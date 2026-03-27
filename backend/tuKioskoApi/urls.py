@@ -1,0 +1,19 @@
+from rest_framework import routers
+from django.urls import path, include
+from .views import *
+
+
+router = routers.DefaultRouter()
+router.register(r'productos', ObtenerProductosVista)
+router.register(r'areas', ObtenerAreaVista)
+router.register(r'ordenes', ObtenerOrdenVista)
+router.register(r'usuarios', UsuarioVista)
+router.register(r'vendedores', VendedorVista)
+router.register(r'ventas', VentaVista)
+router.register(r'productos-vendidos', ProductoVendidoVista)
+
+
+urlpatterns = [
+    path("", include(router.urls)),
+    path('datos-ventas/', DatosVentasAPIView.as_view(), name='datos-ventas'),
+]

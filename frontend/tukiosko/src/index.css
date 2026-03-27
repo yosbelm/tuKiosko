@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@layer utilities{
+    .scrollbar-hide::-webkit-scrollbar{
+        display: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar{
+        -ms-overflow-style: none,
+    }
+}
+
+[data-sonner-toast][data-styled=true] [data-description] {
+    color: #ffffff !important;
+}

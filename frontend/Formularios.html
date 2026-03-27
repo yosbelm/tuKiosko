@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularios de Gestión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        'primary-hover': '#2563eb',
+                        border: '#e5e7eb',
+                        'input-bg': '#f9fafb',
+                        'text-muted': '#6b7280',
+                        'text-dark': '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom toggle switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3b82f6;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3b82f6;
+        }
+        .toggle-checkbox {
+            right: 16px;
+        }
+        
+        /* Hide scrollbar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Floating menu animation */
+        .fab-menu {
+            transform: scale(0);
+            transform-origin: bottom right;
+            transition: transform 0.2s ease-out;
+        }
+        .fab-menu.active {
+            transform: scale(1);
+        }
+
+        /* Form sections */
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+
+        /* Input focus styles */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Number input arrows hide */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <h1 class="text-xl font-semibold text-gray-900">Sistema de Gestión</h1>
+            <p class="text-sm text-gray-500 mt-1">Administra áreas, productos y vendedores</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- Navigation Tabs -->
+        <div class="flex gap-2 mb-8 bg-white p-1 rounded-lg border border-gray-200 w-fit">
+            <button onclick="showForm('area')" id="tab-area" class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-all bg-blue-500 text-white">
+                Área
+            </button>
+            <button onclick="showForm('producto')" id="tab-producto" class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-100">
+                Producto
+            </button>
+            <button onclick="showForm('vendedor')" id="tab-vendedor" class="tab-btn px-4 py-2 rounded-md text-sm font-medium transition-all text-gray-600 hover:bg-gray-100">
+                Vendedor
+            </button>
+        </div>
+
+        <!-- ==================== FORMULARIO ÁREA ==================== -->
+        <section id="form-area" class="form-section active">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">Crear Nueva Área</h2>
+                    <p class="text-sm text-gray-500 mt-1">Define las ubicaciones para tus productos</p>
+                </div>
+                
+                <form class="p-6 space-y-6">
+                    <!-- Nombre del Área -->
+                    <div class="space-y-2">
+                        <label class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700">Nombre del Área</span>
+                            <span class="text-xs text-gray-400">Requerido</span>
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                name="nombre" 
+                                placeholder="Ej: Almacén Principal"
+                                maxlength="100"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 transition-all"
+                            >
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">0/100</span>
+                        </div>
+                        <p class="text-xs text-gray-500">Máximo 100 caracteres</p>
+                    </div>
+
+                    <!-- Descripción opcional -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-gray-700">Descripción</span>
+                            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 text-gray-400 text-xs cursor-help" title="Campo opcional">?</span>
+                        </label>
+                        <textarea 
+                            name="descripcion" 
+                            rows="3"
+                            placeholder="Descripción del área..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 resize-none transition-all"
+                        ></textarea>
+                        <p class="text-xs text-gray-500">No más de 200 caracteres</p>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex items-center gap-3 pt-4">
+                        <button type="submit" class="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors">
+                            Guardar Área
+                        </button>
+                        <button type="reset" class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-200 transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== FORMULARIO PRODUCTO ==================== -->
+        <section id="form-producto" class="form-section">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">Crear Nuevo Producto</h2>
+                    <p class="text-sm text-gray-500 mt-1">Agrega productos a tu inventario</p>
+                </div>
+                
+                <form class="p-6 space-y-6">
+                    <!-- Nombre del Producto -->
+                    <div class="space-y-2">
+                        <label class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700">Nombre del Producto</span>
+                            <span class="text-xs text-gray-400">Requerido</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            name="nombre" 
+                            placeholder="Ej: Laptop Dell XPS 15"
+                            maxlength="100"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 transition-all"
+                        >
+                        <p class="text-xs text-gray-500">Máximo 100 caracteres</p>
+                    </div>
+
+                    <!-- Estado Activo (Toggle) -->
+                    <div class="flex items-center justify-between py-2">
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Producto Activo</label>
+                            <p class="text-xs text-gray-500 mt-0.5">El producto estará disponible para la venta</p>
+                        </div>
+                        <div class="relative inline-block w-12 align-middle select-none">
+                            <input type="checkbox" name="activo" id="toggle-activo" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-blue-500 appearance-none cursor-pointer transition-all duration-200">
+                            <label for="toggle-activo" class="toggle-label block overflow-hidden h-6 rounded-full bg-blue-500 cursor-pointer"></label>
+                        </div>
+                    </div>
+
+                    <!-- Precios (Grid 2 columnas) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Precio de Compra -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-gray-700">Precio de Compra</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                                <input 
+                                    type="number" 
+                                    name="precio_compra" 
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    min="0"
+                                    class="w-full pl-8 pr-16 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 transition-all"
+                                >
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">USD</span>
+                            </div>
+                        </div>
+
+                        <!-- Precio de Venta -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-gray-700">Precio de Venta</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                                <input 
+                                    type="number" 
+                                    name="precio_venta" 
+                                    placeholder="0.00"
+                                    step="0.01"
+                                    min="0"
+                                    class="w-full pl-8 pr-16 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 transition-all"
+                                >
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">USD</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cantidad con controles +/- -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Cantidad en Stock</label>
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                                <button type="button" onclick="decrementCantidad()" class="px-4 py-3 hover:bg-gray-100 text-gray-600 font-medium transition-colors">
+                                    −
+                                </button>
+                                <input 
+                                    type="number" 
+                                    name="cantidad" 
+                                    id="cantidad-input"
+                                    value="0"
+                                    min="0"
+                                    class="w-20 py-3 bg-transparent border-x border-gray-200 text-center text-gray-900 font-medium"
+                                >
+                                <button type="button" onclick="incrementCantidad()" class="px-4 py-3 hover:bg-gray-100 text-gray-600 font-medium transition-colors">
+                                    +
+                                </button>
+                            </div>
+                            <span class="text-sm text-gray-500">unidades</span>
+                        </div>
+                    </div>
+
+                    <!-- Ubicación (Select con icono) -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-gray-700">Ubicación</span>
+                            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 text-gray-400 text-xs cursor-help" title="Selecciona el área donde se almacenará">?</span>
+                        </label>
+                        <div class="relative">
+                            <select 
+                                name="ubicacion" 
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all pr-10"
+                            >
+                                <option value="">Seleccionar área...</option>
+                                <option value="1">📦 Almacén Principal</option>
+                                <option value="2">🏪 Tienda Central</option>
+                                <option value="3">🚚 Bodega Norte</option>
+                                <option value="4">📍 Sucursal Sur</option>
+                            </select>
+                            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-gray-500">Selecciona el área de almacenamiento</p>
+                    </div>
+
+                    <!-- Categorías (Tags) -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Categorías</label>
+                        <div class="flex flex-wrap items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg min-h-[52px]">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white text-sm rounded-full">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M17.707 9.293l-5-5a.999.999 0 00-1.414 0l-9 9a.999.999 0 000 1.414l5 5a.999.999 0 001.414 0l9-9a.999.999 0 000-1.414zM13 6a1 1 0 110 2 1 1 0 010-2z"/>
+                                </svg>
+                                Electrónica
+                                <button type="button" class="ml-1 hover:bg-blue-600 rounded-full p-0.5">×</button>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-sm rounded-full">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Nuevo
+                                <button type="button" class="ml-1 hover:bg-green-600 rounded-full p-0.5">×</button>
+                            </span>
+                            <input type="text" placeholder="Agregar categoría..." class="flex-1 min-w-[120px] bg-transparent border-none outline-none text-sm text-gray-600 placeholder-gray-400">
+                        </div>
+                    </div>
+
+                    <!-- Imagen del producto (File upload) -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Imagen del Producto</label>
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 border-dashed rounded-lg">
+                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <span class="flex-1 text-sm text-gray-500">Arrastra archivos aquí...</span>
+                            <label class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 cursor-pointer transition-colors">
+                                Examinar
+                                <input type="file" name="imagen" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex items-center gap-3 pt-4">
+                        <button type="submit" class="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors">
+                            Guardar Producto
+                        </button>
+                        <button type="reset" class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-200 transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== FORMULARIO VENDEDOR ==================== -->
+        <section id="form-vendedor" class="form-section">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">Registrar Vendedor</h2>
+                    <p class="text-sm text-gray-500 mt-1">Asigna usuarios como vendedores</p>
+                </div>
+                
+                <form class="p-6 space-y-6">
+                    <!-- Selección de Usuario -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Usuario</label>
+                        <div class="relative">
+                            <div class="flex items-center gap-3 w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-all">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jane" alt="Avatar" class="w-8 h-8 rounded-full bg-gray-200">
+                                <div class="flex-1">
+                                    <select name="usuario" class="w-full bg-transparent border-none outline-none text-gray-900 cursor-pointer appearance-none">
+                                        <option value="">Seleccionar usuario...</option>
+                                        <option value="1">María García</option>
+                                        <option value="2">Carlos López</option>
+                                        <option value="3">Ana Martínez</option>
+                                        <option value="4">Pedro Sánchez</option>
+                                    </select>
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Múltiples usuarios (chips) -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Equipo de Ventas</label>
+                        <div class="flex flex-wrap items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg min-h-[52px]">
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-sm rounded-full shadow-sm">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" alt="" class="w-5 h-5 rounded-full">
+                                Jack
+                                <button type="button" class="text-gray-400 hover:text-gray-600">×</button>
+                            </span>
+                            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-sm rounded-full shadow-sm">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ann" alt="" class="w-5 h-5 rounded-full">
+                                Ann
+                                <button type="button" class="text-gray-400 hover:text-gray-600">×</button>
+                            </span>
+                            <input type="text" placeholder="Agregar usuario..." class="flex-1 min-w-[120px] bg-transparent border-none outline-none text-sm text-gray-600 placeholder-gray-400">
+                        </div>
+                        <p class="text-xs text-gray-500">Selecciona hasta 5 usuarios</p>
+                    </div>
+
+                    <!-- Tipo de contrato (Radio buttons) -->
+                    <div class="space-y-3">
+                        <label class="text-sm font-medium text-gray-700">Tipo de Contrato</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition-all">
+                                <input type="radio" name="contrato" value="fijo" class="w-5 h-5 text-blue-500 border-gray-300 focus:ring-blue-500">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900">Tiempo Completo</span>
+                                    <p class="text-xs text-gray-500">Contrato fijo con beneficios</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition-all">
+                                <input type="radio" name="contrato" value="parcial" class="w-5 h-5 text-blue-500 border-gray-300 focus:ring-blue-500">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900">Medio Tiempo</span>
+                                    <p class="text-xs text-gray-500">Horario flexible</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition-all">
+                                <input type="radio" name="contrato" value="comision" class="w-5 h-5 text-blue-500 border-gray-300 focus:ring-blue-500">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900">Por Comisión</span>
+                                    <p class="text-xs text-gray-500">Pago basado en ventas</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Comisión (porcentaje) -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Porcentaje de Comisión</label>
+                        <div class="relative">
+                            <input 
+                                type="number" 
+                                name="comision" 
+                                placeholder="0"
+                                min="0"
+                                max="100"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 transition-all pr-12"
+                            >
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">%</span>
+                        </div>
+                    </div>
+
+                    <!-- Zona de venta -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Zona de Venta</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🌍</span>
+                            <select 
+                                name="zona" 
+                                class="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
+                            >
+                                <option value="">Seleccionar zona...</option>
+                                <option value="norte">🇲🇽 Zona Norte</option>
+                                <option value="sur">🇲🇽 Zona Sur</option>
+                                <option value="centro">🇲🇽 Zona Centro</option>
+                                <option value="internacional">🌎 Internacional</option>
+                            </select>
+                            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Teléfono de Contacto</label>
+                        <div class="flex">
+                            <div class="flex items-center gap-2 px-3 py-3 bg-gray-100 border border-r-0 border-gray-200 rounded-l-lg">
+                                <span class="text-lg">🇲🇽</span>
+                                <span class="text-sm text-gray-600">+52</span>
+                                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <input 
+                                type="tel" 
+                                name="telefono" 
+                                placeholder="55 1234 5678"
+                                class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-r-lg text-gray-900 placeholder-gray-400 transition-all"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Checkboxes de permisos -->
+                    <div class="space-y-3">
+                        <label class="text-sm font-medium text-gray-700">Permisos y Preferencias</label>
+                        <div class="space-y-3">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="descuentos" class="w-5 h-5 mt-0.5 text-blue-500 border-gray-300 rounded focus:ring-blue-500">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900">Aplicar Descuentos</span>
+                                    <p class="text-xs text-gray-500">Puede ofrecer descuentos hasta el 15%</p>
+                                </div>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="notificaciones" checked class="w-5 h-5 mt-0.5 text-blue-500 border-gray-300 rounded focus:ring-blue-500">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900">Recibir Notificaciones</span>
+                                    <p class="text-xs text-gray-500">Alertas sobre ventas y comisiones</p>
+                                </div>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="reportes" class="w-5 h-5 mt-0.5 text-blue-500 border-gray-300 rounded focus:ring-blue-500">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-900">Acceso a Reportes</span>
+                                    <p class="text-xs text-gray-500">Ver estadísticas de ventas detalladas</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Notas -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-gray-700">Notas Adicionales</span>
+                            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-gray-100 text-gray-400 text-xs cursor-help">?</span>
+                        </label>
+                        <textarea 
+                            name="notas" 
+                            rows="3"
+                            placeholder="Información adicional sobre el vendedor..."
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 resize-none transition-all"
+                        ></textarea>
+                        <p class="text-xs text-gray-500">No más de 200 caracteres</p>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex items-center gap-3 pt-4">
+                        <button type="submit" class="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-colors">
+                            Registrar Vendedor
+                        </button>
+                        <button type="reset" class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-200 transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== BOTÓN FLOTANTE ==================== -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Menú flotante -->
+        <div id="fab-menu" class="fab-menu absolute bottom-16 right-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden min-w-[200px]">
+            <button onclick="showForm('area'); toggleFabMenu();" class="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left">
+                <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </span>
+                <div>
+                    <span class="text-sm font-medium text-gray-900">Nueva Área</span>
+                    <p class="text-xs text-gray-500">Crear ubicación</p>
+                </div>
+            </button>
+            <button onclick="showForm('producto'); toggleFabMenu();" class="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-100">
+                <span class="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </span>
+                <div>
+                    <span class="text-sm font-medium text-gray-900">Nuevo Producto</span>
+                    <p class="text-xs text-gray-500">Agregar al inventario</p>
+                </div>
+            </button>
+            <button onclick="showForm('vendedor'); toggleFabMenu();" class="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-100">
+                <span class="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </span>
+                <div>
+                    <span class="text-sm font-medium text-gray-900">Nuevo Vendedor</span>
+                    <p class="text-xs text-gray-500">Registrar vendedor</p>
+                </div>
+            </button>
+        </div>
+
+        <!-- Botón FAB principal -->
+        <button 
+            onclick="toggleFabMenu()" 
+            id="fab-button"
+            class="w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-200"
+        >
+            <svg id="fab-icon-plus" class="w-6 h-6 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- JavaScript para interactividad básica -->
+    <script>
+        // Mostrar formulario específico
+        function showForm(formId) {
+            // Ocultar todos los formularios
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar el formulario seleccionado
+            document.getElementById('form-' + formId).classList.add('active');
+            
+            // Actualizar tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('text-gray-600', 'hover:bg-gray-100');
+            });
+            
+            const activeTab = document.getElementById('tab-' + formId);
+            activeTab.classList.remove('text-gray-600', 'hover:bg-gray-100');
+            activeTab.classList.add('bg-blue-500', 'text-white');
+        }
+
+        // Toggle menú flotante
+        function toggleFabMenu() {
+            const menu = document.getElementById('fab-menu');
+            const icon = document.getElementById('fab-icon-plus');
+            
+            menu.classList.toggle('active');
+            icon.style.transform = menu.classList.contains('active') ? 'rotate(45deg)' : 'rotate(0deg)';
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const fab = document.querySelector('.fixed.bottom-6.right-6');
+            if (!fab.contains(event.target)) {
+                const menu = document.getElementById('fab-menu');
+                const icon = document.getElementById('fab-icon-plus');
+                menu.classList.remove('active');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        // Incrementar cantidad
+        function incrementCantidad() {
+            const input = document.getElementById('cantidad-input');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        // Decrementar cantidad
+        function decrementCantidad() {
+            const input = document.getElementById('cantidad-input');
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+    </script>
+
+</body>
+</html>
