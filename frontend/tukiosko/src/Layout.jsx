@@ -47,21 +47,21 @@ export default function Layout() {
         <Outlet context={{ toggleSidebar }} /> 
 
         {/* FAB Menu */}
-        <div className="fixed bottom-6 right-6 z-50" ref={menuRef}>
-            <div className={`absolute bottom-16 right-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden min-w-50 transition-all duration-200 origin-bottom-right ${isMenuOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+        <Link to={"/agregar-compra"}>
+        <div className="fixed bottom-6 right-6 z-50">
+            {/* <div className={`absolute bottom-16 right-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden min-w-50 transition-all duration-200 origin-bottom-right ${isMenuOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}> */}
                 {/* <button onClick={() => { setActiveTab('area'); setIsMenuOpen(false); }} className="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left">
                     <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">A</div>
                     <span className="text-sm font-medium text-gray-900">Nueva Área</span>
                 </button> */}
-                <button onClick={() => { setActiveTab('producto'); setIsMenuOpen(false); }} className="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-100">
+                {/* <button onClick={() => { setActiveTab('producto'); setIsMenuOpen(false); }} className="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left border-t border-gray-100">
                     <div className="w-8 h-8 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
                         {<Plus className="w-4 h-4" />}
                     </div>
-                    <Link to={"/agregar-producto"}>
-                        <span className="text-sm font-medium text-gray-900">Nuevo Producto</span>
-                    </Link>
-                </button>
-            </div>
+                    
+                        <span className="text-sm font-medium text-gray-900">Nuevo Compra</span>
+                </button> */}
+            {/* </div> */}
 
             <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
@@ -72,6 +72,7 @@ export default function Layout() {
             </svg>
             </button>
         </div>
+        </Link>
 
       </main>
       

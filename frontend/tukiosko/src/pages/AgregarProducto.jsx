@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { postNuevoProducto } from "../api/productos.api"
 import { toast } from 'sonner';
+import { getAllAreas } from '../api/productos.api'
 
 
 export default function AgregarProducto() {
@@ -26,7 +27,8 @@ export default function AgregarProducto() {
     const [precioCompra, setPrecioCompra] = useState(0);
     const [precioVenta, setPrecioVenta] = useState(0);
     const [cantidad, setCantidad] = useState(1);
-    const [ubicacion, setUbicacion] = useState("");
+    const [ubicacion, setUbicacion] = useState([]);
+    const [definirUbicacion, setDefinirUbicacion] = useState("")
     const [cargando, setCargando] = useState(false);
 
 
@@ -40,7 +42,7 @@ export default function AgregarProducto() {
           "precio_compra": precioCompra,
           "precio_venta": precioVenta,
           "cantidad": cantidad,
-          "ubicacion": 1
+          "ubicacion": definirUbicacion
         })
         try {
             await postNuevoProducto(
@@ -50,7 +52,7 @@ export default function AgregarProducto() {
                 "precio_compra": precioCompra,
                 "precio_venta": precioVenta,
                 "cantidad": cantidad,
-                "ubicacion": 1
+                "ubicacion": definirUbicacion
               }
             );
             toast.success('Producto agregado correctamente', {
@@ -58,8 +60,10 @@ export default function AgregarProducto() {
                 duration: 3000,
             });
             setNombre("");
-            setPrecioCompra("");
-            setPrecioVenta("");
+            setPrecioCompra(0);
+            setPrecioVenta(0);
+            setCantidad(1);
+            setDefinirUbicacion("");
         } catch (error) {
             console.error("Error al crear área:", error);
             alert("Hubo un error al guardar");
@@ -67,6 +71,21 @@ export default function AgregarProducto() {
             setCargando(false);
         }
     };
+
+
+    useEffect(() => {
+      async function allAreas (){
+        await getAllAreas()
+          .then(response => {
+            setUbicacion(response.data);
+            console.log(response.data)
+          })
+          .catch(error => {
+            console.error('Error al obtener areas:', error);
+          }); 
+      };
+      allAreas();
+    }, [])
 
   return (
         <>
@@ -80,7 +99,7 @@ export default function AgregarProducto() {
                     <form className="p-6 space-y-6" onSubmit={agregarProducto}>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-gray-700">Nombre del Producto</label>
-                          <input type="text" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 
+                          <input type="text" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 
                           rounded-lg focus:border-blue-500 outline-none" value={nombre} placeholder='Ej: Galletas'
                           onChange={(e) => setNombre(e.target.value)} />
                         </div>
@@ -105,7 +124,7 @@ export default function AgregarProducto() {
                                 <label className="text-sm font-medium text-gray-700">Precio de Venta</label>
                                 <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                                <input type="number" className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg
+                                <input type="number" className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg
                                  focus:border-blue-500 outline-none" value={precioVenta}
                                  onChange={(e) => setPrecioVenta(e.target.value)}/>
                                 </div>
@@ -114,22 +133,42 @@ export default function AgregarProducto() {
                                 <label className="text-sm font-medium text-gray-700">Precio de Compra</label>
                                 <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                                <input type="number" className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg
+                                <input type="number" className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg
                                  focus:border-blue-500 outline-none" value={precioCompra}
                                  onChange={(e) => setPrecioCompra(e.target.value)}/>
                                 </div>
                             </div>
                         </div>
 
-                        <div className='flex'>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-gray-700">Cantidad</label>
                                 <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 w-fit">
-                                <button type="button" onClick={() => setCantidad(Math.max(0, cantidad - 1))} className="px-4 py-2 hover:bg-gray-100 text-gray-600">−</button>
-                                <input type="number" value={cantidad} readOnly className="w-16 bg-transparent text-center font-medium border-x border-gray-200" 
-                                onChange={(e) => setPrecioCompra(e.target.value)} />
-                                <button type="button" onClick={() => setCantidad(cantidad + 1)} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
+                                  <button type="button" onClick={() => setCantidad(Math.max(0, cantidad - 1))} className="px-4 py-2 hover:bg-gray-100 text-gray-600">−</button>
+                                  <input type="number" value={cantidad} className="w-16 bg-transparent text-center font-normal border-x border-gray-200" 
+                                  onChange={(e) => setCantidad(e.target.value)} />
+                                  <button type="button" onClick={() => setCantidad(cantidad + 1)} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
                                 </div>
+                            </div>
+                            <div className='space-y-2'>
+                              <label className="text-sm font-medium text-gray-700">Ubicación</label>
+                              <div className="relative">
+                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🚹</span>
+                                  <select 
+                                      name="zona" value={definirUbicacion}
+                                      onChange={(e) => setDefinirUbicacion(e.target.value)}
+                                      className="w-full pl-12 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
+                                  >
+                                      <option value="">Seleccionar ubicación...</option>
+                                      {ubicacion.map(ubc => (
+                                          <option key={ubc.id} value={ubc.id}>{ubc.nombre}</option>
+                                        ))
+                                      }
+                                  </select>
+                                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                  </svg>
+                              </div>
                             </div>
                         </div>
 

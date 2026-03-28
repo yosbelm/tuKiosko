@@ -40,12 +40,12 @@ export default function Sidebar({ isOpen, toggle }){
             {/* Navigation */}
             <nav className="py-1 text-sm">
             <SectionTitle title="Navegacion" />
-            <SidebarLink direccion={"/"} icon={<Settings2 className="w-4 h-4" />} label="Panel" active />
+            <SidebarLink direccion={"/"} direccionUrl={"/"} icon={<Settings2 className="w-4 h-4" />} label="Panel"  />
 
             <SectionTitle title="Administrar" />
-            <SidebarLink direccion="/agregar-producto" icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
-            <SidebarLink direccion="/agregar-area" icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
-            <SidebarLink direccion="/agregar-vendedor" icon={<UserRoundPlus className="w-4 h-4" />} label="Agregar Vendedor" hasArrow />
+            <SidebarLink direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
+            <SidebarLink direccion="/agregar-area" direccionUrl={"/agregar-area"} icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
+            <SidebarLink direccion="/agregar-vendedor" direccionUrl={"/agregar-vendedor"} icon={<UserRoundPlus className="w-4 h-4" />} label="Agregar Vendedor" hasArrow />
 
             {/* <SidebarLink icon="fa-power-off" label="Disabled menu" disabled /> */}
             </nav>

@@ -23,6 +23,7 @@ function Index() {
   const [cantidadVentasSemanal, setCantidadVentasSemanal] = useState([])
   const [dineroVentasMensual, setDineroVentasMensual] = useState([])
   const [cantidadVentasMensual, setCantidadVentasMensual] = useState([])
+  const [cantidadProductos, setCantidadProductos] = useState([])
   
 
   useEffect(() => {
@@ -49,6 +50,7 @@ function Index() {
 
           setDineroVentasMensual(response.data.dinero_ventas_mensual)
           setCantidadVentasMensual(response.data.productos_vendidos_mes)
+          setCantidadProductos(response.data.total_productos_conteo)
           console.log(response.data.productos_vendidos)
         })
         .catch(error => {
@@ -69,8 +71,8 @@ function Index() {
               <StatCard title="Ventas Semanales" icon={<Briefcase className="w-6 h-6" />}
                 iconBg="bg-blue-500" value={dineroVentasSemanal} cantidad={cantidadVentasSemanal} color="bg-[#9182f2]" trend="down" />
               
-              <StatCard title="Ventas Mensuales" icon={<BarChart3 className="w-6 h-6" />}
-                iconBg="bg-gray-600" value={dineroVentasMensual} cantidad={cantidadVentasMensual} color="bg-[#1de9b6]" trend="up" />
+              <StatCard title="Productos" icon={<BarChart3 className="w-6 h-6" />}
+                iconBg="bg-gray-600" value="Productos de este kiosko" cantidad={cantidadProductos} color="bg-[#1de9b6]" trend="up" />
 
               <Link to="/agregar-producto" className="block cursor-pointer">
                 <StatCard title="Vendedores" icon={<Workflow className="w-6 h-6" />}
@@ -81,7 +83,7 @@ function Index() {
             {/* <h1 className="font-bold text-2xl mb-1">Historial</h1> */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
               {/* Recent Users Table */}
-              <div className="lg:col-span-7 bg-white rounded-lg shadow-sm max-h-127 overflow-auto">
+              <div className="lg:col-span-7 bg-white rounded-lg shadow-sm max-h-127 overflow-auto scrollbar-hide">
                 <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2">
                   <div className="w-1 h-5 bg-[#1c2d47] rounded"></div>
                   <h3 className="text-gray-700 font-semibold">Ventas Recientes</h3>

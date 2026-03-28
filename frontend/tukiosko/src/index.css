@@ -12,3 +12,22 @@
 [data-sonner-toast][data-styled=true] [data-description] {
     color: #ffffff !important;
 }
+
+/* Color base para todos los toasts (el azul oscuro que tenías) */
+[data-sonner-toast] {
+    background: #1c2d47 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* Cuando sea de tipo ERROR (Rojo) */
+[data-sonner-toast][data-type="error"] {
+    background: #eb2f2f !important; /* Rojo Tailwind */
+    border-color: #dc2626 !important;
+}
+
+
+/* Asegurar que la descripción siempre sea blanca */
+[data-sonner-toast] [data-description] {
+    color: rgba(255, 255, 255, 0.8) !important;
+}

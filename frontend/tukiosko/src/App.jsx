@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import AgregarProducto from './pages/AgregarProducto'
-import Index from '.';
+import Index from './Index';
 import Layout from './Layout';
 import AgregarArea from './pages/AgregarArea';
 import AgregarVendedor from './pages/AgregarVendedor';
+import AgregarCompra from './pages/AgregarCompra';
 
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Toaster position="bottom-center"
+      <Toaster position="top-right"
       theme='light'
         toastOptions={{
           style: {
@@ -23,6 +24,7 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
+          <Route path="/agregar-compra" element={<AgregarCompra />} />
           <Route path="/agregar-producto" element={<AgregarProducto />} />
           <Route path="/agregar-area" element={<AgregarArea />} />
           <Route path="/agregar-vendedor" element={<AgregarVendedor />} />

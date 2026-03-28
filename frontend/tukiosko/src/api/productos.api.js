@@ -17,6 +17,10 @@ export const getAllVendedores = () => {
     return apiUrl.get(`/vendedores/`);
 }
 
+export const getAllAreas = () => {
+    return apiUrl.get(`/areas/`);
+}
+
 // POST
 export const postNuevaArea = (data) => {
     return apiUrl.post(`/areas/`, data);
@@ -28,5 +32,9 @@ export const postNuevoProducto = (data) => {
 
 export const postNuevoVendedor = (data) => {
     return apiUrl.post(`/vendedores/`, data);
+};
+
+export const postVenta = (data) => {
+    return apiUrl.post(`/ventas/finalizar_venta/`, data);
 };
 

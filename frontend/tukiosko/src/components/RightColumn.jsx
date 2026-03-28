@@ -3,7 +3,7 @@ import fechaFinal from '../../utils/Date'
 export default function RightColumn({ precio, cantidad, producto, creado }){
     return(
         // Cambiamos overflow-hidden por overflow-x-auto
-        <div className="bg-white rounded-lg shadow-sm p-0 overflow-x-auto scrollbar-thin">
+        <div className="bg-white rounded-lg shadow-sm p-0 overflow-x-auto scrollbar-hide">
             {/* Agregamos min-w-max para forzar a los elementos a mantener su tamaño y disparar el scroll */}
             <table className="w-full min-w-max">
                 <tbody>

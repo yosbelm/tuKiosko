@@ -5,7 +5,7 @@ export default function UserRow ({ name, precio, seed, date, status }){
         <tr className="flex justify-between gap-3 hover:bg-gray-50 transition-colors">
             <td className="py-4 px-6 whitespace-nowrap">
                 <div className="flex items-center gap-3">
-                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed === 'femenino' ? 'Isabella' : 'Albert'}`} alt={name} className="w-10 h-10 rounded-full bg-gray-100" />
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed === 'femenino' ? 'Isabella' : 'Carlos'}`} alt={name} className="w-10 h-10 rounded-full bg-gray-100" />
                 <div className="">
                     <p className="font-medium text-gray-700">{name}</p>
                     <p className="text-xs text-gray-400">{date}</p>                        
