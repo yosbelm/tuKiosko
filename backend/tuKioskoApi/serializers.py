@@ -4,6 +4,7 @@ from django.db import transaction
 
 
 class ProductosSerializer(serializers.ModelSerializer):
+    ubicacion = serializers.ReadOnlyField(source='ubicacion.nombre')
     class Meta:
         model = Producto
         fields = '__all__'
@@ -12,7 +13,7 @@ class ProductosSerializer(serializers.ModelSerializer):
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
-        fields = ['nombre']
+        fields = '__all__'
         
         
         

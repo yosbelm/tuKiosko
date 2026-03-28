@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from datetime import datetime, date
 from django.utils.timezone import now
 from django.db.models import Sum, F
@@ -15,7 +16,7 @@ from tuKioskoApp.models import *
 # Create your views here.
 class ObtenerProductosVista(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
-    queryset = Producto.objects.filter(activo=True).order_by('-creado')
+    queryset = Producto.objects.filter(activo=True, cantidad__gt=0).order_by('-creado')
     
     
     
@@ -47,6 +48,33 @@ class VentaVista(viewsets.ModelViewSet):
     serializer_class = VentaSerializer
     queryset = Venta.objects.all()    
     
+    @action(detail=False, methods=['post'])
+    def finalizar_venta(self, request):
+        datos = request.data
+        try:
+            with transaction.atomic():
+                venta = Venta.objects.create(
+                    vendedor_id=datos['vendedor'],
+                    precio_total=datos['precio_total']
+                )
+                for item in datos['productos']:
+                    prod = Producto.objects.select_for_update().get(id=item['producto'])                    
+
+                    if prod.cantidad < item['cantidad']:
+                        raise ValueError(f"Stock insuficiente para {prod.nombre}")
+                    prod.cantidad -= item['cantidad']
+                    prod.save()
+
+                    ProductoVendido.objects.create(
+                        venta_producto=venta,
+                        producto=prod,
+                        precio_producto_vendido=item['precio_unitario'],
+                        cantidad=item['cantidad']
+                    )                
+                return Response({'status': 'Venta completada'}, status=201)
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
+
     
     
 class ProductoVendidoVista(viewsets.ModelViewSet):
@@ -60,16 +88,17 @@ class DatosVentasAPIView(APIView):
     def get(self, request):
         hoy = date.today()
         vendedores = Vendedor.objects.all().count()
+        total_productos = Producto.objects.all()
         productos_vendidos = ProductoVendido.objects.filter(creado__gte=hoy).values(
             nombre=F('producto__nombre'),
             precio=F('precio_producto_vendido')
         ).annotate(
             cantidad_total=Sum('cantidad'),
             total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
-        )
+        ).order_by('-creado')
 
         
-        ventas_diarias = Venta.objects.filter(creado__gte=hoy)
+        ventas_diarias = Venta.objects.filter(creado__gte=hoy).order_by('-creado')
         productos_vendidos_dia = ProductoVendido.objects.filter(creado__gte=hoy).aggregate(
                 cantidad_total=Sum('cantidad'),
             )['cantidad_total'] or 0
@@ -103,6 +132,7 @@ class DatosVentasAPIView(APIView):
             "ventas_diarias_conteo": ventas_diarias.count(),
             "ventas_semanal_conteo": ventas_semana.count(),
             "ventas_mensaual_conteo": ventas_mes.count(),
+            "total_productos_conteo": total_productos.count(),
             "dinero_ventas_diarias": dinero_ventas_diarias,
             "dinero_ventas_semanal": dinero_ventas_semanal,
             "dinero_ventas_mensual": dinero_ventas_mensual,
