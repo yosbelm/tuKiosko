@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from datetime import datetime, date
 from django.utils.timezone import now
+from django.utils import timezone
 from django.db.models import Sum, F
 
 
@@ -17,6 +18,11 @@ from tuKioskoApp.models import *
 class ObtenerProductosVista(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
     queryset = Producto.objects.filter(activo=True, cantidad__gt=0).order_by('-creado')
+    
+
+class ObtenerTodosProductosVista(viewsets.ModelViewSet):
+    serializer_class = ProductosSerializer
+    queryset = Producto.objects.all()
     
     
     
@@ -84,12 +90,23 @@ class ProductoVendidoVista(viewsets.ModelViewSet):
 
 
 
+class DetallesProductoAPIView(APIView):
+    def get(self, request, producto_id):
+        producto = get_object_or_404(Producto, id=producto_id)
+        
+        return Response({
+            "producto": ProductosSerializer(producto).data,
+        })
+
+
+
 class DatosVentasAPIView(APIView):
     def get(self, request):
-        hoy = date.today()
-        vendedores = Vendedor.objects.all().count()
-        total_productos = Producto.objects.all()
-        productos_vendidos = ProductoVendido.objects.filter(creado__gte=hoy).values(
+        hoy = timezone.now()
+        vendedores = Vendedor.objects.count()
+        total_productos = Producto.objects.count() 
+        
+        productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy).values(
             nombre=F('producto__nombre'),
             precio=F('precio_producto_vendido')
         ).annotate(
@@ -97,34 +114,25 @@ class DatosVentasAPIView(APIView):
             total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
         ).order_by('-creado')
 
+        productos_vendidos_dia = ProductoVendido.objects.filter(creado__date=hoy).aggregate(
+            cantidad_total=Sum('cantidad')
+        )['cantidad_total'] or 0
         
-        ventas_diarias = Venta.objects.filter(creado__gte=hoy).order_by('-creado')
-        productos_vendidos_dia = ProductoVendido.objects.filter(creado__gte=hoy).aggregate(
-                cantidad_total=Sum('cantidad'),
-            )['cantidad_total'] or 0
         productos_vendidos_semana = ProductoVendido.objects.filter(creado__year=hoy.year, creado__week=hoy.isocalendar()[1]).aggregate(
-                cantidad_total=Sum('cantidad'),
-            )['cantidad_total'] or 0
-        productos_vendidos_mes = ProductoVendido.objects.filter(creado__year=hoy.year, creado__month=hoy.month).aggregate(
-                cantidad_total=Sum('cantidad'),
-            )['cantidad_total'] or 0
-        print(f'--------------{productos_vendidos_dia}')
-
-            
-        # Ventas semana 
-        ventas_semana = Venta.objects.filter(creado__year=hoy.year, creado__week=hoy.isocalendar()[1])
-        # Ventas del mes
-        ventas_mes = Venta.objects.filter(creado__year=hoy.year, creado__month=hoy.month)
-        productos_mes = ProductoVendido.objects.filter(creado__year=hoy.year, creado__month=hoy.month)
+            cantidad_total=Sum('cantidad')
+        )['cantidad_total'] or 0
         
-        dinero_ventas_diarias, dinero_ventas_semanal, dinero_ventas_mensual = 0, 0, 0
-        for venta in ventas_diarias:
-            dinero_ventas_diarias+=venta.precio_total
-        for venta in ventas_semana:
-            dinero_ventas_semanal+=venta.precio_total
-        for venta in ventas_mes:
-            dinero_ventas_mensual+=venta.precio_total
-            
+        productos_vendidos_mes = ProductoVendido.objects.filter(creado__year=hoy.year, creado__month=hoy.month).aggregate(
+            cantidad_total=Sum('cantidad')
+        )['cantidad_total'] or 0
+
+        ventas_diarias = Venta.objects.filter(creado__date=hoy).order_by('-creado')
+        ventas_semana = Venta.objects.filter(creado__year=hoy.year, creado__week=hoy.isocalendar()[1])
+        ventas_mes = Venta.objects.filter(creado__year=hoy.year, creado__month=hoy.month)
+        
+        dinero_ventas_diarias = ventas_diarias.aggregate(total=Sum('precio_total'))['total'] or 0
+        dinero_ventas_semanal = ventas_semana.aggregate(total=Sum('precio_total'))['total'] or 0
+        dinero_ventas_mensual = ventas_mes.aggregate(total=Sum('precio_total'))['total'] or 0
             
         return Response({
             "ventas_diarias": VentaSerializer(ventas_diarias, many=True).data,
@@ -132,7 +140,7 @@ class DatosVentasAPIView(APIView):
             "ventas_diarias_conteo": ventas_diarias.count(),
             "ventas_semanal_conteo": ventas_semana.count(),
             "ventas_mensaual_conteo": ventas_mes.count(),
-            "total_productos_conteo": total_productos.count(),
+            "total_productos_conteo": total_productos,
             "dinero_ventas_diarias": dinero_ventas_diarias,
             "dinero_ventas_semanal": dinero_ventas_semanal,
             "dinero_ventas_mensual": dinero_ventas_mensual,

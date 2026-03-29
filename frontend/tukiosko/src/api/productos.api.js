@@ -9,6 +9,10 @@ export const getAllProducts = () => {
     return apiUrl.get(`/productos/`);
 };
 
+export const getTodosProductos = () => {
+    return apiUrl.get(`/todos-productos/`);
+};
+
 export const getAllVentas = () => {
     return apiUrl.get(`/datos-ventas/`);
 };
@@ -19,6 +23,10 @@ export const getAllVendedores = () => {
 
 export const getAllAreas = () => {
     return apiUrl.get(`/areas/`);
+}
+
+export const getProducto = (id) => {
+    return apiUrl.get(`/producto-detalles/${id}/`);
 }
 
 // POST

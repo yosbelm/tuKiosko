@@ -38,6 +38,7 @@ function Index() {
       getAllVentas()
         .then(response => {
           setVentas(response.data.ventas_diarias);
+          console.log(response.data.ventas_diarias)
           setVendedores(response.data.vendedores)
           setProductosVendidos(response.data.productos_vendidos);
           console.log(response.data.productos_vendidos)
@@ -71,8 +72,10 @@ function Index() {
               <StatCard title="Ventas Semanales" icon={<Briefcase className="w-6 h-6" />}
                 iconBg="bg-blue-500" value={dineroVentasSemanal} cantidad={cantidadVentasSemanal} color="bg-[#9182f2]" trend="down" />
               
-              <StatCard title="Productos" icon={<BarChart3 className="w-6 h-6" />}
-                iconBg="bg-gray-600" value="Productos de este kiosko" cantidad={cantidadProductos} color="bg-[#1de9b6]" trend="up" />
+              <Link to="/productos-lista" className="block cursor-pointer">
+                <StatCard title="Productos" icon={<BarChart3 className="w-6 h-6" />}
+                  iconBg="bg-gray-600" value="Productos de este kiosko" cantidad={cantidadProductos} color="bg-[#1de9b6]" trend="up" />
+              </Link>
 
               <Link to="/agregar-producto" className="block cursor-pointer">
                 <StatCard title="Vendedores" icon={<Workflow className="w-6 h-6" />}

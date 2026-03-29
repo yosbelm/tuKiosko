@@ -1,10 +1,10 @@
-import { ChartLine, BoxIcon, LocationEditIcon, PackageOpen, User2, Settings2, PackagePlus, MapPinPlus, UserRoundPlus } from "lucide-react"
+import { ChartLine, Timer, BoxIcon, LocationEditIcon, PackageOpen, User2, Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList } from "lucide-react"
 import SectionTitle from './SectionTitle'
 import SidebarLink from './SidebarLink';
 
 
 
-export default function Sidebar({ isOpen, toggle }){
+export default function Sidebar({ isOpen, toggle, closeOnLink }){
     const toggleSidebar = () => {
         setIsSidebarOpen(!isOpen);
       };
@@ -40,12 +40,13 @@ export default function Sidebar({ isOpen, toggle }){
             {/* Navigation */}
             <nav className="py-1 text-sm">
             <SectionTitle title="Navegacion" />
-            <SidebarLink direccion={"/"} direccionUrl={"/"} icon={<Settings2 className="w-4 h-4" />} label="Panel"  />
+            <SidebarLink closeSidebar={closeOnLink} direccion={"/"} direccionUrl={"/"} icon={<Settings2 className="w-4 h-4" />} label="Panel"  />
+            <SidebarLink closeSidebar={closeOnLink} direccion={"/productos-lista"} direccionUrl={"/productos-lista"} icon={<ClipboardList className="w-4 h-4" />} label="Productos"  />
 
             <SectionTitle title="Administrar" />
-            <SidebarLink direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
-            <SidebarLink direccion="/agregar-area" direccionUrl={"/agregar-area"} icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
-            <SidebarLink direccion="/agregar-vendedor" direccionUrl={"/agregar-vendedor"} icon={<UserRoundPlus className="w-4 h-4" />} label="Agregar Vendedor" hasArrow />
+            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
+            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-area" direccionUrl={"/agregar-area"} icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
+            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-vendedor" direccionUrl={"/agregar-vendedor"} icon={<UserRoundPlus className="w-4 h-4" />} label="Agregar Vendedor" hasArrow />
 
             {/* <SidebarLink icon="fa-power-off" label="Disabled menu" disabled /> */}
             </nav>

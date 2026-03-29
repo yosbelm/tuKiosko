@@ -15,6 +15,12 @@ export default function Layout() {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   useEffect(() => {
       const handleClickOutside = (event) => {
         if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -41,7 +47,7 @@ export default function Layout() {
   return (
     <div className="bg-[#f4f7fa] min-h-screen font-['Open_Sans',sans-serif]">
       {/* Pasamos el estado y la función al Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} closeOnLink={closeSidebarOnMobile} />
       <main className="md:ml-64 min-h-screen">
         <Header toggle={toggleSidebar} />
         <Outlet context={{ toggleSidebar }} /> 
@@ -65,8 +71,8 @@ export default function Layout() {
 
             <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
-            className={`w-14 h-14 bg-[#1c2d47] hover:bg-[#373a3f] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${isMenuOpen ? 'rotate-45' : ''}`}
-            >
+            className={`w-14 h-14 bg-[#1c2d47] hover:bg-[#373a3f] text-white cursor-help rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${isMenuOpen ? 'rotate-45' : ''}`}
+            title="Agrega una nueva venta.">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
             </svg>

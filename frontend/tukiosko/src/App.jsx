@@ -6,6 +6,8 @@ import Layout from './Layout';
 import AgregarArea from './pages/AgregarArea';
 import AgregarVendedor from './pages/AgregarVendedor';
 import AgregarCompra from './pages/AgregarCompra';
+import ProductoLista from './pages/ProductosLista'
+import ProductoDetalles from './pages/ProductoDetalles';
 
 
 export default function App() {
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/agregar-producto" element={<AgregarProducto />} />
           <Route path="/agregar-area" element={<AgregarArea />} />
           <Route path="/agregar-vendedor" element={<AgregarVendedor />} />
+          <Route path="/productos-lista" element={<ProductoLista />} />
+          <Route path="/producto-detalles/:id/" element={<ProductoDetalles />} />
         </Route>
       </Routes>
     </BrowserRouter>

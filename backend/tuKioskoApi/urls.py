@@ -5,6 +5,7 @@ from .views import *
 
 router = routers.DefaultRouter()
 router.register(r'productos', ObtenerProductosVista)
+router.register(r'todos-productos', ObtenerTodosProductosVista, basename='productos-todos' )
 router.register(r'areas', ObtenerAreaVista)
 router.register(r'ordenes', ObtenerOrdenVista)
 router.register(r'usuarios', UsuarioVista)
@@ -16,4 +17,5 @@ router.register(r'productos-vendidos', ProductoVendidoVista)
 urlpatterns = [
     path("", include(router.urls)),
     path('datos-ventas/', DatosVentasAPIView.as_view(), name='datos-ventas'),
+    path('producto-detalles/<int:producto_id>/', DetallesProductoAPIView.as_view(), name='producto-detalles'),
 ]
