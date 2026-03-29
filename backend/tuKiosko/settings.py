@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#+f=t1^z+xx6apd42s+^5(d&)43oq%1_z-t#_3y&nrws0o02=0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tukiosko-backend.onrender.com']
 
 
 # Application definition
