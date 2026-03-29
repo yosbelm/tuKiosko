@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-#+f=t1^z+xx6apd42s+^5(d&)43oq%1_z-t#_3y&nrws0o02=0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['tukiosko-backend.onrender.com']
+ALLOWED_HOSTS = ['tukiosko-backend.onrender.com', 
+                 '127.0.0.1:8000',
+                 '127.0.0.1'
+                 ]
 
 
 # Application definition
@@ -148,7 +151,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  
     "http://localhost:5173",
-    "https://tukiosko-frontend.onrender.com"
+    "https://tukiosko.onrender.com"
 ]
 
 
