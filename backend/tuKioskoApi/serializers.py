@@ -4,7 +4,10 @@ from django.db import transaction
 
 
 class ProductosSerializer(serializers.ModelSerializer):
-    ubicacion = serializers.ReadOnlyField(source='ubicacion.nombre')
+    ubicacion = serializers.SlugRelatedField(
+        slug_field='nombre', 
+        queryset=Area.objects.all()
+    )
     class Meta:
         model = Producto
         fields = '__all__'

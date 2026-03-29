@@ -9,7 +9,6 @@ export default function Header({toggle}){
     const urlDirection = useResolvedPath();
     const url = urlDirection.pathname;
     const [urlFinal, setUrlFinal] = useState("")
-    console.log(url.split("/")[1])
 
     useEffect(()=>{
       if(url === '/agregar-area'){

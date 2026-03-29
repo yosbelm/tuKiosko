@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-#+f=t1^z+xx6apd42s+^5(d&)43oq%1_z-t#_3y&nrws0o02=0
 DEBUG = True
 
 ALLOWED_HOSTS = ['tukiosko-backend.onrender.com', 
-                 '127.0.0.1:8000',
-                 '127.0.0.1'
+                 'http://127.0.0.1/',
+                 'http://127.0.0.1:8000/',
+                 '127.0.0.1',
                  ]
 
 

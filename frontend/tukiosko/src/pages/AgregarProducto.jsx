@@ -78,6 +78,9 @@ export default function AgregarProducto() {
         await getAllAreas()
           .then(response => {
             setUbicacion(response.data);
+            if (response.data.length > 0 && !definirUbicacion) {
+              setDefinirUbicacion(response.data[0].nombre);
+            }
             console.log(response.data)
           })
           .catch(error => {
@@ -159,9 +162,8 @@ export default function AgregarProducto() {
                                       onChange={(e) => setDefinirUbicacion(e.target.value)}
                                       className="w-full pl-12 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
                                   >
-                                      <option value="">Seleccionar ubicación...</option>
                                       {ubicacion.map(ubc => (
-                                          <option key={ubc.id} value={ubc.id}>{ubc.nombre}</option>
+                                          <option key={ubc.id} value={ubc.nombre}>{ubc.nombre}</option>
                                         ))
                                       }
                                   </select>
