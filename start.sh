@@ -13,6 +13,5 @@ if not User.objects.filter(username='yosbel').exists():
     User.objects.create_superuser('yosbel', 'yosbel@example.com', '1234.2902Amayah')
 "
 
-# 3. Iniciar el servidor (Gunicorn)
-# Asegúrate de que la ruta al wsgi sea la correcta según tu estructura
-gunicorn tuKiosko.wsgi:application --bind 0.0.0.0:$PORT
+# 3. Iniciar el servidor (Gunicorn) indicando el directorio correcto
+gunicorn tuKiosko.wsgi:application --bind 0.0.0.0:$PORT --chdir backend
