@@ -91,11 +91,16 @@ WSGI_APPLICATION = 'tuKiosko.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+IS_PRODUCTION = os.getenv('IS_PRODUCTION', 'False') == 'True'
+if IS_PRODUCTION:
+    DATABASE_PATH = '/data/db.sqlite3'
+else:
+    DATABASE_PATH = BASE_DIR / 'db.sqlite3'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATABASE_PATH,
     }
 }
 
