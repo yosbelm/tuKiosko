@@ -1,28 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Package, DollarSign, AlertTriangle, XCircle, Search, Plus, MapPin, Calendar } from 'lucide-react';
-import {getAllProducts, getTodosProductos} from '../api/productos.api'
+import {getAllProducts, getTodosProductos, deleteProducto} from '../api/productos.api'
 import { Link } from 'react-router-dom';
+import { toast } from "sonner"
 
 
-// Componente StatCard interno para mantener el estilo consistente
-const StatCard = ({ title, icon, iconBg, value, subtitle, color }) => (
-  <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-4">
-    <div className={`w-12 h-12 ${iconBg} rounded-lg flex items-center justify-center text-white shrink-0`}>
-      {icon}
-    </div>
-    <div className="flex-1 min-w-0">
-      <p className="text-gray-500 text-sm truncate">{title}</p>
-      <p className="text-xl font-bold text-gray-800">{value}</p>
-      {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
-    </div>
-    <div className={`w-1 h-12 ${color} rounded`}></div>
-  </div>
-);
 
 function ProductoLista() {
   const [productos, setProductos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   useEffect(() => {
     // Simulación de llamada a API getAllProducts()
@@ -67,8 +56,41 @@ function ProductoLista() {
     return `$${value}`;
   };
 
+  const confirmDelete = (producto) => {
+    setProductToDelete(producto);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+    
+    try {
+      await deleteProducto(productToDelete.id);
+      setProductos((prev) => prev.filter((item) => item.id !== productToDelete.id));
+      toast.success(`Se eliminó el producto`, {
+        description: `Se ha eliminado ${productToDelete.nombre} satisfactoriamente.`,
+        duration: 3000,
+      });
+    } catch (error) {
+      toast.error("Error al eliminar el producto");
+    } finally {
+      setShowDeleteModal(false);
+      setProductToDelete(null);
+    }
+  };
+
+  const removeProduct = async (id, name) =>{
+    await deleteProducto(id);
+    console.log(`se elimino ${id}`)
+    setProductos((prev) => prev.filter((item) => item.id !== id))
+    toast.success(`Se eliminó el producto`, {
+      description: `Se ha eliminado ${name} satisfactoriamente.`,
+      duration: 3000,
+    });
+  } 
+
   return (
-    <div className="p-4 lg:p-6 lg:pt-2 min-h-screen">
+    <div className="p-4 lg:p-6 lg:pt-2 min-h-screen pb-18">
 
 
       {/* Tabla de Productos */}
@@ -118,6 +140,7 @@ function ProductoLista() {
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Cantidad</th>
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Ubicación</th>
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Creado</th>
+                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Acción</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -175,6 +198,16 @@ function ProductoLista() {
                           {formatDate(producto.creado)}
                         </div>
                       </td>
+                      <td className='px-3 py-4 text-center'>
+                        <button className='bg-red-200 text-red-500 hover:bg-[#2a3f5f px-2 py-1 rounded-lg text-sm font-medium transition-colors'
+                          onClick={(e) => {
+                            e.stopPropagation(); // Evita que el Link del padre se active
+                            confirmDelete(producto);
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
@@ -193,16 +226,54 @@ function ProductoLista() {
 
         {/* Footer con información */}
         {!loading && productosFiltrados.length > 0 && (
-          <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-sm text-gray-500">
+          <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-left gap-2 text-sm text-gray-500">
+            <span className="w-2 h-2 bg-[#1de9b6] rounded-full"></span>
             <span>Mostrando {productosFiltrados.length} de {totalProductos} productos</span>
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-[#1de9b6] rounded-full"></span>
               <span>Última actualización: Hoy</span>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
+
+      {/* Modal de Confirmación */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-6 text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <AlertTriangle className="h-6 w-6 text-red-600" />
+              </div>
+              
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                ¿Confirmar eliminación?
+              </h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Estás a punto de eliminar <span className="font-semibold text-gray-800">"{productToDelete?.nombre}"</span>. 
+                Esta acción no se puede deshacer.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="flex-1 px-4 py-2 bg-red-200 text-red-500 hover:bg-red-700 hover:text-white rounded-lg font-medium transition-colors"
+                >
+                  Eliminar ahora
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+    
   );
 }
 

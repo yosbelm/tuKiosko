@@ -24,7 +24,7 @@ export default function StatCard({
               <span className="text-green-500 font-semibold">{trendValue}</span>
             )}
             <span className="text-gray-400">
-                {value === "Vendedores de este kiosko" || value === "Productos de este kiosko" ? `${value}` : `Total Vendido: ${value}`}
+                {value === "Vendedores de este kiosko" || value === "Productos de este kiosko" ? `${value}` : `Total Vendido: $${value}`}
             </span>
           </p>
         </div>

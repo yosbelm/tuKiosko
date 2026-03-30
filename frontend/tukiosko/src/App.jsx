@@ -8,6 +8,8 @@ import AgregarVendedor from './pages/AgregarVendedor';
 import AgregarCompra from './pages/AgregarCompra';
 import ProductoLista from './pages/ProductosLista'
 import ProductoDetalles from './pages/ProductoDetalles';
+import VentaDetalles from './pages/VentaDetalles';
+import VendedoresLista from './pages/VendedoresLista';
 
 
 export default function App() {
@@ -32,6 +34,8 @@ export default function App() {
           <Route path="/agregar-vendedor" element={<AgregarVendedor />} />
           <Route path="/productos-lista" element={<ProductoLista />} />
           <Route path="/producto-detalles/:id/" element={<ProductoDetalles />} />
+          <Route path="/ventas/:id/" element={<VentaDetalles />} />
+          <Route path="/vendedores-lista/" element={<VendedoresLista />} />
         </Route>
       </Routes>
     </BrowserRouter>

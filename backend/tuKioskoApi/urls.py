@@ -18,4 +18,6 @@ urlpatterns = [
     path("", include(router.urls)),
     path('datos-ventas/', DatosVentasAPIView.as_view(), name='datos-ventas'),
     path('producto-detalles/<int:producto_id>/', DetallesProductoAPIView.as_view(), name='producto-detalles'),
+    path('eliminar-producto/<int:producto_id>/', DeleteProductoAPIView.as_view(), name='eliminar-producto'),
+    path('detalles-venta/<int:venta_id>/', DetallesVentaAPIView.as_view(), name='detalles-venta'),
 ]

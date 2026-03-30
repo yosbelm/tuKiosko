@@ -23,6 +23,8 @@ export default function Header({toggle}){
         setUrlFinal(" Lista Productos /")
       }else if (url.split("/")[1] === 'producto-detalles'){
         setUrlFinal(" Detalles Producto /")
+      }else if (url.split("/")[1] === 'ventas'){
+        setUrlFinal(" Detalles Venta /")
       } else{
         setUrlFinal(" Panel ")
       }

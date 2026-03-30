@@ -17,6 +17,10 @@ export const getAllVentas = () => {
     return apiUrl.get(`/datos-ventas/`);
 };
 
+export const getDetallesVenta = (id) => {
+    return apiUrl.get(`/detalles-venta/${id}/`);
+};
+
 export const getAllVendedores = () => {
     return apiUrl.get(`/vendedores/`);
 }
@@ -46,3 +50,13 @@ export const postVenta = (data) => {
     return apiUrl.post(`/ventas/finalizar_venta/`, data);
 };
 
+
+// PATCH
+export const patchProducto = (id, data) => {
+    return apiUrl.patch(`/todos-productos/${id}/`, data)
+}
+
+// DELETE
+export const deleteProducto = (id) => {
+    return apiUrl.delete(`/eliminar-producto/${id}/`)
+}

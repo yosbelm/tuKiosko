@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { 
   Package, 
@@ -16,8 +14,10 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { getProducto } from '../api/productos.api';
+import { getProducto, patchProducto } from '../api/productos.api';
 import { useParams, useNavigate } from 'react-router-dom';
+import {toast} from "sonner"
+
 
 function ProductoDetalles({ productoId, onBack, onSave }) {
   const [producto, setProducto] = useState(null);
@@ -30,17 +30,6 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
   const params = useParams()
   const navigate = useNavigate()
 
-  // Simulación de datos para demostración
-  const mockProducto = {
-    id: 1,
-    nombre: 'Coca Cola 500ml',
-    activo: true,
-    precio_compra: 1.50,
-    precio_venta: 2.50,
-    cantidad: 24,
-    ubicacion: 'Estante A1',
-    creado: '2024-01-15T10:30:00',
-  };
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -77,15 +66,19 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
     setSaving(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 800));
-      // En producción: await updateProduct(productoId, formData);
+      await patchProducto(params.id, formData)
       setProducto(formData);
       setEditMode(false);
-      setNotification({ type: 'success', message: 'Producto actualizado correctamente' });
-      setTimeout(() => setNotification(null), 3000);
+      toast.success('Actualización exitosa', {
+        description: `Se ha actualizado el producto ${formData.nombre} satisfactoriamente.`,
+        duration: 3000,
+      });
       if (onSave) onSave(formData);
     } catch (error) {
-      setNotification({ type: 'error', message: 'Error al guardar los cambios' });
-      setTimeout(() => setNotification(null), 3000);
+      toast.error('Error al guardar los cambios', {
+        description: `Ocurrió un error al actualizar el producto ${formData.nombre}.`,
+        duration: 3000,
+      });
     } finally {
       setSaving(false);
     }
@@ -212,9 +205,9 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Columna Principal - Formulario */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-3">
           {/* Información Básica */}
           <div className="bg-white rounded-lg shadow-sm">
             <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2">
@@ -404,7 +397,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
         </div>
 
         {/* Columna Lateral - Resumen */}
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* Card de Resumen */}
           <div className="bg-white rounded-lg shadow-sm">
             <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2">

@@ -84,7 +84,7 @@ function Index() {
             </div>
 
             {/* <h1 className="font-bold text-2xl mb-1">Historial</h1> */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 mb-6">
               {/* Recent Users Table */}
               <div className="lg:col-span-7 bg-white rounded-lg shadow-sm max-h-127 overflow-auto scrollbar-hide">
                 <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2">
@@ -95,8 +95,10 @@ function Index() {
                   <table className="w-full">
                     <tbody className="divide-y divide-gray-50">
                       {ventas.map(venta =>(
+                        <Link to={`/ventas/${venta.id}/`}>
                           <UserRow key={venta.id} name={venta.vendedor_nombre} precio={venta.precio_total} cantidad={venta.cantidad}
                           seed={venta.vendedor_genero} date={fechaFinal(venta.creado)} status="online" />
+                        </Link>
                         ))
                       }
                       {/* <UserRow name="Ida Jorgensen" seed="Ida" date="19 MAY 12:56" status="offline" /> */}

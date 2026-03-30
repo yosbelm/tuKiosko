@@ -1,4 +1,4 @@
-import { ChartLine, Timer, BoxIcon, LocationEditIcon, PackageOpen, User2, Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList } from "lucide-react"
+import { ChartLine, Timer, BoxIcon, LocationEditIcon, PackageOpen, User2, Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList, Users } from "lucide-react"
 import SectionTitle from './SectionTitle'
 import SidebarLink from './SidebarLink';
 
@@ -42,6 +42,7 @@ export default function Sidebar({ isOpen, toggle, closeOnLink }){
             <SectionTitle title="Navegacion" />
             <SidebarLink closeSidebar={closeOnLink} direccion={"/"} direccionUrl={"/"} icon={<Settings2 className="w-4 h-4" />} label="Panel"  />
             <SidebarLink closeSidebar={closeOnLink} direccion={"/productos-lista"} direccionUrl={"/productos-lista"} icon={<ClipboardList className="w-4 h-4" />} label="Productos"  />
+            <SidebarLink closeSidebar={closeOnLink} direccion={"/vendedores-lista"} direccionUrl={"/vendedores-lista"} icon={<Users className="w-4 h-4" />} label="Vendedores"  />
 
             <SectionTitle title="Administrar" />
             <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />

@@ -26,6 +26,16 @@ class ObtenerTodosProductosVista(viewsets.ModelViewSet):
     
     
     
+class DeleteProductoAPIView(APIView):
+    @action(detail=False, methods=['delete'])
+    def delete(self, request, producto_id):
+        producto = get_object_or_404(Producto, id=producto_id)
+        producto.delete()
+        
+        return Response({'status': 'Producto eliminado'}, status=201)
+
+    
+    
 class ObtenerAreaVista(viewsets.ModelViewSet):
     serializer_class = AreaSerializer
     queryset = Area.objects.all()
@@ -96,6 +106,18 @@ class DetallesProductoAPIView(APIView):
         
         return Response({
             "producto": ProductosSerializer(producto).data,
+        })
+        
+    
+    
+class DetallesVentaAPIView(APIView):
+    def get(self, request, venta_id):
+        venta = get_object_or_404(Venta, id=venta_id)
+        productos_vendidos = ProductoVendido.objects.filter(venta_producto_id=venta.id)
+        
+        return Response({
+            "venta": VentaSerializer(venta).data,
+            "productos_vendidos": ProductoVendidoSerializer(productos_vendidos, many=True).data,
         })
 
 
