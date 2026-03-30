@@ -15,4 +15,4 @@ if not User.objects.filter(username='yosbel').exists():
 
 # 3. Iniciar el servidor (Gunicorn)
 # Asegúrate de que la ruta al wsgi sea la correcta según tu estructura
-gunicorn --bind 0.0.0.0:$PORT tuKiosko.wsgi
+gunicorn tuKiosko.wsgi:application --bind 0.0.0.0:$PORT
