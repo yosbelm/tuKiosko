@@ -198,7 +198,7 @@ function VentaDetalles() {
                     </div>
 
                     {/* Card: Tip Informativo */}
-                    <div className="bg-[#1c2d47] rounded-lg p-5 text-white shadow-lg relative overflow-hidden">
+                    {/* <div className="bg-[#1c2d47] rounded-lg p-5 text-white shadow-lg relative overflow-hidden">
                         <Tag className="absolute -right-4 -bottom-4 w-24 h-24 text-white/10 rotate-12" />
                         <h4 className="font-bold mb-1 flex items-center gap-2">
                         <ShoppingCart className="w-4 h-4" />
@@ -208,7 +208,7 @@ function VentaDetalles() {
                         Esta venta ha descontado automáticamente el stock de los productos involucrados. 
                         No es posible editar las cantidades una vez confirmada.
                         </p>
-                    </div>
+                    </div> */}
                 </div>
 
             </div>
