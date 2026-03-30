@@ -104,6 +104,7 @@ DATABASES = {
     }
 }
 
+print(f"DEBUG: La base de datos se está cargando en: {DATABASES['default']['NAME']}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
