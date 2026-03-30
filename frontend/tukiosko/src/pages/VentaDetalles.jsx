@@ -153,7 +153,7 @@ function VentaDetalles() {
                 <div className="space-y-3">
                     {/* Card: Resumen de Transacción */}
                     <div className="bg-white rounded-lg shadow-sm">
-                        <div className="p-6 space-y-6">
+                        <div className="p-6 py-3 space-y-3">
                             <div className="text-center pb-4 border-b border-gray-100">
                                 <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold">Total Cobrado</p>
                                 <h2 className="text-3xl font-black text-[#1c2d47] mt-1">
@@ -163,8 +163,8 @@ function VentaDetalles() {
 
                             <div className="space-y-3">
                                 <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-blue-50 rounded-lg">
-                                        <User className="w-5 h-5 text-blue-600" />
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <User className="w-5 h-5 text-[#1c2d47]" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500 font-medium">Atendido por:</p>
@@ -173,8 +173,8 @@ function VentaDetalles() {
                                 </div>
 
                                 <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-purple-50 rounded-lg">
-                                        <Calendar className="w-5 h-5 text-purple-600" />
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Calendar className="w-5 h-5 text-[#1c2d47]" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500 font-medium">Fecha y Hora:</p>
@@ -183,8 +183,8 @@ function VentaDetalles() {
                                 </div>
 
                                 <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-green-50 rounded-lg">
-                                        <ShoppingCart className="w-5 h-5 text-green-600" />
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <ShoppingCart className="w-5 h-5 text-[#1c2d47]" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500 font-medium">Items totales:</p>

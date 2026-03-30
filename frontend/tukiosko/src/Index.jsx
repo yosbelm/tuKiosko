@@ -77,7 +77,7 @@ function Index() {
                   iconBg="bg-gray-600" value="Productos de este kiosko" cantidad={cantidadProductos} color="bg-[#1de9b6]" trend="up" />
               </Link>
 
-              <Link to="/agregar-producto" className="block cursor-pointer">
+              <Link to="/vendedores-lista" className="block cursor-pointer">
                 <StatCard title="Vendedores" icon={<Workflow className="w-6 h-6" />}
                   iconBg="bg-slate-800" value="Vendedores de este kiosko" cantidad={vendedores} color="bg-[#1de9b6]" trend="up" />
               </Link>
