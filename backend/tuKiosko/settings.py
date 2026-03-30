@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'tuKiosko.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 IS_PRODUCTION = os.environ.get('IS_PRODUCTION', 'False').strip().lower() == 'true'
-if DEBUG:
+if IS_PRODUCTION:
     DATABASE_PATH = '/data/db.sqlite3'    
     print(f"MODO PRODUCCIÓN ACTIVO: La base de datos está en {DATABASE_PATH}")
 else:
