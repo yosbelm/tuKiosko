@@ -1,9 +1,13 @@
+import os
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from tuKioskoApi.serializers import UserRegistrationSerializer
+
+
+IS_PRODUCTION = os.environ.get('IS_PRODUCTION', 'False').strip().lower() == 'true'
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -15,22 +19,15 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             
             res = Response({"success": True}) # Pon los datos aquí
             
-            res.set_cookie(
-                key="access_token",
-                value=access_token,
-                httponly=True,
-                secure=False,   # <--- Obligatorio en False si no usas HTTPS (SSL)
-                samesite='Lax', # <--- 'Lax' es más permisivo para desarrollo local
-                path="/"
-            ) 
-            res.set_cookie(
-                key="refresh_token",
-                value=refresh_token,
-                httponly=True,
-                secure=False,
-                samesite="Lax",
-                path="/"
-            )   
+            cookie_params = {
+                "httponly": True,
+                "secure": IS_PRODUCTION, 
+                "samesite": 'None' if IS_PRODUCTION else 'Lax', # 'None' para cross-site
+                "path": "/"
+            }
+
+            res.set_cookie(key="access_token", value=tokens["access"], **cookie_params)
+            res.set_cookie(key="refresh_token", value=tokens["refresh"], **cookie_params)  
             return res
         except Exception as e:
             print(f"ERROR EN LOGIN: {e}")
@@ -55,8 +52,8 @@ class CustomRefreshTokenView(TokenRefreshView):
                 key="access_token",
                 value=access_token,
                 httponly=True,
-                secure=False,
-                samesite="Lax",
+                secure=IS_PRODUCTION, 
+                samesite='None' if IS_PRODUCTION else 'Lax',
                 path="/"
             )   
             return res
