@@ -1,8 +1,10 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
+import React from "react";
 
-const PrivateRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
+const PrivateRoute = ({ children, rolPermitido }) => {
+    const { isAuthenticated, user, loading } = useAuth();
+    const navigate = useNavigate();
 
     if (loading) {
         return (
@@ -15,7 +17,14 @@ const PrivateRoute = ({ children }) => {
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/" />;
+        return <Navigate to={"/"} replace />;
+    }
+
+    if (rolPermitido && user?.rol !== rolPermitido) {
+        console.log(`desde private route ${user.rol}`)
+        return user?.rol === 'admin' 
+            ? <Navigate to={"/panel"} replace />
+            : <Navigate to={"/historial"} replace />;
     }
 
     return children;

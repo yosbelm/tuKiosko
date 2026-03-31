@@ -31,7 +31,7 @@ export default function RegisterPage() {
             toast.error('Las contraseñas no coinciden');
             return;
         }
-        if (password.length < 6) {
+        if (password.length < 4) {
             toast.error('La contraseña debe tener al menos 6 caracteres');
             return;
         }

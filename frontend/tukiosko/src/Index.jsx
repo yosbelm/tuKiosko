@@ -96,7 +96,7 @@ function Index() {
                     <tbody className="divide-y divide-gray-50">
                       {ventas.map(venta =>(
                           <UserRow key={venta.id} ventaId={venta.id} name={venta.vendedor_nombre} precio={venta.precio_total} cantidad={venta.cantidad}
-                          seed={venta.vendedor_genero} date={fechaFinal(venta.creado)} status="online" />
+                          seed={venta.vendedor_genero} date={fechaFinal(venta.creado)} status="online" urlRedirect={"ventas"} />
                         ))
                       }
                       {/* <UserRow name="Ida Jorgensen" seed="Ida" date="19 MAY 12:56" status="offline" /> */}

@@ -33,21 +33,20 @@ export default function LoginPage() {
             };
             await iniciarSesion(payload);
             estaAutenticado()
-            .then(response => {
-                setRol(response.data.rol);
-                console.log(`rol ----${response.data.rol}`)
-                if (response.data.rol==="administrador"){
-                    console.log('es adminse fue -----')
-                    navigate("/panel/")
-                }
-            })
-            .catch(error => {
-                console.error('Error al obtener autenticacion:', error);
-            });
+            const response = await estaAutenticado();
+            console.log(`este es el rolque llega ologinpag ${response.data.rol}`)
+            const userRol = response.data.rol;
             toast.success('Inicio de sesión exitoso', {
                 description: 'Bienvenido de nuevo.',
                 duration: 3000,
             });
+            if (userRol === "administrador") {
+                navigate("/panel");
+            } else if (userRol === "vendedor") {
+                navigate("/historial");
+            } else {
+                navigate("/");
+            }
             setUsername('');
             setPassword('');
         } catch (error) {

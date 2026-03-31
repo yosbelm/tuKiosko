@@ -13,10 +13,14 @@ import VendedoresLista from './pages/VendedoresLista';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import LayoutAuth from './LayoutAuth';
+import LayoutVendedor from './LayoutVendedor'
 import { useEffect, useState } from 'react';
 import { estaAutenticado } from './api/productos.api'
 import { AuthProvider } from './api/useAuth';
 import PrivateRoute from './api/privateRoute'
+import Historial from './pagesVendedor/Historial';
+import VentaDetallesVendedor from './pagesVendedor/VentaDetallesVendedor'
+import ProductosVendidos from './pagesVendedor/ProductosVendidos'
 
 
 export default function App() {
@@ -48,20 +52,55 @@ export default function App() {
           className: 'my-custom-toast',
         }} />
       <Routes>
-        <Route element={<Layout autenticado={autenticado} setAutenticado={setAutenticado} />}>
-          <Route path="/panel" element={<PrivateRoute><Index /></PrivateRoute>} />
-          <Route path="/agregar-compra" element={<PrivateRoute><AgregarCompra /></PrivateRoute>} />
-          <Route path="/agregar-producto" element={<PrivateRoute><AgregarProducto /></PrivateRoute>} />
-          <Route path="/agregar-area" element={<PrivateRoute><AgregarArea /></PrivateRoute>} />
-          <Route path="/agregar-vendedor" element={<PrivateRoute><AgregarVendedor /></PrivateRoute>} />
-          <Route path="/productos-lista" element={<PrivateRoute><ProductoLista /></PrivateRoute>} />
-          <Route path="/producto-detalles/:id/" element={<PrivateRoute><ProductoDetalles /></PrivateRoute>} />
-          <Route path="/ventas/:id/" element={<PrivateRoute><VentaDetalles /></PrivateRoute>} />
-          <Route path="/vendedores-lista/" element={<PrivateRoute><VendedoresLista /></PrivateRoute>} />
+        {/* Admin */}
+        <Route element={<PrivateRoute rolPermitido="administrador"><Layout autenticado={autenticado} /></PrivateRoute>}>
+          <Route path="/panel" element={<PrivateRoute rolPermitido="administrador">
+            <Index />
+            </PrivateRoute>} />
+          <Route path="/agregar-compra" element={<PrivateRoute rolPermitido="administrador">
+            <AgregarCompra />
+            </PrivateRoute>} />
+          <Route path="/agregar-producto" element={<PrivateRoute rolPermitido="administrador">
+            <AgregarProducto />
+            </PrivateRoute>} />
+          <Route path="/agregar-area" element={<PrivateRoute rolPermitido="administrador">
+            <AgregarArea />
+            </PrivateRoute>} />
+          <Route path="/agregar-vendedor" element={<PrivateRoute rolPermitido="administrador">
+            <AgregarVendedor />
+            </PrivateRoute>} />
+          <Route path="/productos-lista" element={<PrivateRoute rolPermitido="administrador">
+            <ProductoLista />
+            </PrivateRoute>} />
+          <Route path="/producto-detalles/:id/" element={<PrivateRoute rolPermitido="administrador">
+            <ProductoDetalles />
+            </PrivateRoute>} />
+          <Route path="/ventas/:id/" element={<PrivateRoute rolPermitido="administrador">
+            <VentaDetalles />
+            </PrivateRoute>} />
+          <Route path="/vendedores-lista/" element={<PrivateRoute rolPermitido="administrador">
+            <VendedoresLista />
+            </PrivateRoute>} />
+        </Route>
+
+        {/* Vendedor */}
+        <Route element={<PrivateRoute rolPermitido="vendedor"><LayoutVendedor autenticado={autenticado} /></PrivateRoute>}>
+          <Route path="/historial" element={<PrivateRoute rolPermitido="vendedor">
+            <Historial/>
+            </PrivateRoute>}/>
+          <Route path="/venta-detalles/:id/" element={<PrivateRoute rolPermitido="vendedor">
+            <VentaDetallesVendedor/>
+            </PrivateRoute>}/>
+          <Route path="/agregar-compras" element={<PrivateRoute rolPermitido="vendedor">
+            <AgregarCompra />
+            </PrivateRoute>} />
+          <Route path="/productos-vendidos" element={<PrivateRoute rolPermitido="vendedor">
+            <ProductosVendidos />
+            </PrivateRoute>} />
         </Route>
 
         {/* Auth */}
-        <Route element={<LayoutAuth autenticado={autenticado} />}>
+        <Route element={<LayoutAuth />}>
           <Route path="/" element={<LoginPage />} />
           <Route path="/registro/" element={<RegisterPage />} />
         </Route>

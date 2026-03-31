@@ -1,4 +1,5 @@
 import {  ClipboardList, Users, HistoryIcon } from "lucide-react"
+import { Link } from "react-router-dom";
 
 
 export default function NavBar() {
@@ -10,6 +11,7 @@ export default function NavBar() {
             <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.1),0_4px_20px_rgba(0,0,0,0.1)] lg:px-10 px-6.25 py-1.5">
                 <div className="flex items-end justify-around gap-5 lg:gap-10">
                     {/* Home */}
+                    <Link to={"/historial"}>
                     <button className="flex flex-col items-center gap-0 text-gray-400 hover:text-gray-600 transition-colors">
                         {/* <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -17,6 +19,7 @@ export default function NavBar() {
                         <HistoryIcon className="h-5 w-5"/>
                         <span className="text-xs font-medium">Historial</span>
                     </button>
+                    </Link>
 
                     {/* Market */}
                     {/* <button className="flex flex-col items-center gap-0 text-gray-400 hover:text-gray-600 transition-colors">
@@ -27,6 +30,7 @@ export default function NavBar() {
                     </button> */}
 
                     {/* Saved (Center - Highlighted) */}
+                    <Link to={"/agregar-compras"}>
                     <button className="flex flex-col items-center gap-0 -mt-8">
                         <div className="w-14 h-14 bg-[#1c2d47] text-white rounded-full flex items-center justify-center shadow-lg">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,16 +39,19 @@ export default function NavBar() {
                         </div>
                         <span className="mt-2 text-xs text-[#1c2d47] font-medium"></span>
                     </button>
+                    </Link>
 
                     {/* Notifs */}
+                    <Link to={"/productos-vendidos"}>
                     <button className="flex flex-col items-center gap-0 text-gray-400 hover:text-gray-600 transition-colors">
                         {/* <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                         </svg> */}
                         <ClipboardList className="h-5 w-5"/>
-                        <span className="text-xs font-medium">Ventas</span>
+                        <span className="text-xs font-medium">Productos</span>
                         
                     </button>
+                    </Link>
 
                     {/* Account */}
                     {/* <button className="flex flex-col items-center 0 text-red-400 hover:text-red-500 transition-colors">

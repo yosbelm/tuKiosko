@@ -12,20 +12,7 @@ class Usuario(AbstractUser):
     foto_perfil = models.ImageField(upload_to='fotos_perfil/', null=True, blank=True)
     last_login = models.DateTimeField(null=True, blank=True)
     telefono = models.CharField(max_length=15, null=True, blank=True)
-    email = models.CharField(max_length=35, null=True, blank=True)
-    
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='usuario_set',
-        blank=True,
-        help_text='Los grupos a los que este usuario pertenece.'
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='usuario_permission_set',
-        blank=True,
-        help_text='Los permisos específicos para este usuario.'
-    )
+    email = models.EmailField(unique=True, max_length=150, null=True, blank=True)
     
     @property
     def es_superusuario(self):

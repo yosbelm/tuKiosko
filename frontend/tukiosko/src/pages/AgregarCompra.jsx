@@ -128,13 +128,13 @@ export default function POSPage() {
 
 
     return (
-        <div className="min-h-screen mb-8 bg-gray-50">
-            <main className="p-4 lg:p-6">
-                <div className="flex flex-col gap-6 items-center w-full max-w-4xl mx-auto">
+        <div className="min-h-screen mb-16">
+            <main className="">
+                <div className="flex flex-col gap-3 items-center w-full max-w-4xl mx-auto">
                 {/* Left Column - Products */}
                 <div className="w-full">
                     {/* Search Bar */}
-                    <div className="relative mb-6">
+                    <div className="relative mb-3 rounded-xl border border-gray-200 shadow-sm">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                         type="text"
@@ -167,7 +167,7 @@ export default function POSPage() {
                                 </div>
                                 <div className="flex items-center gap-4">
                                 <span className="font-bold text-green-700">${product.precio_venta}</span>
-                                <Plus className="w-5 h-5 text-green-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <Plus className="w-5 h-5 text-green-700 opacity-100 transition-opacity" />
                                 </div>
                             </button>
                             ))

@@ -133,6 +133,7 @@ class DatosVentasAPIView(APIView):
         
         productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy).values(
             nombre=F('producto__nombre'),
+            ubicacion=F('producto__ubicacion__nombre'),
             precio=F('precio_producto_vendido')
         ).annotate(
             cantidad_total=Sum('cantidad'),
