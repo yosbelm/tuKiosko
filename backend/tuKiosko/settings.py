@@ -174,3 +174,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://tukiosko-backend.onrender.com',
+]
