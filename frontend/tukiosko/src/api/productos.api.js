@@ -1,8 +1,29 @@
 import axios from 'axios';
 
 const apiUrl = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    withCredentials: true
 });
+
+axios.defaults.withCredentials = true;
+
+apiUrl.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+        if (error.response && error.response.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                await apiUrl.post('/token/refresh/');
+                return apiUrl(originalRequest);
+            } catch (refreshError) {
+                return Promise.reject(refreshError);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 
 // GET
 export const getAllProducts = () => {
@@ -59,4 +80,47 @@ export const patchProducto = (id, data) => {
 // DELETE
 export const deleteProducto = (id) => {
     return apiUrl.delete(`/eliminar-producto/${id}/`)
+}
+
+
+
+// Authentication
+export const registrarUsuario = (data) => {
+    return apiUrl.post(`/register/`, data)
+}
+
+
+export const iniciarSesion = async (data) => {
+    return await apiUrl.post(`/token/`, data);
+}
+
+
+export const cerrarSesion = () => {
+    return apiUrl.post(`/logout/`)
+}
+
+
+export const estaAutenticado = async () => {
+    return await apiUrl.get(`/authenticated/`);
+};
+
+
+export const refreshToken = async () => {
+    try {
+        const response = await apiUrl.post(`/token/refresh/`);
+        return response.data.refreshed; 
+    } catch (error) {
+        return false;
+    }
+}
+
+
+export const call_refresh = async(error, originalRequestFunc) => {
+    if (error.response && error.response.status == 401){
+        const tokenRefreshed =  await refreshToken();
+        if (tokenRefreshed){
+            return await originalRequestFunc();
+        }
+    }
+    throw error
 }

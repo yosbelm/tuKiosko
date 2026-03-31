@@ -12,9 +12,12 @@ from django.db.models import Sum, F
 
 from tuKioskoApi.serializers import *
 from tuKioskoApp.models import *
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
+@permission_classes([IsAuthenticated])
 class ObtenerProductosVista(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
     queryset = Producto.objects.filter(activo=True, cantidad__gt=0).order_by('-creado')

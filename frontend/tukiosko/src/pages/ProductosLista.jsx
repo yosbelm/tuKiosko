@@ -147,16 +147,16 @@ function ProductoLista() {
                 {productosFiltrados.length > 0 ? (
                   productosFiltrados.map((producto) => (
                     <tr key={producto.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
-                      <Link to={`/producto-detalles/${producto.id}`}>
                         <td className="px-3 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-[#1c2d47]/10 rounded-lg flex items-center justify-center">
                               <Package className="w-4 h-4 text-blue-900" />
                             </div>
+                            <Link to={`/producto-detalles/${producto.id}`}>
                             <span className="font-medium text-blue-900 text-nowrap">{producto.nombre}</span>
+                            </Link>
                           </div>
                         </td>
-                      </Link>
                       <td className="px-3 py-4 text-center">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           producto.activo 

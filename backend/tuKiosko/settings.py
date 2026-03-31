@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['tukiosko-backend.onrender.com',
                  'http://127.0.0.1/',
                  'http://127.0.0.1:8000/',
                  '127.0.0.1',
+                 'localhost'
                  ]
 
 
@@ -42,11 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tuKioskoApp',
-    'tuKioskoApi',
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'tuKioskoApp',
+    'tuKioskoApi',
 ]
 
 MIDDLEWARE = [
@@ -60,16 +61,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ),
-#      'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ]
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'tuKioskoApi.authentication.CookiesJWTAuthentication',
+    ),
+     'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
 
 ROOT_URLCONF = 'tuKiosko.urls'
+
+AUTH_USER_MODEL="tuKioskoApp.Usuario"
 
 TEMPLATES = [
     {
@@ -156,6 +159,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  
