@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import AgregarProducto from './pages/AgregarProducto'
 import Index from './Index';
@@ -99,6 +99,8 @@ export default function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/registro/" element={<RegisterPage />} />
         </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </AuthProvider>
     </BrowserRouter>

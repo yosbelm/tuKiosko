@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { iniciarSesion, estaAutenticado } from '../api/productos.api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+import {useAuth} from '../api/useAuth' 
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -10,6 +11,7 @@ export default function LoginPage() {
     const [cargando, setCargando] = useState(false);
     const [mostrarPassword, setMostrarPassword] = useState(false);
     const [rol, setRol] = useState(null);
+    const { checkStatus } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -32,10 +34,11 @@ export default function LoginPage() {
                 password: password
             };
             await iniciarSesion(payload);
-            estaAutenticado()
+            await checkStatus();
             const response = await estaAutenticado();
             console.log(`este es el rolque llega ologinpag ${response.data.rol}`)
             const userRol = response.data.rol;
+            setRol(response.data.rol)
             toast.success('Inicio de sesión exitoso', {
                 description: 'Bienvenido de nuevo.',
                 duration: 3000,

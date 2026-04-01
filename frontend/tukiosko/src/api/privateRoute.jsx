@@ -22,7 +22,7 @@ const PrivateRoute = ({ children, rolPermitido }) => {
 
     if (rolPermitido && user?.rol !== rolPermitido) {
         console.log(`desde private route ${user.rol}`)
-        return user?.rol === 'admin' 
+        return user?.rol === 'administrador' 
             ? <Navigate to={"/panel"} replace />
             : <Navigate to={"/historial"} replace />;
     }

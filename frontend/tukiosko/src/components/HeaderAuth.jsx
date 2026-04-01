@@ -1,4 +1,4 @@
-import { Users, Bell, ChevronDown, MenuIcon, LogOut, LogIn } from "lucide-react";
+import { Users, Bell, ChevronDown, MenuIcon, LogOut, LogIn, InfoIcon } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
 import {cerrarSesion} from '../api/productos.api'
@@ -114,7 +114,7 @@ export default function HeaderAuth({autenticado}) {
                                 onClick={() => setIsMenuOpen(false)}
                             >
                                 <LogIn className="w-4 h-4 text-gray-400" />
-                                Iniciar sesión
+                                Sobre Nosotros
                             </Link>:(
                                 autenticado ? (
                                 <button 
@@ -134,8 +134,8 @@ export default function HeaderAuth({autenticado}) {
                                     className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    <LogIn className="w-4 h-4 text-gray-400" />
-                                    Iniciar sesión
+                                    <InfoIcon className="w-4 h-4 text-gray-400" />
+                                    Sobre Nosotros
                                 </Link>
                                 ))
                             }
