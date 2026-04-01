@@ -34,7 +34,7 @@ class VendedorSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     
-    nombre = serializers.ReadOnlyField(source='nombre.username')
+    nombre = serializers.ReadOnlyField(source='username')
 
     class Meta:
         model = Usuario

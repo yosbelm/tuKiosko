@@ -131,7 +131,7 @@ class VendedorVista(viewsets.ModelViewSet):
     def get_vendedor(self, request):
         negocio = request.user
         print(f'este es el user {negocio}')
-        vendedores = Usuario.objects.filter(nombre=negocio)
+        vendedores = Usuario.objects.filter(referido_por=negocio.id)
         return Response(VendedorSerializer(vendedores, many=True).data)
     
     
