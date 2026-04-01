@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from tuKioskoApp.models import Usuario
 from tuKioskoApi.serializers import UserRegistrationSerializer
 
 
@@ -66,10 +67,20 @@ class CustomRefreshTokenView(TokenRefreshView):
 @permission_classes([AllowAny])
 def register(request):
     serializer = UserRegistrationSerializer(data=request.data)
+    codigo_referido = request.query_params.get('referido', '')
+    print(f'Este es el código de referido: {codigo_referido}')    
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors)
+        user = serializer.save()        
+        if codigo_referido:
+            try:
+                promotor = Usuario.objects.get(codigo_referir=codigo_referido)
+                user.referido_por = promotor
+                user.save()
+            except Usuario.DoesNotExist:
+                pass
+                
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
     
         
 

@@ -52,9 +52,17 @@ export default function HeaderAuth({autenticado}) {
         }else if (url === '/historial') {
             setUrlFinal(" Historial /");
             setMostrarNav(true)
+        }else if (url === '/productos-vendidos') {
+            setUrlFinal(" Productos Vendidos /");
+            setMostrarNav(true)
+        }else if (url === '/agregar-compras') {
+            setUrlFinal(" Agregar Compra /");
+            setMostrarNav(true)
+        }else if (url.split("/")[1] === 'venta-detalles') {
+            setUrlFinal(" Detalles Compra /");
+            setMostrarNav(true)
         } else {
             setUrlFinal(" Panel ");
-            setMostrarNav(true);
         }
     }, [url]);
 

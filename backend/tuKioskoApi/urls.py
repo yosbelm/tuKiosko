@@ -8,10 +8,9 @@ from .views import *
 router = routers.DefaultRouter()
 router.register(r'productos', ObtenerProductosVista)
 router.register(r'todos-productos', ObtenerTodosProductosVista, basename='productos-todos' )
-router.register(r'areas', ObtenerAreaVista)
-router.register(r'ordenes', ObtenerOrdenVista)
+router.register(r'areas', ObtenerAreaVista, basename="areas_negocio")
 router.register(r'usuarios', UsuarioVista)
-router.register(r'vendedores', VendedorVista)
+router.register(r'vendedores', VendedorVista, basename="vendedores")
 router.register(r'ventas', VentaVista)
 router.register(r'productos-vendidos', ProductoVendidoVista)
 

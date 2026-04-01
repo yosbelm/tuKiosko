@@ -47,8 +47,6 @@ export default function Sidebar({ isOpen, toggle, closeOnLink }){
             <SectionTitle title="Administrar" />
             <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
             <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-area" direccionUrl={"/agregar-area"} icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
-            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-vendedor" direccionUrl={"/agregar-vendedor"} icon={<UserRoundPlus className="w-4 h-4" />} label="Agregar Vendedor" hasArrow />
-
             {/* <SidebarLink icon="fa-power-off" label="Disabled menu" disabled /> */}
             </nav>
         </aside>

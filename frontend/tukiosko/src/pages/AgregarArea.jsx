@@ -14,15 +14,20 @@ export default function AgregarArea(){
         setCargando(true);
         console.log({ nombre: nombre })
         try {
-            await postNuevaArea({ nombre: nombre });
+            const nueva_area = { nombre: nombre }
+            await postNuevaArea(nueva_area);
             toast.success('Área creada correctamente', {
                 description: `Se ha añadido "${nombre}" a la lista.`,
                 duration: 3000,
             });
+            setAreasDisponibles([...areasDisponibles, nueva_area]);
             setNombre("");
         } catch (error) {
             console.error("Error al crear área:", error);
-            alert("Hubo un error al guardar");
+            toast.error('Limite alcanzado', {
+                description: `Ha llegado al limite de areas.`,
+                duration: 3000,
+            });
         } finally {
             setCargando(false);
         }

@@ -4,7 +4,6 @@ import AgregarProducto from './pages/AgregarProducto'
 import Index from './Index';
 import Layout from './Layout';
 import AgregarArea from './pages/AgregarArea';
-import AgregarVendedor from './pages/AgregarVendedor';
 import AgregarCompra from './pages/AgregarCompra';
 import ProductoLista from './pages/ProductosLista'
 import ProductoDetalles from './pages/ProductoDetalles';
@@ -57,18 +56,14 @@ export default function App() {
           <Route path="/panel" element={<PrivateRoute rolPermitido="administrador">
             <Index />
             </PrivateRoute>} />
-          <Route path="/agregar-compra" element={<PrivateRoute rolPermitido="administrador">
-            <AgregarCompra />
-            </PrivateRoute>} />
+
           <Route path="/agregar-producto" element={<PrivateRoute rolPermitido="administrador">
             <AgregarProducto />
             </PrivateRoute>} />
           <Route path="/agregar-area" element={<PrivateRoute rolPermitido="administrador">
             <AgregarArea />
             </PrivateRoute>} />
-          <Route path="/agregar-vendedor" element={<PrivateRoute rolPermitido="administrador">
-            <AgregarVendedor />
-            </PrivateRoute>} />
+          
           <Route path="/productos-lista" element={<PrivateRoute rolPermitido="administrador">
             <ProductoLista />
             </PrivateRoute>} />

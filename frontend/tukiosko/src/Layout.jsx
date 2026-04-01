@@ -54,7 +54,7 @@ export default function Layout({autenticado}) {
         <Outlet context={{ toggleSidebar }} /> 
 
         {/* FAB Menu */}
-        <Link to={"/agregar-compra"}>
+        <Link to={"/agregar-producto"}>
         <div className="fixed bottom-6 right-6 z-50">
             {/* <div className={`absolute bottom-16 right-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden min-w-50 transition-all duration-200 origin-bottom-right ${isMenuOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
                 <button onClick={() => { setActiveTab('area'); setIsMenuOpen(false); }} className="flex items-center gap-3 w-full px-4 py-3 hover:bg-gray-50 transition-colors text-left">
@@ -73,7 +73,7 @@ export default function Layout({autenticado}) {
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)} 
               className={`w-14 h-14 bg-[#1c2d47] hover:bg-[#373a3f] text-white cursor-help rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${isMenuOpen ? 'rotate-45' : ''}`}
-              title="Agrega una nueva venta.">
+              title="Agrega un nuevo producto.">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
               </svg>

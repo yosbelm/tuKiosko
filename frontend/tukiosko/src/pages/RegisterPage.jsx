@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { registrarUsuario } from '../api/productos.api';
+import { useLocation } from 'react-router-dom';
 
 export default function RegisterPage() {
     const [nombre, setNombre] = useState('');
@@ -11,6 +12,7 @@ export default function RegisterPage() {
     const [cargando, setCargando] = useState(false);
     const [mostrarPassword, setMostrarPassword] = useState(false);
     const [mostrarConfirmarPassword, setMostrarConfirmarPassword] = useState(false);
+    const location = useLocation();
 
     const handleRegistro = async (e) => {
         e.preventDefault();
@@ -39,12 +41,15 @@ export default function RegisterPage() {
         setCargando(true);
         
         try {
+            const queryParams = new URLSearchParams(location.search);
+            const codigoReferido = queryParams.get('referido');
+
             const payload = {
                 username: nombre, // El ID del vendedor actual
                 password: password,
                 email: email
             };
-            await registrarUsuario(payload);
+            await registrarUsuario(payload, codigoReferido);
             toast.success('Registro exitoso', {
                 description: `Bienvenido ${nombre}, tu cuenta ha sido creada.`,
                 duration: 3000,

@@ -19,11 +19,7 @@ class AreaSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
-        
-class OrdenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Orden
-        fields = '__all__'
+
         
         
 
@@ -41,35 +37,34 @@ class VendedorSerializer(serializers.ModelSerializer):
     nombre = serializers.ReadOnlyField(source='nombre.username')
 
     class Meta:
-        model = Vendedor
+        model = Usuario
         fields = ['id', 'nombre', 'genero', 'salario', 'username', 'password']
 
-    def create(self, validated_data):
-        with transaction.atomic():
-            # 1. Extraer los datos del usuario del diccionario validado
-            username = validated_data.pop('username')
-            password = validated_data.pop('password')
-            try:
-                salario = validated_data.pop('salario')
-                genero = validated_data.pop('genero')
-            except:
-                salario = 0
-                genero = "femenino"
+    # def create(self, validated_data):
+    #     with transaction.atomic():
+    #         # 1. Extraer los datos del usuario del diccionario validado
+    #         username = validated_data.pop('username')
+    #         password = validated_data.pop('password')
+    #         try:
+    #             salario = validated_data.pop('salario')
+    #             genero = validated_data.pop('genero')
+    #         except:
+    #             salario = 0
+    #             genero = "femenino"
 
-            usuario = Usuario.objects.create_user(
-                username=username,
-                password=password,
-                first_name=username,
-                rol=Usuario.Rol.VENDEDOR
-            )
+    #         usuario = Usuario.objects.create_user(
+    #             username=username,
+    #             password=password,
+    #             first_name=username,
+    #             rol=Usuario.Rol.VENDEDOR
+    #         )
 
-            vendedor = Vendedor.objects.create(nombre=usuario, salario=salario, genero=genero)
-            return vendedor
+    #         return vendedor
         
         
         
 class VentaSerializer(serializers.ModelSerializer):
-    vendedor_nombre = serializers.ReadOnlyField(source='vendedor.nombre.first_name')
+    vendedor_nombre = serializers.ReadOnlyField(source='vendedor.username')
     vendedor_genero = serializers.ReadOnlyField(source='vendedor.genero')
     class Meta:
         model = Venta

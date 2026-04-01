@@ -96,7 +96,6 @@ export default function POSPage() {
     // Finalize purchase
     const finalizePurchase = async () => {
         const payload = {
-            vendedor: 1, // El ID del vendedor actual
             precio_total: total,
             productos: orderItems.map(item => ({
                 producto: item.productId,

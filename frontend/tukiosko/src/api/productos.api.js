@@ -43,11 +43,11 @@ export const getDetallesVenta = (id) => {
 };
 
 export const getAllVendedores = () => {
-    return apiUrl.get(`/vendedores/`);
+    return apiUrl.get(`/vendedores/get_vendedor/`);
 }
 
 export const getAllAreas = () => {
-    return apiUrl.get(`/areas/`);
+    return apiUrl.get(`/areas/obtener_area/`);
 }
 
 export const getProducto = (id) => {
@@ -56,16 +56,16 @@ export const getProducto = (id) => {
 
 // POST
 export const postNuevaArea = (data) => {
-    return apiUrl.post(`/areas/`, data);
+    return apiUrl.post(`/areas/subir_area/`, data);
 };
 
 export const postNuevoProducto = (data) => {
-    return apiUrl.post(`/productos/`, data);
+    return apiUrl.post(`/productos/subir_producto/`, data);
 };
 
-export const postNuevoVendedor = (data) => {
-    return apiUrl.post(`/vendedores/`, data);
-};
+// export const postNuevoVendedor = (data) => {
+//     return apiUrl.post(`/vendedores/`, data);
+// };
 
 export const postVenta = (data) => {
     return apiUrl.post(`/ventas/finalizar_venta/`, data);
@@ -85,8 +85,11 @@ export const deleteProducto = (id) => {
 
 
 // Authentication
-export const registrarUsuario = (data) => {
-    return apiUrl.post(`/register/`, data)
+export const registrarUsuario = (data, referido) => {
+    const url = referido 
+        ? `/register/?referido=${referido}` 
+        : `/register/`;
+    return apiUrl.post(url, data)
 }
 
 

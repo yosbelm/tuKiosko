@@ -6,7 +6,5 @@ from tuKioskoApp.models import *
 admin.site.register(Usuario)
 admin.site.register(Area)
 admin.site.register(Producto)
-admin.site.register(Vendedor)
-admin.site.register(Orden)
 admin.site.register(Venta)
 admin.site.register(ProductoVendido)
