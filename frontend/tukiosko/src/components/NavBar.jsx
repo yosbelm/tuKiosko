@@ -2,6 +2,7 @@ import {  ClipboardList, Users, HistoryIcon, Calculator } from "lucide-react"
 import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Calculadora from "./Calculadora";
+import { createPortal } from 'react-dom';
 
 
 export default function NavBar({mostrar, total}) {
@@ -80,7 +81,10 @@ export default function NavBar({mostrar, total}) {
                     </button> */}
                 </div>
             </nav>
-            {abrirCalculadora && <Calculadora total={total} onClose={() => setAbrirCalculadora(false)} />}
+            {abrirCalculadora && createPortal(
+                <Calculadora total={total} onClose={() => setAbrirCalculadora(false)} />,
+                document.body
+            )}
         </div>
       </div>
     );
