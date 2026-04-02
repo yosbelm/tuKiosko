@@ -6,6 +6,7 @@ import fechaFinal from '../../utils/Date';
 export default function Historial() {
     const [ventas, setVentas] = useState([]);
     const [productosVendidos, setProductosVendidos] = useState([]);
+    const [dineroVentasDiarias, setDineroVentasDiarias] = useState("")
     const [cargando, setCargando] = useState(true);
 
     useEffect(() => {
@@ -14,6 +15,7 @@ export default function Historial() {
                 const response = await getAllVentas();
                 // Usamos ventas_diarias para mantener consistencia con tu Index
                 setVentas(response.data.ventas_diarias || []);
+                setDineroVentasDiarias(response.data.total_dinero_vendido.total_dinero_ventas || 0);
                 setProductosVendidos(response.data.productos_vendidos || []);
             } catch (error) {
                 console.error('Error al obtener ventas:', error);
@@ -26,6 +28,10 @@ export default function Historial() {
     }, []);
 
     return (
+        <>
+            <div className="px-6 py-2 mb-3 bg-green-100 font-bold text-green-500 text-center rounded-xl border border-gray-200 shadow-sm">
+                Total Dinero: ${dineroVentasDiarias}
+            </div>
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden relative">
                 {/* Header del Historial */}
                 <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
@@ -33,16 +39,16 @@ export default function Historial() {
                         <div className="w-1.5 h-6 bg-[#1c2d47] rounded-full"></div>
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900">Historial de Ventas</h3>
-                            <p className="text-xs text-gray-500">Registro de transacciones recientes</p>
+                            <p className="text-[11px] md:text-xs lg:text-xs text-gray-500">Registro de transacciones recientes</p>
                         </div>
                     </div>
-                    <span className="px-3 py-1 bg-gray-100 text-[#1c2d47] text-xs font-medium rounded-full">
-                        {ventas.length} registros
+                    <span className="px-3 py-1 bg-gray-100 text-[#1c2d47] text-[11px] md:text-[13px] lg:text-[13px] font-medium rounded-full">
+                        {ventas.length} ventas
                     </span>
                 </div>
 
                 {/* Tabla Responsiva */}
-                <div className="max-h-[calc(100vh-220px)] lg:max-h-127 overflow-y-auto scrollbar-hide">
+                <div className="max-h-[calc(100vh-150px)] lg:max-h-127 overflow-y-auto scrollbar-hide">
                     {cargando ? (
                         <div className="p-10 text-center text-gray-400">Cargando historial...</div>
                     ) : (
@@ -52,7 +58,7 @@ export default function Historial() {
                                     ventas.map((venta) => (
                                         <UserRow 
                                             key={venta.id} 
-                                            ventaId={venta.id} 
+                                            ventaId={venta.ticket_venta} 
                                             name={venta.vendedor_nombre} 
                                             precio={venta.precio_total} 
                                             cantidad={venta.cantidad}
@@ -87,5 +93,6 @@ export default function Historial() {
                     </div>
                 )}
             </div>
+        </>
     );
 }

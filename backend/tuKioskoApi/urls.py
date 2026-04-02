@@ -20,7 +20,7 @@ urlpatterns = [
     path('datos-ventas/', DatosVentasAPIView.as_view(), name='datos-ventas'),
     path('producto-detalles/<int:producto_id>/', DetallesProductoAPIView.as_view(), name='producto-detalles'),
     path('eliminar-producto/<int:producto_id>/', DeleteProductoAPIView.as_view(), name='eliminar-producto'),
-    path('detalles-venta/<int:venta_id>/', DetallesVentaAPIView.as_view(), name='detalles-venta'),
+    path('detalles-venta/<str:venta_id>/', DetallesVentaAPIView.as_view(), name='detalles-venta'),
     
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', CustomRefreshTokenView.as_view(), name='token_refresh'),

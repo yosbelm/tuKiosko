@@ -1,5 +1,5 @@
 import { Users, Bell, ChevronDown, LogOut, MenuIcon, User } from "lucide-react"
-import React, { Profiler, useEffect, useState } from "react";
+import React, { Profiler, useEffect, useState, useRef } from "react";
 import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
 import { getAllProducts, cerrarSesion } from "../api/productos.api";
 import {toast} from "sonner";
@@ -11,10 +11,23 @@ export default function Header({toggle}){
     const url = urlDirection.pathname;
     const [urlFinal, setUrlFinal] = useState("")
     const [mostrarChevron, setMostrarChevron] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef(null);
     const navigate = useNavigate();
 
+    // Cerrar el menú si se hace click fuera
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     const handleChevron = () => {
-      setMostrarChevron(!mostrarChevron);
+      setIsMenuOpen(!isMenuOpen);
     } 
 
     const handleLogout = async () => {
@@ -89,14 +102,16 @@ export default function Header({toggle}){
                   <Users className="w-4 h-4"/>
                   <ChevronDown className="w-4 h-4 text-xs" />
                 </button>
-                {mostrarChevron && (
-                <div className="absolute right-2 top-full mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 animate-in fade-in zoom-in duration-200 z-50">
+                {isMenuOpen  && (
+                <div className="absolute right-2 top-full mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 animate-in fade-in zoom-in duration-200 z-50" ref={menuRef}>
+                  <Link to={"/usuario-cuenta"}>
                   <button
                     className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     <User className="w-4 h-4" />
                     Cuenta
                   </button>
+                  </Link>
                   <button 
                     className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                     onClick={() => {

@@ -31,7 +31,7 @@ export const getAllProducts = () => {
 };
 
 export const getTodosProductos = () => {
-    return apiUrl.get(`/todos-productos/`);
+    return apiUrl.get(`/todos-productos/obtener_productos/`);
 };
 
 export const getAllVentas = () => {
@@ -52,6 +52,10 @@ export const getAllAreas = () => {
 
 export const getProducto = (id) => {
     return apiUrl.get(`/producto-detalles/${id}/`);
+}
+
+export const getUsuario = () => {
+    return apiUrl.get(`/usuarios/get_usuario/`);
 }
 
 // POST

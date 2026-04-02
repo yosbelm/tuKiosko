@@ -26,7 +26,7 @@ class AreaSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = '__all__'
+        fields = ['username', 'email', 'genero', 'rol', 'codigo_referir', 'salario', 'referido_por']
         
 
 

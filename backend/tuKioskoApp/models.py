@@ -75,11 +75,17 @@ class Producto(models.Model):
     
 class Venta(models.Model):
     vendedor = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="vendedor_venta")
+    ticket_venta = models.CharField(max_length=15, unique=True, blank=True, null=True)
     precio_total = models.DecimalField(max_digits=10, decimal_places=2)
     creado = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"Vendido por {self.vendedor} en {self.creado}"
+    
+    def save(self, *args, **kwargs):
+        if not self.ticket_venta:
+            self.ticket_venta = get_random_string(15)
+        super().save(*args, **kwargs)
     
 
 

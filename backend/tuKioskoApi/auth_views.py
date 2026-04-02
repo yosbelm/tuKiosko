@@ -75,6 +75,7 @@ def register(request):
             try:
                 promotor = Usuario.objects.get(codigo_referir=codigo_referido)
                 user.referido_por = promotor
+                user.rol = 'vendedor'
                 user.save()
             except Usuario.DoesNotExist:
                 pass

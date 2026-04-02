@@ -7,7 +7,9 @@ import {
   MoreVertical, 
   ShieldCheck, 
   UserCircle,
-  Clock
+  Clock,
+  Mars,
+  Venus
 } from 'lucide-react';
 import { getAllVendedores } from '../api/productos.api.js';
 
@@ -30,7 +32,7 @@ export default function VendedoresLista() {
     fetchVendedores();
   }, []);
 
-  const formatCurrency = (value) => `$${Number(value).toLocaleString()}`;
+  const formatCurrency = (value) => `${Number(value).toLocaleString()}`;
   
   const formatDate = (dateString) => {
     if (!dateString) return 'Nunca';
@@ -64,7 +66,7 @@ export default function VendedoresLista() {
       </div>
 
       {/* Grid de Vendedores */}
-      <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3">
+      <div className="grid md:grid-cols-2 sm:grid-cols-1 xl:grid-cols-3 gap-3">
         {vendedores.map((v) => (
           <div 
             key={v.id} 
@@ -90,9 +92,9 @@ export default function VendedoresLista() {
                   </span>
                 </div>
               </div>
-              {/* <button className="text-gray-400 hover:text-gray-600 p-1">
+              <button className="text-gray-400 hover:text-gray-600 p-1">
                 <MoreVertical className="w-5 h-5" />
-              </button> */}
+              </button>
             </div>
 
             {/* Detalles */}
@@ -116,10 +118,10 @@ export default function VendedoresLista() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider italic">Último Acceso</span>
+                  <span className="text-[10px] uppercase text-gray-400 font-bold tracking-wider italic">Género</span>
                   <p className="text-xs text-gray-600 flex items-center justify-end gap-1 mt-0.5">
-                    <Clock className="w-3 h-3" />
-                    {formatDate(v.nombre?.last_login)}
+                    {v.genero === "femenino" ? <Mars className="w-3 h-3" />: <Venus className="w-3 h-3" />}
+                    {v.genero}
                   </p>
                 </div>
               </div>

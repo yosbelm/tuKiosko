@@ -63,7 +63,7 @@ export default function AgregarProducto() {
             setPrecioCompra(0);
             setPrecioVenta(0);
             setCantidad(1);
-            setDefinirUbicacion("");
+            setDefinirUbicacion(definirUbicacion);
         } catch (error) {
             console.error("Error al crear área:", error);
             alert("Hubo un error al guardar");

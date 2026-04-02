@@ -4,7 +4,7 @@ import AgregarProducto from './pages/AgregarProducto'
 import Index from './Index';
 import Layout from './Layout';
 import AgregarArea from './pages/AgregarArea';
-import AgregarCompra from './pages/AgregarCompra';
+import AgregarCompra from './pagesVendedor/AgregarCompra';
 import ProductoLista from './pages/ProductosLista'
 import ProductoDetalles from './pages/ProductoDetalles';
 import VentaDetalles from './pages/VentaDetalles';
@@ -20,6 +20,7 @@ import PrivateRoute from './api/privateRoute'
 import Historial from './pagesVendedor/Historial';
 import VentaDetallesVendedor from './pagesVendedor/VentaDetallesVendedor'
 import ProductosVendidos from './pagesVendedor/ProductosVendidos'
+import UsuarioCuenta from './pages/UsuarioCuenta';
 
 
 export default function App() {
@@ -76,6 +77,9 @@ export default function App() {
           <Route path="/vendedores-lista/" element={<PrivateRoute rolPermitido="administrador">
             <VendedoresLista />
             </PrivateRoute>} />
+          <Route path="/usuario-cuenta/" element={<PrivateRoute rolPermitido="administrador">
+            <UsuarioCuenta />
+            </PrivateRoute>} />
         </Route>
 
         {/* Vendedor */}
@@ -95,7 +99,7 @@ export default function App() {
         </Route>
 
         {/* Auth */}
-        <Route element={<LayoutAuth />}>
+        <Route element={<LayoutAuth autenticado={autenticado} />}>
           <Route path="/" element={<LoginPage />} />
           <Route path="/registro/" element={<RegisterPage />} />
         </Route>

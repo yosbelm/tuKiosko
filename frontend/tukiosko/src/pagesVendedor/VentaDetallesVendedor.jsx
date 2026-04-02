@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {getDetallesVenta} from '../api/productos.api';
+import fechaFinal from '../../utils/Date'
 
 
 export default function VentaDetallesVendedor() {
@@ -58,7 +59,7 @@ export default function VentaDetallesVendedor() {
     if (!venta) return null;
 
     return (
-        <div className="">
+        <div className="sm: mb-20">
             {/* Header / Navegación */}
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
@@ -70,7 +71,7 @@ export default function VentaDetallesVendedor() {
                     </button>
                     <div>
                         <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                            Ticket #{venta.id}
+                        Venta ID: {params.id}
                         </h1>
                         <p className="text-xs text-gray-500 font-medium">Detalles de la transacción</p>
                     </div>
@@ -89,7 +90,7 @@ export default function VentaDetallesVendedor() {
                         <div className="px-3 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-5 bg-[#1c2d47] rounded-full"></div>
-                                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider">Productos Vendidos</h3>
+                                <h3 className="font-bold text-gray-700 tracking-wider">Productos Vendidos</h3>
                             </div>
                             <span className="text-xs font-bold text-gray-500 bg-white border px-2 py-0.5 rounded shadow-sm">
                                 {productosVendidos.length} items
@@ -111,8 +112,8 @@ export default function VentaDetallesVendedor() {
                                     <tr key={item.id} className="hover:bg-gray-50/30 transition-colors group">
                                         <td className="px-3 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                    <Package className="w-4 h-4 text-gray-400" />
+                                                <div className="w-9 h-9 bg-[#1c2d47] border border-gray-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                    <Package className="w-4 h-4 text-white" />
                                                 </div>
                                                 <span className="font-semibold text-gray-800 text-sm">{item.producto_nombre}</span>
                                             </div>
@@ -125,7 +126,7 @@ export default function VentaDetallesVendedor() {
                                         <td className="px-3 py-4 text-right text-sm text-gray-500 tabular-nums">
                                             {formatCurrency(item.precio_producto_vendido)}
                                         </td>
-                                        <td className="px-3 py-4 text-right font-bold text-gray-900 text-sm tabular-nums">
+                                        <td className="px-3 py-4 text-right font-bold text-green-500 text-sm tabular-nums">
                                             {formatCurrency(item.precio_producto_vendido * item.cantidad)}
                                         </td>
                                     </tr>
@@ -173,7 +174,7 @@ export default function VentaDetallesVendedor() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-gray-400">Fecha de Emisión</p>
-                                    <p className="text-sm text-gray-700">{formatDate(venta.creado)}</p>
+                                    <p className="text-sm text-gray-700">{fechaFinal(venta.creado)}</p>
                                 </div>
                             </div>
 

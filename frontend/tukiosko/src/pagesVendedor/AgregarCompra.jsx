@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react"
 import { Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle, X, Package } from "lucide-react"
-import { getAllProducts, postVenta } from '../api/productos.api'
+import { getAllProducts, postVenta, estaAutenticado } from '../api/productos.api'
 import { toast } from "sonner"
 
 
@@ -11,12 +11,24 @@ export default function POSPage() {
     const [showVendorDropdown, setShowVendorDropdown] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false);
     const [productos, setProductos] = useState([])
+    const [usuario, setUsuario] = useState([])
 
     useEffect(() => {
         getAllProducts()
           .then(response => {
             setProductos(response.data);
             console.log(response.data)
+          })
+          .catch(error => {
+            console.error('Error al obtener productos:', error);
+          });
+    },[])
+
+    useEffect(() => {
+        estaAutenticado()
+          .then(response => {
+            setUsuario(response.data);
+            console.log(response.data.username)
           })
           .catch(error => {
             console.error('Error al obtener productos:', error);
@@ -192,11 +204,11 @@ export default function POSPage() {
                             className="w-full flex items-center gap-3 p-3 py-1 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                             <img
-                            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos"
+                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${usuario.genero === 'femenino' ? 'Isabella' : 'Carlos'}`}
                             alt="Carlos"
                             className="w-10 h-10 rounded-full bg-gray-200"
                             />
-                            <span className="font-medium text-[#111827]">carlos</span>
+                            <span className="font-medium text-[#111827]">{usuario.username}</span>
                         </button>
 
                         {/* {showVendorDropdown && (
@@ -249,33 +261,34 @@ export default function POSPage() {
                                 <p className="font-medium text-[#111827] flex-1 pr-2">{item.name}</p>
                                 <button
                                     onClick={() => removeFromOrder(item.productId)}
-                                    className="text-gray-400 hover:text-red-500 transition-colors"
+                                    className="hover:text-red-900 text-red-500 transition-colors"
                                 >
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <button
-                                    onClick={() => updateQuantity(item.productId, -1)}
-                                    className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                                    >
-                                    <Minus className="w-4 h-4 text-gray-600" />
-                                    </button>
-                                    <span className="w-8 text-center font-medium text-[#111827]">{item.cantidad}</span>
-                                    <button
-                                    onClick={() => updateQuantity(item.productId, 1)}
-                                    className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                                    >
-                                    <Plus className="w-4 h-4 text-gray-600" />
-                                    </button>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm text-gray-500">${item.price} c/u</p>
-                                    <p className="font-semibold text-[#111827]">
-                                    ${(item.price * item.cantidad)}
-                                    </p>
-                                </div>
+                                    <div className="text-right">
+                                        <p className="text-sm text-gray-500">${item.price} c/u</p>
+                                        <p className="font-semibold text-[#111827] text-left">
+                                            ${(item.price * item.cantidad)}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                        onClick={() => updateQuantity(item.productId, -1)}
+                                        className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                        >
+                                        <Minus className="w-4 h-4 text-gray-600" />
+                                        </button>
+                                        <span className="w-8 text-center font-medium text-[#111827]">{item.cantidad}</span>
+                                        <button
+                                        onClick={() => updateQuantity(item.productId, 1)}
+                                        className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                        >
+                                        <Plus className="w-4 h-4 text-gray-600" />
+                                        </button>
+                                    </div>
+                                    
                                 </div>
                             </div>
                             ))}

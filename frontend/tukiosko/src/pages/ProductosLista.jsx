@@ -149,11 +149,11 @@ function ProductoLista() {
                     <tr key={producto.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
                         <td className="px-3 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 bg-[#1c2d47]/10 rounded-lg flex items-center justify-center">
-                              <Package className="w-4 h-4 text-blue-900" />
+                            <div className="w-8 h-8 bg-[#1c2d47] rounded-lg flex items-center justify-center">
+                              <Package className="w-4 h-4 text-white" />
                             </div>
                             <Link to={`/producto-detalles/${producto.id}`}>
-                            <span className="font-medium text-blue-900 text-nowrap">{producto.nombre}</span>
+                            <span className="font-medium text-[#1c2d47] text-nowrap">{producto.nombre}</span>
                             </Link>
                           </div>
                         </td>
@@ -169,7 +169,7 @@ function ProductoLista() {
                       <td className="px-2 py-4 text-gray-600 font-medium">
                         {formatCurrency(producto.precio_compra)}
                       </td>
-                      <td className="px-3 py-4 text-[#1c2d47] font-semibold">
+                      <td className="px-3 py-4 text-green-500 font-semibold">
                         {formatCurrency(producto.precio_venta)}
                       </td>
                       <td className="px-3 py-4 flex justify-center items-center gap-1">

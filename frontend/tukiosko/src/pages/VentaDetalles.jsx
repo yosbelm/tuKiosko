@@ -8,10 +8,11 @@ import {
   Hash,
   ShoppingCart,
   Receipt,
-  Tag
+  ChevronRight
 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getDetallesVenta } from '../api/productos.api';
+import fechaFinal from '../../utils/Date'
 
 function VentaDetalles() {
     const [venta, setVenta] = useState(null);
@@ -78,59 +79,72 @@ function VentaDetalles() {
     return (
         <div className="p-4 lg:p-6 py-3 lg:pt-2 min-h-screen bg-gray-50/50 pb-20">
         {/* Header */}
-            <div className="flex items-center gap-4 mb-6">
-                <button onClick={handleBack} className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
-                </button>
-                <div>
-                    <h1 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <Receipt className="w-5 h-5 text-[#1c2d47]" />
-                        Venta #{venta.id}
-                    </h1>
-                    {/* <p className="text-sm text-gray-500">Consulta los detalles de la transacción realizada</p> */}
+        <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                    <button 
+                        onClick={handleBack} 
+                        className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm group"
+                    >
+                        <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:text-[#1c2d47]" />
+                    </button>
+                    <div>
+                        <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            Venta ID:{venta.ticket_venta}
+                        </h1>
+                        {/* <p className="text-xs text-gray-500 font-medium">Detalles de la transacción</p> */}
+                    </div>
+                </div>
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-100 text-xs font-bold">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    VENTA COMPLETADA
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
-                {/* Columna Principal - Lista de Productos Vendidos */}
-                <div className="lg:col-span-2 space-y-3">
-                    <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-                            <div className="w-1 h-5 bg-[#1c2d47] rounded"></div>
-                            <h3 className="text-gray-700 font-semibold">Productos en esta Venta</h3>
+                {/* LADO IZQUIERDO: Lista de Productos (Ocupa 8 columnas en PC) */}
+                <div className="lg:col-span-7 space-y-3">
+                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div className="px-3 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                            <div className="flex items-center gap-2">
+                                <div className="w-1.5 h-5 bg-[#1c2d47] rounded-full"></div>
+                                <h3 className="font-bold text-gray-700 tracking-wider">Productos Vendidos</h3>
+                            </div>
+                            <span className="text-xs font-bold text-gray-500 bg-white border px-2 py-0.5 rounded shadow-sm">
+                                {productosVendidos.length} items
+                            </span>
                         </div>
                         
                         <div className="overflow-x-auto scrollbar-hide">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="bg-gray-50 text-left">
-                                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Producto</th>
-                                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase text-center">Cantidad</th>
-                                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase text-nowrap text-right">Precio Unit.</th>
-                                        <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase text-right">Subtotal</th>
+                                    <tr className="bg-white border-b border-gray-100">
+                                        <th className="px-3 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Descripción</th>
+                                        <th className="px-3 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Cant.</th>
+                                        <th className="px-3 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Precio</th>
+                                        <th className="px-3 py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
                                 {productosVendidos.map((item) => (
-                                    <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4">
+                                    <tr key={item.id} className="hover:bg-gray-50/30 transition-colors group">
+                                        <td className="px-3 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
-                                                    <Package className="w-4 h-4 text-gray-600" />
+                                                <div className="w-9 h-9 bg-[#1c2d47] border border-gray-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                    <Package className="w-4 h-4 text-white" />
                                                 </div>
-                                                <span className="font-medium text-gray-800 text-nowrap">{item.producto_nombre}</span>
+                                                <span className="font-semibold text-gray-800 text-sm">{item.producto_nombre}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-center text-gray-600">
-                                            <span className="bg-gray-100 px-2.5 py-1 rounded text-sm font-medium">
+                                        <td className="px-3 py-4 text-center">
+                                            <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-md">
                                                 {item.cantidad}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right text-gray-600 italic">
+                                        <td className="px-3 py-4 text-right text-sm text-gray-500 tabular-nums">
                                             {formatCurrency(item.precio_producto_vendido)}
                                         </td>
-                                        <td className="px-6 py-4 text-right font-semibold text-[#1c2d47]">
+                                        <td className="px-3 py-4 text-right font-bold text-green-500 text-sm tabular-nums">
                                             {formatCurrency(item.precio_producto_vendido * item.cantidad)}
                                         </td>
                                     </tr>
@@ -139,78 +153,78 @@ function VentaDetalles() {
                             </table>
                         </div>
                         
-                        {/* Scroll */}
-                        <div className="lg:hidden flex items-center justify-center gap-2 py-2 text-gray-400 animate-pulse">
-                            <span className="text-xs font-medium tracking-wider">Desliza para ver más</span>
-                            <div className="flex animate-bounce-x">
-                            <ArrowLeft className="w-4 h-4 rotate-180" />
-                            </div>
+                        {/* Scroll hint para móvil */}
+                        <div className="lg:hidden p-3 bg-gray-50 border-t border-gray-100 flex items-center justify-center gap-2">
+                            <ChevronRight className="w-4 h-4 text-gray-400 animate-bounce-x" />
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">Desliza para ver precios</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Columna Lateral - Información de la Venta */}
-                <div className="space-y-3">
-                    {/* Card: Resumen de Transacción */}
-                    <div className="bg-white rounded-lg shadow-sm">
-                        <div className="p-6 py-3 space-y-3">
-                            <div className="text-center pb-4 border-b border-gray-100">
-                                <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold">Total Cobrado</p>
-                                <h2 className="text-3xl font-black text-[#1c2d47] mt-1">
+                {/* LADO DERECHO: Resumen (Ocupa 4 columnas en PC) */}
+                <div className="lg:col-span-5 space-y-3">
+                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-4 py-3 overflow-hidden relative">
+                        {/* Círculos decorativos tipo ticket */}
+                        <div className="absolute -top-3 -left-3 w-6 h-6 bg-gray-50 rounded-full border border-gray-200 shadow-inner"></div>
+                        <div className="absolute -top-3 -right-3 w-6 h-6 bg-gray-50 rounded-full border border-gray-200 shadow-inner"></div>
+
+                        <div className="text-center pb-2 border-b border-dashed border-gray-200">
+                            <p className="text-[10px] font-black text-gray-400 mb-1">Total de la Venta</p>
+                            <h2 className="text-2xl font-black text-green-500 tracking-tight">
                                 {formatCurrency(venta.precio_total)}
-                                </h2>
+                            </h2>
+                        </div>
+
+                        <div className="pt-3 space-y-5">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-[#1c2d47]/5 rounded-xl flex items-center justify-center">
+                                    <User className="w-5 h-5 text-[#1c2d47]" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-bold text-gray-400 ">Vendedor Responsable</p>
+                                    <p className="text-sm font-black text-gray-800 tracking-tight">{venta.vendedor_nombre}</p>
+                                </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-gray-100 rounded-lg">
-                                        <User className="w-5 h-5 text-[#1c2d47]" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 font-medium">Atendido por:</p>
-                                        <p className="text-sm font-bold text-gray-800">{venta.vendedor_nombre}</p>
-                                    </div>
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-[#1c2d47]/5 rounded-xl flex items-center justify-center">
+                                    <Calendar className="w-5 h-5 text-[#1c2d47]" />
                                 </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-gray-100 rounded-lg">
-                                        <Calendar className="w-5 h-5 text-[#1c2d47]" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 font-medium">Fecha y Hora:</p>
-                                        <p className="text-sm text-gray-800">{formatDate(venta.creado)}</p>
-                                    </div>
+                                <div>
+                                    <p className="text-[10px] font-bold text-gray-400">Fecha de Emisión</p>
+                                    <p className="text-sm text-gray-700">{fechaFinal(venta.creado)}</p>
                                 </div>
+                            </div>
 
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-gray-100 rounded-lg">
-                                        <ShoppingCart className="w-5 h-5 text-[#1c2d47]" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 font-medium">Items totales:</p>
-                                        <p className="text-sm text-gray-800">
-                                        {productosVendidos.reduce((acc, curr) => acc + curr.cantidad, 0)} unidades
-                                        </p>
-                                    </div>
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-[#1c2d47]/5 rounded-xl flex items-center justify-center">
+                                    <ShoppingCart className="w-5 h-5 text-[#1c2d47]" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-bold text-gray-400">Volumen de Compra</p>
+                                    <p className="text-sm font-semibold text-gray-700">
+                                        {productosVendidos.reduce((acc, curr) => acc + curr.cantidad, 0)} unidades totales
+                                    </p>
                                 </div>
                             </div>
                         </div>
+
+                        {/* Botón de acción adicional (opcional) */}
+                        <div className="mt-4">
+                            <button 
+                                onClick={() => window.print()} 
+                                className="w-full py-3 bg-[#1c2d47] hover:bg-[#2a3e5d] text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-blue-900/10 uppercase tracking-widest flex items-center justify-center gap-2"
+                            >
+                                <Receipt className="w-4 h-4" />
+                                Imprimir Comprobante
+                            </button>
+                        </div>
                     </div>
-
-                    {/* Card: Tip Informativo */}
-                    {/* <div className="bg-[#1c2d47] rounded-lg p-5 text-white shadow-lg relative overflow-hidden">
-                        <Tag className="absolute -right-4 -bottom-4 w-24 h-24 text-white/10 rotate-12" />
-                        <h4 className="font-bold mb-1 flex items-center gap-2">
-                        <ShoppingCart className="w-4 h-4" />
-                        Venta Finalizada
-                        </h4>
-                        <p className="text-xs text-blue-100 leading-relaxed">
-                        Esta venta ha descontado automáticamente el stock de los productos involucrados. 
-                        No es posible editar las cantidades una vez confirmada.
-                        </p>
-                    </div> */}
+                    
+                    <p className="text-[10px] text-center text-gray-400 font-medium italic">
+                        ID Único de Transacción: {venta.ticket_venta}
+                    </p>
                 </div>
-
             </div>
         </div>
     );

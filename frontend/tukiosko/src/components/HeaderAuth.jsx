@@ -1,4 +1,4 @@
-import { Users, Bell, ChevronDown, MenuIcon, LogOut, LogIn, InfoIcon } from "lucide-react";
+import { Users, Bell, ChevronDown, MenuIcon, LogOut, LogIn, InfoIcon, User } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
 import {cerrarSesion} from '../api/productos.api'
@@ -12,6 +12,7 @@ export default function HeaderAuth({autenticado}) {
     const [urlFinal, setUrlFinal] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [mostrarNav, setMostrarNav] = useState(false);
+    const [mostrarIcons, setMostrarIcons] = useState(true);
     const menuRef = useRef(null);
     const navigate = useNavigate()
 
@@ -47,8 +48,10 @@ export default function HeaderAuth({autenticado}) {
     useEffect(() => {
         if (url === '/registro') {
             setUrlFinal(" Registrarse /");
+            setMostrarIcons(false);
         } else if (url === '/') {
             setUrlFinal(" Iniciar sesión /");
+            setMostrarIcons(false);
         }else if (url === '/historial') {
             setUrlFinal(" Historial /");
             setMostrarNav(true)
@@ -77,7 +80,7 @@ export default function HeaderAuth({autenticado}) {
 
     return (
         <header className="sticky top-0 left-0 z-40">
-            <div className="flex items-center justify-between pl-4 pr-8 py-4">
+            <div className="flex items-center justify-between pl-4 pr-8 pb-0 py-4">
                 <div className="flex items-center gap-4">
                     <button className="hidden sm:block text-gray-400 hover:text-gray-600">
                         <i className="fas fa-expand"></i>
@@ -93,58 +96,71 @@ export default function HeaderAuth({autenticado}) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 relative" ref={menuRef}>
-                    <button 
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all duration-200 ${
-                            isMenuOpen ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-                        }`}
-                    >
-                        <Users className="w-4 h-4" />
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
-                    </button>
+                {mostrarIcons && (
+                    <div className="flex items-center gap-4 relative" ref={menuRef}>
+                        <button className="relative text-gray-400 hover:text-gray-600">
+                            <Bell className="w-4 h-4" />
+                        </button>
+                        <button 
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className={`flex items-center gap-1 px-0 py-1.5 rounded-lg transition-all duration-200 ${
+                                isMenuOpen ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Users className="w-4 h-4" />
+                            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
+                        </button>
 
-                    {/* Dropdown Menu */}
-                    {isMenuOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 animate-in fade-in zoom-in duration-200 z-50">
-                            { autenticado === null ? 
-                            <Link 
-                                to="/" 
-                                className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                <LogIn className="w-4 h-4 text-gray-400" />
-                                Sobre Nosotros
-                            </Link>:(
-                                autenticado ? (
-                                <button 
-                                    className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                                    onClick={() => {
-                                        console.log("Logout...");
-                                        handleLogout();
-                                        setIsMenuOpen(false);
-                                    }}
-                                >
-                                    <LogOut className="w-4 h-4" />
-                                    Cerrar sesión
-                                </button>
-                                ) : ( 
+                        {/* Dropdown Menu */}
+                        {isMenuOpen && (
+                            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 animate-in fade-in zoom-in duration-200 z-50">
+                                { autenticado === null ? 
                                 <Link 
                                     to="/" 
                                     className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
-                                    <InfoIcon className="w-4 h-4 text-gray-400" />
+                                    <LogIn className="w-4 h-4 text-gray-400" />
                                     Sobre Nosotros
-                                </Link>
-                                ))
-                            }
-                        </div>
-                    )}
-                    {mostrarNav && (
-                        <NavBar />
-                    )}
-                </div>
+                                </Link>:(
+                                    autenticado ? (
+                                    <>
+                                    <button
+                                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Cuenta
+                                    </button>    
+                                    <button 
+                                        className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                        onClick={() => {
+                                            console.log("Logout...");
+                                            handleLogout();
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        Cerrar sesión
+                                    </button>
+                                    </>
+                                    ) : ( 
+                                    <Link 
+                                        to="/" 
+                                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        <InfoIcon className="w-4 h-4 text-gray-400" />
+                                        Sobre Nosotros
+                                    </Link>
+                                    ))
+                                }
+                            </div>
+                        )}
+                        {mostrarNav && (
+                            <NavBar />
+                        )}
+                    </div>
+                )}                
             </div>
         </header>
     );

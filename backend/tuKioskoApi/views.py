@@ -56,6 +56,15 @@ class ObtenerProductosVista(viewsets.ModelViewSet):
 class ObtenerTodosProductosVista(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
     queryset = Producto.objects.all()
+    @action(detail=False, methods=['get'])
+    def obtener_productos(self, request):
+        try:
+            negocio = Usuario.objects.filter(id=request.user.id).first()
+            total_productos = Producto.objects.filter(negocio_pertenece=negocio)
+            return Response(ProductosSerializer(total_productos, many=True).data)
+        except Exception as e:
+            print("entra en not" )
+            return Response({'error': str(e)}, status=400)
     
     
     
@@ -115,11 +124,13 @@ class ObtenerAreaVista(viewsets.ModelViewSet):
 class UsuarioVista(viewsets.ModelViewSet):
     serializer_class = UsuarioSerializer
     queryset = Usuario.objects.all()
-    
-
-# class UsuarioVista(viewsets.ModelViewSet):
-#     serializer_class = UsuarioSerializer
-#     queryset = Usuario.objects.all() 
+    @action(detail=False, methods=['get'])
+    def get_usuario(self, request):
+        usuario = request.user
+        print(f'este es el user {usuario}')
+        usuario = Usuario.objects.filter(id=usuario.id).first()
+        return Response(UsuarioSerializer(usuario).data)
+     
     
     
     
@@ -131,7 +142,7 @@ class VendedorVista(viewsets.ModelViewSet):
     def get_vendedor(self, request):
         negocio = request.user
         print(f'este es el user {negocio}')
-        vendedores = Usuario.objects.filter(referido_por=negocio.id)
+        vendedores = Usuario.objects.filter(referido_por=negocio.id, rol="vendedor")
         return Response(VendedorSerializer(vendedores, many=True).data)
     
     
@@ -192,7 +203,7 @@ class DetallesProductoAPIView(APIView):
     
 class DetallesVentaAPIView(APIView):
     def get(self, request, venta_id):
-        venta = get_object_or_404(Venta, id=venta_id)
+        venta = get_object_or_404(Venta, ticket_venta=venta_id)
         productos_vendidos = ProductoVendido.objects.filter(venta_producto_id=venta.id)
         
         return Response({
@@ -205,51 +216,78 @@ class DetallesVentaAPIView(APIView):
 class DatosVentasAPIView(APIView):
     def get(self, request):
         hoy = timezone.now()
-        vendedores = Usuario.objects.count()
-        total_productos = Producto.objects.count() 
+        usuario = request.user
+         
+        productos_vendidos_dia, productos_vendidos_semana, productos_vendidos_mes = None, None, None
+        vendedores, total_productos = 0, 0
+        dinero_ventas_diarias = None
+        ventas_semana, dinero_ventas_semanal, total_dinero_vendido = 0, 0, 0
         
-        productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy).values(
-            nombre=F('producto__nombre'),
-            ubicacion=F('producto__ubicacion__nombre'),
-            precio=F('precio_producto_vendido')
-        ).annotate(
-            cantidad_total=Sum('cantidad'),
-            total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
-        ).order_by('-creado')
+        if usuario.rol=="administrador":
+            vendedores = Usuario.objects.filter(referido_por=usuario).count()
+            total_productos = Producto.objects.filter(negocio_pertenece=usuario).count()
+        
+            productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy, 
+                producto__negocio_pertenece=usuario).values(
+                nombre=F('producto__nombre'),
+                ubicacion=F('producto__ubicacion__nombre'),
+                precio=F('precio_producto_vendido')
+            ).annotate(
+                cantidad_total=Sum('cantidad'),
+                total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
+            ).order_by('producto__nombre')
+            
+            productos_vendidos_dia = ProductoVendido.objects.filter(creado__date=hoy, producto__negocio_pertenece=usuario).aggregate(
+                cantidad_total=Sum('cantidad')
+            )['cantidad_total'] or 0
+            
+            productos_vendidos_semana = ProductoVendido.objects.filter(creado__year=hoy.year, 
+                producto__negocio_pertenece=usuario,
+                creado__week=hoy.isocalendar()[1]).aggregate(
+                cantidad_total=Sum('cantidad')
+            )['cantidad_total'] or 0
+            
+            productos_vendidos_mes = ProductoVendido.objects.filter(creado__year=hoy.year,
+                producto__negocio_pertenece=usuario,
+                creado__month=hoy.month).aggregate(
+                cantidad_total=Sum('cantidad')
+            )['cantidad_total'] or 0
+            
+            ventas_diarias = Venta.objects.filter(creado__date=hoy, vendedor__referido_por=usuario).order_by('-creado')
+            dinero_ventas_diarias = ventas_diarias.aggregate(total=Sum('precio_total'))['total'] or 0
+            ventas_semana = Venta.objects.filter(creado__year=hoy.year, vendedor__referido_por=usuario, creado__week=hoy.isocalendar()[1])
+            dinero_ventas_semanal = ventas_semana.aggregate(total=Sum('precio_total'))['total'] or 0
+        
+        if usuario.rol == "vendedor":
+            productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy, 
+                venta_producto__vendedor=usuario).values(
+                nombre=F('producto__nombre'),
+                ubicacion=F('producto__ubicacion__nombre'),
+                precio=F('precio_producto_vendido')
+            ).annotate(
+                cantidad_total=Sum('cantidad'),
+                total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
+            ).order_by('producto__nombre')
+            productos_vendidos_count = ProductoVendido.objects.filter(creado__date=hoy, 
+                venta_producto__vendedor=usuario).aggregate(total_productos=Sum('cantidad'))
+            
+            print(f'------------------{productos_vendidos_count}')
 
-        productos_vendidos_dia = ProductoVendido.objects.filter(creado__date=hoy).aggregate(
-            cantidad_total=Sum('cantidad')
-        )['cantidad_total'] or 0
-        
-        productos_vendidos_semana = ProductoVendido.objects.filter(creado__year=hoy.year, creado__week=hoy.isocalendar()[1]).aggregate(
-            cantidad_total=Sum('cantidad')
-        )['cantidad_total'] or 0
-        
-        productos_vendidos_mes = ProductoVendido.objects.filter(creado__year=hoy.year, creado__month=hoy.month).aggregate(
-            cantidad_total=Sum('cantidad')
-        )['cantidad_total'] or 0
-
-        ventas_diarias = Venta.objects.filter(creado__date=hoy).order_by('-creado')
-        ventas_semana = Venta.objects.filter(creado__year=hoy.year, creado__week=hoy.isocalendar()[1])
-        ventas_mes = Venta.objects.filter(creado__year=hoy.year, creado__month=hoy.month)
-        
-        dinero_ventas_diarias = ventas_diarias.aggregate(total=Sum('precio_total'))['total'] or 0
-        dinero_ventas_semanal = ventas_semana.aggregate(total=Sum('precio_total'))['total'] or 0
-        dinero_ventas_mensual = ventas_mes.aggregate(total=Sum('precio_total'))['total'] or 0
+            ventas_diarias = Venta.objects.filter(creado__date=hoy, vendedor=usuario).order_by('-creado')
+            total_dinero_vendido = ventas_diarias.aggregate(total_dinero_ventas=Sum('precio_total'))
             
         return Response({
             "ventas_diarias": VentaSerializer(ventas_diarias, many=True).data,
             "productos_vendidos": productos_vendidos,
+            "productos_vendidos_count": productos_vendidos_count,
             "ventas_diarias_conteo": ventas_diarias.count(),
-            "ventas_semanal_conteo": ventas_semana.count(),
-            "ventas_mensaual_conteo": ventas_mes.count(),
             "total_productos_conteo": total_productos,
             "dinero_ventas_diarias": dinero_ventas_diarias,
             "dinero_ventas_semanal": dinero_ventas_semanal,
-            "dinero_ventas_mensual": dinero_ventas_mensual,
             "productos_vendidos_dia": productos_vendidos_dia,
             "productos_vendidos_semana": productos_vendidos_semana,
             "productos_vendidos_mes": productos_vendidos_mes,
             "vendedores": vendedores,
+            "total_dinero_vendido": total_dinero_vendido,
         })
     
