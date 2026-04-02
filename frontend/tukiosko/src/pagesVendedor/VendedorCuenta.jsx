@@ -9,13 +9,15 @@ export default function VendedorCuenta () {
   const [darkMode, setDarkMode] = useState(false);
   const [usuario, setUsuario] = useState([]);
   const [linkReferir, setLinkReferir] = useState("");
+  const [referidoPor, setReferidoPor] = useState("");
   const [copiado, setCopiado] = useState(false);
 
   useEffect(()=>{
     getUsuario()
     .then(response=>{
-      setUsuario(response.data.usuario_datos)
-      setLinkReferir(response.data.usuario_link)
+      setUsuario(response.data.usuario_datos);
+      setLinkReferir(response.data.usuario_link);
+      setReferidoPor(response.data.referido_por);
     }).catch(error=>{
       console.log(`Error al obtener el usaurio ${error}`)
     })
@@ -176,7 +178,7 @@ export default function VendedorCuenta () {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase">Último Ingreso</p>
-                  <p className="text-sm text-gray-700">N/A</p>
+                  <p className="text-sm text-gray-700">No asignado</p>
                 </div>
               </div>
 
@@ -187,7 +189,7 @@ export default function VendedorCuenta () {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase">Referido por</p>
-                  <p className="text-sm text-gray-700">{usuario.referido_por || 'Registro Directo'}</p>
+                  <p className="text-sm text-gray-700">{referidoPor || 'Registro Directo'}</p>
                 </div>
               </div>
             </div>

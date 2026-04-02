@@ -136,7 +136,7 @@ export default function HeaderAuth({autenticado}) {
                                     <LogIn className="w-4 h-4 text-gray-400" />
                                     Sobre Nosotros
                                 </Link>:(
-                                    autenticado ? (
+                                    
                                     <>
                                     <Link to={"/vendedor-cuenta"}>
                                     <button
@@ -161,16 +161,7 @@ export default function HeaderAuth({autenticado}) {
                                         Cerrar sesión
                                     </button>
                                     </>
-                                    ) : ( 
-                                    <Link 
-                                        to="/" 
-                                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        <InfoIcon className="w-4 h-4 text-gray-400" />
-                                        Sobre Nosotros
-                                    </Link>
-                                    ))
+                                    )
                                 }
                             </div>
                         )}

@@ -127,15 +127,17 @@ class UsuarioVista(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_usuario(self, request):
         usuario = request.user
-        link_referido = None
+        link_referido, referido_por = None, None
         print(f'este es el user {usuario}')
         usuario = Usuario.objects.filter(id=usuario.id).first()
+        referido_por = Usuario.objects.filter(id=usuario.referido_por.id).first().username
         if usuario.rol == "administrador":
             link_referido = f"https://tukiosko.onrender.com/registro?={usuario.codigo_referir}"
             print(f'este es el link {link_referido}')
         return Response({
             "usuario_datos":UsuarioSerializer(usuario).data,
             "usuario_link": link_referido,
+            "referido_por": referido_por,
             })
      
     
