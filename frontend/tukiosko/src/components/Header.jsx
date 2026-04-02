@@ -110,6 +110,9 @@ export default function Header({toggle}){
                   <Link to={"/usuario-cuenta"}>
                   <button
                     className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={() => {
+                      handleChevron()
+                  }}
                   >
                     <User className="w-4 h-4" />
                     Cuenta

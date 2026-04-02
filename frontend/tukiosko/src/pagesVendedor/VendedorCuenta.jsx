@@ -4,7 +4,7 @@ import {getUsuario} from '../api/productos.api';
 import {toast} from "sonner";
 
 
-export default function UsuarioCuenta () {
+export default function VendedorCuenta () {
   // Estado para el modo oscuro
   const [darkMode, setDarkMode] = useState(false);
   const [usuario, setUsuario] = useState([]);
@@ -57,13 +57,13 @@ export default function UsuarioCuenta () {
 
 
   return (
-    <div className={`transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-white' : ' text-gray-800'} min-h-screen px-6 pt-2`}>
+    <div className={`transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-white' : ' text-gray-800'} min-h-screen pt-2`}>
       
       {/* Header con Switch de Modo Oscuro */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
           {/* <div className="w-1 h-6 bg-[#1c2d47] dark:bg-[#1de9b6] rounded"></div> */}
-          <h2 className="text-xl font-bold tracking-tight">Perfil de Administrador</h2>
+          <h2 className="text-xl font-bold tracking-tight">Perfil de Vendedor</h2>
         </div>
         
         <button 
@@ -125,27 +125,6 @@ export default function UsuarioCuenta () {
             </div>
           </div>
 
-          {/* Tarjeta de Referido (Consistente con RightColumn) */}
-          <div className={`${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} flex justify-between rounded-xl border p-4 shadow-sm`}>
-             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-[#1c2d47] text-white rounded-lg flex items-center justify-center">
-                  <QrCode className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase">Código de Referido</p>
-                  <p className="text-sm font-black tracking-widest">{usuario.codigo_referir}</p>
-                </div>
-             </div>
-             <div className="w-10 h-10 text-gray-500 rounded-lg flex items-center justify-center">
-             <button onClick={copiarAlPortapapeles}>
-  {copiado ? (
-    <CopyCheck className="w-6 h-5 text-green-500" />
-  ) : (
-    <Copy className="w-6 h-5 hover:text-blue-400" />
-  )}
-</button>
-              </div>
-          </div>
         </div>
 
         {/* Columna Derecha: Detalles del Contrato y Contacto */}

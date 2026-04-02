@@ -68,19 +68,21 @@ class CustomRefreshTokenView(TokenRefreshView):
 def register(request):
     serializer = UserRegistrationSerializer(data=request.data)
     codigo_referido = request.query_params.get('referido', '')
-    print(f'Este es el código de referido: {codigo_referido}')    
+    promotor = Usuario.objects.filter(codigo_referir=codigo_referido, rol="administrador").first()
+    print(f'Este es el código de referido: {codigo_referido}') 
+    print(f'est es el promotor {Usuario.objects.filter(codigo_referir=codigo_referido, rol="administrador").exists()}')   
     if serializer.is_valid():
-        user = serializer.save()        
-        if codigo_referido:
+        if codigo_referido and promotor:
+            user = serializer.save()
             try:
-                promotor = Usuario.objects.get(codigo_referir=codigo_referido)
                 user.referido_por = promotor
                 user.rol = 'vendedor'
-                user.save()
+                user.save() 
+                return Response(serializer.data, status=200)               
             except Usuario.DoesNotExist:
-                pass
+                return Response({"status": "Ha occurrido un error"}, status=400)
                 
-        return Response(serializer.data, status=201)
+        return Response({"status": "Codigo o administrador no validos"}, status=400)
     return Response(serializer.errors, status=400)
     
         

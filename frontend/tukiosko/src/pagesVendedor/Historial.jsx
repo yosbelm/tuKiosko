@@ -28,7 +28,7 @@ export default function Historial() {
     }, []);
 
     return (
-        <>
+        <div className="min-h-screen mb-16">
             <div className="px-6 py-2 mb-3 bg-green-100 font-bold text-green-500 text-center rounded-xl border border-gray-200 shadow-sm">
                 Total Dinero: ${dineroVentasDiarias}
             </div>
@@ -93,6 +93,6 @@ export default function Historial() {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }

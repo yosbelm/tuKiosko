@@ -76,7 +76,7 @@ export default function VentaDetallesVendedor() {
                         <p className="text-xs text-gray-500 font-medium">Detalles de la transacción</p>
                     </div>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-100 text-xs font-bold">
+                <div className="hidden md:hidden lg:flex sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-100 text-xs font-bold">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
                     VENTA COMPLETADA
                 </div>

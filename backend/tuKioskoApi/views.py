@@ -174,8 +174,10 @@ class VentaVista(viewsets.ModelViewSet):
                     prod = Producto.objects.select_for_update().get(id=item['producto'])                    
 
                     if prod.cantidad < item['cantidad']:
-                        raise ValueError(f"Stock insuficiente para {prod.nombre}")
-                    prod.cantidad -= item['cantidad']
+                        prod.cantidad = 0
+                        # raise ValueError(f"Stock insuficiente para {prod.nombre}")
+                    else:
+                        prod.cantidad -= item['cantidad']
                     prod.save()
 
                     ProductoVendido.objects.create(

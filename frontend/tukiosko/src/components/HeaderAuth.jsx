@@ -13,6 +13,7 @@ export default function HeaderAuth({autenticado}) {
     const [urlFinal, setUrlFinal] = useState("");
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [mostrarNav, setMostrarNav] = useState(false);
+    const [mostrarCalculadora, setMostrarCalculadora] = useState(false);
     const [mostrarIcons, setMostrarIcons] = useState(true);
     const menuRef = useRef(null);
     const navigate = useNavigate();
@@ -57,18 +58,23 @@ export default function HeaderAuth({autenticado}) {
             setMostrarIcons(false);
         }else if (url === '/historial') {
             setUrlFinal(" Historial /");
-            setMostrarNav(true)
+            setMostrarNav(true);
+            setMostrarCalculadora(false);
         }else if (url === '/productos-vendidos') {
             setUrlFinal(" Productos Vendidos /");
-            setMostrarNav(true)
+            setMostrarNav(true);
+            setMostrarCalculadora(false);
         }else if (url === '/agregar-compras') {
             setUrlFinal(" Agregar Compra /");
-            setMostrarNav(true)
+            setMostrarNav(true);
+            setMostrarCalculadora(true);
         }else if (url.split("/")[1] === 'venta-detalles') {
             setUrlFinal(" Detalles Compra /");
-            setMostrarNav(true)
+            setMostrarNav(true);
+            setMostrarCalculadora(false);
         } else {
             setUrlFinal(" Panel ");
+            setMostrarNav(true);;
         }
     }, [url]);
 
@@ -80,6 +86,10 @@ export default function HeaderAuth({autenticado}) {
             navigate('/')
         }
     } 
+
+    const handleChevron = () => {
+        setIsMenuOpen(!isMenuOpen);
+      } 
 
     return (
         <header className="sticky top-0 left-0 z-40">
@@ -128,12 +138,17 @@ export default function HeaderAuth({autenticado}) {
                                 </Link>:(
                                     autenticado ? (
                                     <>
+                                    <Link to={"/vendedor-cuenta"}>
                                     <button
                                         className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                    onClick={() => {
+                                        handleChevron()
+                                    }}
                                     >
                                         <User className="w-4 h-4" />
                                         Cuenta
                                     </button>    
+                                    </Link>
                                     <button 
                                         className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                                         onClick={() => {
@@ -160,7 +175,7 @@ export default function HeaderAuth({autenticado}) {
                             </div>
                         )}
                         {mostrarNav && (
-                            <NavBar />
+                            <NavBar mostrar={mostrarCalculadora} />
                         )}
                     </div>
                 )}                

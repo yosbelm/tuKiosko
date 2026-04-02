@@ -80,13 +80,13 @@ export default function POSPage() {
     
         const newQuantity = itemEnOrden.cantidad + delta;
     
-        if (delta > 0 && newQuantity > productData.cantidad) {
-            toast.error(`Stock insuficiente para ${itemEnOrden.name}`, {
-                description: `Solo quedan ${productData.cantidad} unidades disponibles.`,
-                duration: 3000,
-            });
-            return;
-        }
+        // if (delta > 0 && newQuantity > productData.cantidad) {
+        //     toast.error(`Stock insuficiente para ${itemEnOrden.name}`, {
+        //         description: `Solo quedan ${productData.cantidad} unidades disponibles.`,
+        //         duration: 3000,
+        //     });
+        //     return;
+        // }
         setOrderItems((prev) => {
             return prev
                 .map((item) => {
@@ -195,46 +195,6 @@ export default function POSPage() {
                 {/* Right Column - Order Sidebar */}
                 <div className="w-full">
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm sticky top-6">
-                    {/* Vendor Selector */}
-                    <div className="p-4 border-b border-gray-200">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Vendedor</label>
-                        <div className="relative">
-                        <button
-                            onClick={() => setShowVendorDropdown(!showVendorDropdown)}
-                            className="w-full flex items-center gap-3 p-3 py-1 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                            <img
-                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${usuario.genero === 'femenino' ? 'Isabella' : 'Carlos'}`}
-                            alt="Carlos"
-                            className="w-10 h-10 rounded-full bg-gray-200"
-                            />
-                            <span className="font-medium text-[#111827]">{usuario.username}</span>
-                        </button>
-
-                        {/* {showVendorDropdown && (
-                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                            {vendorsData.map((vendor) => (
-                                <button
-                                key={vendor.id}
-                                onClick={() => {
-                                    setSelectedVendor(vendor)
-                                    setShowVendorDropdown(false)
-                                }}
-                                className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
-                                >
-                                <img
-                                    src={vendor.avatar}
-                                    alt={vendor.name}
-                                    className="w-8 h-8 rounded-full bg-gray-200"
-                                />
-                                <span className="font-medium text-[#111827]">{vendor.name}</span>
-                                </button>
-                            ))}
-                            </div>
-                        )} */}
-                        </div>
-                    </div>
-
                     {/* Order Header */}
                     <div className="p-4 border-b border-gray-200">
                         <div className="flex items-center justify-between">

@@ -21,7 +21,8 @@ import Historial from './pagesVendedor/Historial';
 import VentaDetallesVendedor from './pagesVendedor/VentaDetallesVendedor'
 import ProductosVendidos from './pagesVendedor/ProductosVendidos'
 import UsuarioCuenta from './pages/UsuarioCuenta';
-import PublicRoute from '../src/api/publicRoute'
+import PublicRoute from '../src/api/publicRoute';
+import VendedorCuenta from '../src/pagesVendedor/VendedorCuenta'
 
 
 export default function App() {
@@ -96,6 +97,9 @@ export default function App() {
             </PrivateRoute>} />
           <Route path="/productos-vendidos" element={<PrivateRoute rolPermitido="vendedor">
             <ProductosVendidos />
+            </PrivateRoute>} />
+          <Route path="/vendedor-cuenta" element={<PrivateRoute rolPermitido="vendedor">
+            <VendedorCuenta />
             </PrivateRoute>} />
         </Route>
 
