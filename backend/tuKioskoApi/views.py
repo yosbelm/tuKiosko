@@ -222,6 +222,7 @@ class DatosVentasAPIView(APIView):
         vendedores, total_productos = 0, 0
         dinero_ventas_diarias = None
         ventas_semana, dinero_ventas_semanal, total_dinero_vendido = 0, 0, 0
+        productos_vendidos_count = 0
         
         if usuario.rol=="administrador":
             vendedores = Usuario.objects.filter(referido_por=usuario).count()

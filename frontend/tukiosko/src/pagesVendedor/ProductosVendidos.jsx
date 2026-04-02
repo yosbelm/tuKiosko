@@ -83,7 +83,7 @@ export default function ProductosVendidos() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <span className="px-3 py-1  bg-[#1c2d47] font-semibold text-white text-[11px] md:text-[13px] lg:text-[13px] rounded-full">
+                                <span className="px-3 py-1 bg-gray-100 text-[#1c2d47] text-[11px] md:text-[13px] lg:text-[13px] rounded-full">
                                     Total: {cantidadProductosDiarios}
                                 </span>
                             </div>
