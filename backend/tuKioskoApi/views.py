@@ -127,9 +127,18 @@ class UsuarioVista(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_usuario(self, request):
         usuario = request.user
+        link_referido = None
         print(f'este es el user {usuario}')
         usuario = Usuario.objects.filter(id=usuario.id).first()
-        return Response(UsuarioSerializer(usuario).data)
+        if usuario.rol == "administrador":
+            dominio = request.get_host()
+            esquema = request.scheme
+            link_referido = f"{esquema}://{dominio}/register?={usuario.codigo_referir}"
+            print(f'este es el link {link_referido}')
+        return Response({
+            "usuario_datos":UsuarioSerializer(usuario).data,
+            "usuario_link": link_referido,
+            })
      
     
     
