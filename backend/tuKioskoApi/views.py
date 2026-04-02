@@ -131,9 +131,7 @@ class UsuarioVista(viewsets.ModelViewSet):
         print(f'este es el user {usuario}')
         usuario = Usuario.objects.filter(id=usuario.id).first()
         if usuario.rol == "administrador":
-            dominio = request.get_host()
-            esquema = request.scheme
-            link_referido = f"{esquema}://{dominio}/register?={usuario.codigo_referir}"
+            link_referido = f"https://tukiosko.onrender.com/registro?={usuario.codigo_referir}"
             print(f'este es el link {link_referido}')
         return Response({
             "usuario_datos":UsuarioSerializer(usuario).data,

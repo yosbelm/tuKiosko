@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { User, Mail, Phone, Calendar, Clipboard, DollarSign, Users, QrCode, Moon, Sun,Camera,CheckCircle2,XCircle, Copy, CopyIcon, CopyCheck, CopyPlus} from 'lucide-react';
-import {getUsuario} from '../api/productos.api'
+import {getUsuario} from '../api/productos.api';
+import {toast} from "sonner";
 
 
 export default function UsuarioCuenta () {
   // Estado para el modo oscuro
   const [darkMode, setDarkMode] = useState(false);
   const [usuario, setUsuario] = useState([]);
+  const [linkReferir, setLinkReferir] = useState("");
+  const [copiado, setCopiado] = useState(false);
 
   useEffect(()=>{
     getUsuario()
     .then(response=>{
-      setUsuario(response.data)
-      console.log(response.data)
+      setUsuario(response.data.usuario_datos)
+      setLinkReferir(response.data.usuario_link)
     }).catch(error=>{
       console.log(`Error al obtener el usaurio ${error}`)
     })
@@ -26,6 +29,31 @@ export default function UsuarioCuenta () {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  // const copiarAlPortapapeles = () => {
+  //   if (linkReferir) {
+  //     navigator.clipboard.writeText(linkReferir)
+  //       .then(() => {
+  //         toast.success('Enlace copiado', {
+  //           description: `Se ha copiado el enlace de referido correctamente.`,
+  //           duration: 3000,
+  //       });
+  //       })
+  //       .catch(err => {
+  //         console.error("Error al copiar: ", err);
+  //       });
+  //   }
+  // };
+
+  const copiarAlPortapapeles = () => {
+    navigator.clipboard.writeText(linkReferir);
+    setCopiado(true);
+    toast.success('Enlace copiado', {
+          description: `Se ha copiado el enlace de referido correctamente.`,
+          duration: 3000,
+      })
+    setTimeout(() => setCopiado(false), 2000); // El icono vuelve a la normalidad tras 2 seg.
+  };
 
 
   return (
@@ -109,9 +137,13 @@ export default function UsuarioCuenta () {
                 </div>
              </div>
              <div className="w-10 h-10 text-gray-500 rounded-lg flex items-center justify-center">
-              <button>
-                  <Copy className="w-6 h-5"/>
-              </button>
+             <button onClick={copiarAlPortapapeles}>
+  {copiado ? (
+    <CopyCheck className="w-6 h-5 text-green-500" />
+  ) : (
+    <Copy className="w-6 h-5 hover:text-blue-400" />
+  )}
+</button>
               </div>
           </div>
         </div>
