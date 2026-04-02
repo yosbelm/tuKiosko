@@ -4,6 +4,7 @@ import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
 import {cerrarSesion} from '../api/productos.api'
 import {toast} from "sonner";
 import NavBar from "../components/NavBar";
+import {useAuth} from "../api/useAuth"
 
 
 export default function HeaderAuth({autenticado}) {
@@ -14,7 +15,8 @@ export default function HeaderAuth({autenticado}) {
     const [mostrarNav, setMostrarNav] = useState(false);
     const [mostrarIcons, setMostrarIcons] = useState(true);
     const menuRef = useRef(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     // Cerrar el menú si se hace click fuera
     useEffect(() => {
@@ -30,7 +32,8 @@ export default function HeaderAuth({autenticado}) {
     
     const handleLogout = async () => {
         try {
-          await cerrarSesion()
+          await cerrarSesion();
+          logout();
 
           toast.success('Ha cerrado sesión', {
             description: `Ha cerrado sesión satisfactoriamente.`,

@@ -21,6 +21,7 @@ import Historial from './pagesVendedor/Historial';
 import VentaDetallesVendedor from './pagesVendedor/VentaDetallesVendedor'
 import ProductosVendidos from './pagesVendedor/ProductosVendidos'
 import UsuarioCuenta from './pages/UsuarioCuenta';
+import PublicRoute from '../src/api/publicRoute'
 
 
 export default function App() {
@@ -99,7 +100,7 @@ export default function App() {
         </Route>
 
         {/* Auth */}
-        <Route element={<LayoutAuth autenticado={autenticado} />}>
+        <Route element={<PublicRoute><LayoutAuth autenticado={autenticado} /></PublicRoute>}>
           <Route path="/" element={<LoginPage />} />
           <Route path="/registro/" element={<RegisterPage />} />
         </Route>

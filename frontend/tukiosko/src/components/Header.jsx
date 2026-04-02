@@ -3,6 +3,7 @@ import React, { Profiler, useEffect, useState, useRef } from "react";
 import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
 import { getAllProducts, cerrarSesion } from "../api/productos.api";
 import {toast} from "sonner";
+import {useAuth} from "../api/useAuth"
 
 
 
@@ -14,6 +15,7 @@ export default function Header({toggle}){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     // Cerrar el menú si se hace click fuera
     useEffect(() => {
@@ -32,8 +34,9 @@ export default function Header({toggle}){
 
     const handleLogout = async () => {
       try {
-        await cerrarSesion()
-        navigate("/")
+        await cerrarSesion();
+        logout();
+        navigate("/");
       } catch (error) {
         toast.error('Error al cerrar sesión', {
           description: `Ocurrió un error al cerrar sesión: ${error}.`,
