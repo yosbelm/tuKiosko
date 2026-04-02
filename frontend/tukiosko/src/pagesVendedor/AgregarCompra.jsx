@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from "react"
-import { Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle, X, Package } from "lucide-react"
+import { useOutletContext } from "react-router-dom"
+import { Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle, X, Package, FolderClosedIcon } from "lucide-react"
 import { getAllProducts, postVenta, estaAutenticado } from '../api/productos.api'
+import Calculadora from "../components/Calculadora"
 import { toast } from "sonner"
 
 
@@ -11,7 +13,9 @@ export default function POSPage() {
     const [showVendorDropdown, setShowVendorDropdown] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false);
     const [productos, setProductos] = useState([])
-    const [usuario, setUsuario] = useState([])
+    const [eliminarBusqueda, setEliminarBusqueda] = useState(false);
+    const [usuario, setUsuario] = useState([]);
+    const { setTotalVenta } = useOutletContext() || {};
 
     useEffect(() => {
         getAllProducts()
@@ -38,6 +42,7 @@ export default function POSPage() {
     // Modificamos el filtrado para que solo actúe si hay texto
     const searchResults = useMemo(() => {
     if (searchTerm.trim() === "") return [];
+    setEliminarBusqueda(true);
     return productos.filter(
         (product) =>
         product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,15 +52,25 @@ export default function POSPage() {
 
     const handleSelectProduct = (product) => {
         addToOrder(product);
-        setSearchTerm(""); // Limpiamos la búsqueda tras elegir
-        setShowDropdown(false); // Cerramos el menú
+        // setSearchTerm(""); // Limpiamos la búsqueda tras elegir
+        // setShowDropdown(false); // Cerramos el menú
     };
 
+    const eliminarBusquedaButton = ()=>{
+        setSearchTerm("");
+        setEliminarBusqueda(false);
+    }
 
     // Calculate total
     const total = useMemo(() => {
         return orderItems.reduce((sum, item) => sum + item.price * item.cantidad, 0)
     }, [orderItems])
+
+    useEffect(() => {
+        if (setTotalVenta) {
+            setTotalVenta(total);
+        }
+    }, [total, setTotalVenta]);
 
     // Add product to order
     const addToOrder = (product) => {
@@ -147,6 +162,13 @@ export default function POSPage() {
                     {/* Search Bar */}
                     <div className="relative mb-3 rounded-xl border border-gray-200 shadow-sm">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    {eliminarBusqueda && (
+                        <button onClick={()=>eliminarBusquedaButton()} className="absolute right-4 top-1/2 -translate-y-1/2">
+                            <div className="flex justify-center w-5 h-5 items-center rounded-full bg-[#1c2d47]/50 text-gray-100">
+                                <X className="w-4 h-4 font-extrabold" />
+                            </div>
+                        </button>
+                    )}
                     <input
                         type="text"
                         placeholder="Buscar productos por nombre..."
@@ -159,7 +181,7 @@ export default function POSPage() {
                         className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-[#111827] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:border-transparent transition-all"
                     />
                     {showDropdown && searchTerm.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-40 max-h-96 overflow-y-auto">
                         {searchResults.length > 0 ? (
                             searchResults.map((product) => (
                             <button

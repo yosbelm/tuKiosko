@@ -1,9 +1,18 @@
 import {  ClipboardList, Users, HistoryIcon, Calculator } from "lucide-react"
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Calculadora from "./Calculadora";
 
 
-export default function NavBar({mostrar}) {
+export default function NavBar({mostrar, total}) {
+    const [abrirCalculadora, setAbrirCalculadora] = useState(false);
+    const menuRef = useRef(null);
+
+    const abrirCalculadoraButton = ()=>{
+        setAbrirCalculadora(true);
+        console.log('hice clcik en calculadora')
+    };
+            
     return (
       <div className="fixed bottom-2 left-0 z-50 w-full px-4 pb-2 flex justify-center">
         {/* <nav className="flex items-center justify-around bg-white border border-gray-200 rounded-2xl shadow-lg h-11 mx-w-sm max-w-md mx-auto"> */}
@@ -31,18 +40,24 @@ export default function NavBar({mostrar}) {
                     </button> */}
 
                     {/* Saved (Center - Highlighted) */}
-                    <Link to={"/agregar-compras"}>
-                    <button className="flex flex-col items-center gap-0 -mt-8">
-                        <div className="w-14 h-14 bg-[#1c2d47] text-white rounded-full flex items-center justify-center shadow-lg">
-                            {!mostrar ? (<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {!mostrar ?
+                        <Link to={"/agregar-compras"}>
+                            <button className="flex flex-col items-center gap-0 -mt-8">
+                                <div className="w-14 h-14 bg-[#1c2d47] text-white rounded-full flex items-center justify-center shadow-lg">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                                        </svg>) : 
-                                <Calculator className="w-6 h-6"/>
-                            }
-                        </div>
-                        <span className="mt-2 text-xs text-[#1c2d47] font-medium"></span>
-                    </button>
-                    </Link>
+                                    </svg>                            
+                                </div>
+                                <span className="mt-2 text-xs text-[#1c2d47] font-medium"></span>
+                            </button>
+                        </Link> :
+                        <button className="flex flex-col items-center gap-0 -mt-8" onClick={()=>abrirCalculadoraButton()}>
+                            <div className="w-14 h-14 bg-[#1c2d47] text-white rounded-full flex items-center justify-center shadow-lg">
+                                <Calculator className="w-6 h-6"/>                            
+                            </div>
+                            <span className="mt-2 text-xs text-[#1c2d47] font-medium"></span>
+                        </button>
+                    }
 
                     {/* Notifs */}
                     <Link to={"/productos-vendidos"}>
@@ -65,6 +80,7 @@ export default function NavBar({mostrar}) {
                     </button> */}
                 </div>
             </nav>
+            {abrirCalculadora && <Calculadora total={total} onClose={() => setAbrirCalculadora(false)} />}
         </div>
       </div>
     );

@@ -7,7 +7,7 @@ import NavBar from "../components/NavBar";
 import {useAuth} from "../api/useAuth"
 
 
-export default function HeaderAuth({autenticado}) {
+export default function HeaderAuth({autenticado, totalVenta}) {
     const urlDirection = useResolvedPath();
     const url = urlDirection.pathname;
     const [urlFinal, setUrlFinal] = useState("");
@@ -166,7 +166,7 @@ export default function HeaderAuth({autenticado}) {
                             </div>
                         )}
                         {mostrarNav && (
-                            <NavBar mostrar={mostrarCalculadora} />
+                            <NavBar mostrar={mostrarCalculadora} total={totalVenta} />
                         )}
                     </div>
                 )}                
