@@ -12,7 +12,7 @@ export default function SidebarLink ({ icon, label, hasArrow, disabled, direccio
           to={direccion} 
           onClick={closeSidebar}
           className={`flex items-center justify-between px-6 py-3 transition-colors ${
-            url === direccionUrl ? 'border-l-4 border-[#00ead0] bg-white/10 text-white' : 
+            url === direccionUrl ? 'border-l-4 border-white bg-white/10 text-white' : 
             disabled ? 'text-white/30 cursor-not-allowed' : 'text-white/70 hover:bg-[#263d5a] hover:text-white'
           }`}
         >

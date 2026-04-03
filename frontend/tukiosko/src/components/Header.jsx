@@ -7,10 +7,8 @@ import {useAuth} from "../api/useAuth"
 
 
 
-export default function Header({toggle}){
-    const urlDirection = useResolvedPath();
-    const url = urlDirection.pathname;
-    const [urlFinal, setUrlFinal] = useState("")
+export default function Header({toggle, urlFinal}){
+    
     const [mostrarChevron, setMostrarChevron] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
@@ -44,28 +42,7 @@ export default function Header({toggle}){
         });
       } 
     };
-
-    useEffect(()=>{
-      if(url === '/agregar-area'){
-        setUrlFinal(" Agregar Area /")
-      }else if (url === '/agregar-vendedor'){
-        setUrlFinal(" Agregar Vendedores /")
-      }else if (url === '/agregar-producto'){
-        setUrlFinal(" Agregar Productos /")
-      } else if (url === '/agregar-compra'){
-        setUrlFinal(" Agregar Compra /")
-      } else if (url === '/productos-lista'){
-        setUrlFinal(" Lista Productos /")
-      }else if (url.split("/")[1] === 'producto-detalles'){
-        setUrlFinal(" Detalles Producto /")
-      }else if (url.split("/")[1] === 'ventas'){
-        setUrlFinal(" Detalles Venta /")
-      }else if (url === '/vendedores-lista'){
-        setUrlFinal(" Lista Vendedores /")
-      } else{
-        setUrlFinal(" Panel ")
-      }
-    }, [url])
+    
 
     return(
         <header className="sticky top-0 z-40">

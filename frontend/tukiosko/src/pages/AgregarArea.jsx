@@ -1,6 +1,7 @@
 import { postNuevaArea, getAllAreas } from "../api/productos.api"
 import { useEffect, useState } from "react";
 import { toast } from 'sonner';
+import { Save } from "lucide-react";
 
 
 export default function AgregarArea(){
@@ -101,12 +102,14 @@ export default function AgregarArea(){
                             </div>
                             <p className="text-xs text-gray-500">Agrega hasta 3 áreas</p>
                         </div>
-                        <div className="flex items-center gap-3 pt-4">
+                        <div className="flex items-center justify-center gap-3 pt-4">
                             <button 
                                 type="submit" 
                                 disabled={cargando}
-                                className="px-6 py-2.5 bg-[#1c2d47] hover:bg-[#373a3f] text-white font-medium rounded-lg transition-colors disabled:opacity-50"
+                                className="flex items-center justify-center gap-2 w-full lg:w-[50%] md:w-[50%] px-6 py-2.5 bg-[#1c2d47] 
+                                hover:bg-[#373a3f] text-white font-medium rounded-xl transition-colors disabled:opacity-50"
                             >
+                            <Save className="w-4 h-4" />
                             {cargando ? "Guardando..." : "Guardar Área"}
                             </button>
                             {/* <button type="reset" className="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-200 transition-colors">Cancelar</button> */}

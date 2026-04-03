@@ -69,7 +69,7 @@ export default function VendedorCuenta () {
         </div>
         
         <button 
-          onClick={() => setDarkMode(!darkMode)}
+          // onClick={() => setDarkMode(!darkMode)}
           className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border ${
             darkMode 
             ? 'bg-slate-800 border-slate-700 text-yellow-400' 

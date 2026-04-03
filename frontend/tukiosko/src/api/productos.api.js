@@ -67,6 +67,11 @@ export const postNuevoProducto = (data) => {
     return apiUrl.post(`/productos/subir_producto/`, data);
 };
 
+
+export const postNuevaCantidad = (id, data) => {
+    return apiUrl.patch(`/productos/${id}/actualizar_cantidad_producto/`, data);
+};
+
 // export const postNuevoVendedor = (data) => {
 //     return apiUrl.post(`/vendedores/`, data);
 // };

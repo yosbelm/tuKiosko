@@ -83,7 +83,7 @@ function VentaDetalles() {
                 <div className="flex items-center gap-3">
                     <button 
                         onClick={handleBack} 
-                        className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm group"
+                        className="p-1 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm group"
                     >
                         <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:text-[#1c2d47]" />
                     </button>
@@ -133,7 +133,7 @@ function VentaDetalles() {
                                                 <div className="w-9 h-9 bg-[#1c2d47] border border-gray-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                                     <Package className="w-4 h-4 text-white" />
                                                 </div>
-                                                <span className="font-semibold text-gray-800 text-sm">{item.producto_nombre}</span>
+                                                <span className="font-semibold text-gray-800 text-sm text-nowrap">{item.producto_nombre}</span>
                                             </div>
                                         </td>
                                         <td className="px-3 py-4 text-center">

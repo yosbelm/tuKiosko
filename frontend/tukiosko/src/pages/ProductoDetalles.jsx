@@ -14,7 +14,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { getProducto, patchProducto } from '../api/productos.api';
+import { getProducto, patchProducto, getAllAreas } from '../api/productos.api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {toast} from "sonner"
 
@@ -26,6 +26,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [ubicacion, setUbicacion] = useState("");
 
   const params = useParams()
   const navigate = useNavigate()
@@ -54,6 +55,19 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
 
     fetchProducto();
   }, [productoId]);
+
+  useEffect(() => {
+    async function allAreas (){
+      await getAllAreas()
+          .then(response => {
+              setUbicacion(response.data);
+          })
+          .catch(error => {
+              console.error('Error al obtener areas:', error);
+          }); 
+      };
+    allAreas();
+  }, [])
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -138,7 +152,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
   }
 
   return (
-    <div className="p-4 lg:p-6 py-3 lg:pt-2 min-h-screen">
+    <div className="p-4 lg:p-6 py-3 lg:pt-2 min-h-screen pb-24">
       {/* Notificación */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${
@@ -156,13 +170,13 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
       )}
 
       {/* Header */}
-      <div className="flex flex-row sm:items-center justify-between gap-2 mb-6">
-        <div className="flex items-center">
-          <button
-            onClick={handleBack}
-            className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+      <div className="flex flex-row sm:items-center justify-between gap-2 mb-3">
+        <div className="flex items-center gap-3">
+          <button 
+              onClick={handleBack} 
+              className="p-1 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm group"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
+              <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:text-[#1c2d47]" />
           </button>
           <div>
             <h1 className="text-xl font-bold text-gray-800">{producto.nombre}</h1>
@@ -175,28 +189,28 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
             <>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-xl hover:bg-gray-100 transition-colors"
               >
                 <X className="w-4 h-4" />
-                Cancelar
+                
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-2 bg-[#1c2d47] hover:bg-[#373a3f] text-white px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 bg-[#1c2d47] hover:bg-[#373a3f] text-white px-4 py-2 rounded-xl text-sm transition-colors disabled:opacity-50"
               >
                 {saving ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 ) : (
                   <Save className="w-4 h-4" />
                 )}
-                {saving ? 'Guardando...' : 'Guardar Cambios'}
+                {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </>
           ) : (
             <button
               onClick={() => setEditMode(true)}
-              className="flex items-center gap-2 bg-[#1c2d47] hover:bg-[#2a3f5f] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center gap-2 bg-[#1c2d47] hover:bg-[#2a3f5f] text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
             >
               <Edit3 className="w-3 h-3" />
               Editar
@@ -229,8 +243,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                     placeholder="Nombre del producto"
                   />
                 ) : (
-                  <div className="flex items-center gap-3 px-4 py-2.5 bg-gray-50 rounded-lg">
-                    <Package className="w-5 h-5 text-[#1c2d47]" />
+                  <div className="flex items-center gap-3 px-4 py-2.5 bg-gray-100 rounded-lg">
                     <span className="text-gray-800 font-medium">{producto.nombre}</span>
                   </div>
                 )}
@@ -288,18 +301,26 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                 {editMode ? (
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      value={formData.ubicacion}
-                      onChange={(e) => handleInputChange('ubicacion', e.target.value)}
-                      className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1de9b6] focus:border-transparent"
-                      placeholder="Ej: Estante A1"
-                    />
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🚹</span>
+                        <select 
+                            name="zona" value={formData.ubicacion}
+                            onChange={(e) => handleInputChange('ubicacion', e.target.value)}
+                            className="w-full pl-12 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
+                        >
+                            {ubicacion.map(ubc => (
+                                <option key={ubc.id} value={ubc.nombre}>{ubc.nombre}</option>
+                            ))
+                            }
+                        </select>
+                        <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3 px-4 py-2.5 bg-gray-50 rounded-lg">
-                    <MapPin className="w-5 h-5 text-[#1de9b6]" />
-                    <span className="text-gray-800 bg-gray-100 px-3 py-1 rounded">{producto.ubicacion}</span>
+                  <div className="flex items-center gap-3 px-4 py-2.5 bg-gray-100 rounded-lg">
+                    <span className="text-gray-800 bg-gray-100 rounded">{producto.ubicacion}</span>
                   </div>
                 )}
               </div>
@@ -332,8 +353,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                       />
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 rounded-lg">
-                      <DollarSign className="w-5 h-5 text-gray-500" />
+                    <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 rounded-lg">
                       <span className="text-gray-800 font-medium">{formatCurrency(producto.precio_compra)}</span>
                     </div>
                   )}
@@ -357,8 +377,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                       />
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1de9b6]/10 rounded-lg">
-                      <DollarSign className="w-5 h-5 text-[#0d9f7e]" />
+                    <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1de9b6]/10 rounded-lg">
                       <span className="text-[#0d9f7e] font-bold">{formatCurrency(producto.precio_venta)}</span>
                     </div>
                   )}
@@ -382,7 +401,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                     </div>
                   ) : (
                     <div className={`flex items-center gap-2 px-4 py-2.5 rounded-lg ${
-                      producto.cantidad < 5 ? 'bg-amber-50' : 'bg-gray-50'
+                      producto.cantidad < 5 ? 'bg-amber-50' : 'bg-gray-100'
                     }`}>
                       {/* <Hash className={`w-5 h-5 ${producto.cantidad < 5 ? 'text-amber-500' : 'text-gray-500'}`} /> */}
                       <span className={`font-medium ${producto.cantidad < 5 ? 'text-amber-600' : 'text-gray-800'}`}>

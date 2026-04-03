@@ -65,7 +65,7 @@ export default function VentaDetallesVendedor() {
                 <div className="flex items-center gap-3">
                     <button 
                         onClick={handleBack} 
-                        className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm group"
+                        className="p-1 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-sm group"
                     >
                         <ArrowLeft className="w-5 h-5 text-gray-600 group-hover:text-[#1c2d47]" />
                     </button>
@@ -73,7 +73,7 @@ export default function VentaDetallesVendedor() {
                         <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         Venta ID: {params.id}
                         </h1>
-                        <p className="text-xs text-gray-500 font-medium">Detalles de la transacción</p>
+                        {/* <p className="text-xs text-gray-500 font-medium">Detalles de la transacción</p> */}
                     </div>
                 </div>
                 <div className="hidden md:hidden lg:flex sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full border border-green-100 text-xs font-bold">
@@ -115,7 +115,7 @@ export default function VentaDetallesVendedor() {
                                                 <div className="w-9 h-9 bg-[#1c2d47] border border-gray-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                                     <Package className="w-4 h-4 text-white" />
                                                 </div>
-                                                <span className="font-semibold text-gray-800 text-sm">{item.producto_nombre}</span>
+                                                <span className="font-semibold text-gray-800 text-sm text-nowrap">{item.producto_nombre}</span>
                                             </div>
                                         </td>
                                         <td className="px-3 py-4 text-center">
@@ -195,7 +195,7 @@ export default function VentaDetallesVendedor() {
                         <div className="mt-4">
                             <button 
                                 onClick={() => window.print()} 
-                                className="w-full py-3 bg-[#1c2d47] hover:bg-[#2a3e5d] text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-blue-900/10 uppercase tracking-widest flex items-center justify-center gap-2"
+                                className="w-full py-3 bg-[#1c2d47] hover:bg-[#2a3e5d] text-white text-xs font-bold rounded-xl transition-all shadow-md uppercase tracking-widest flex items-center justify-center gap-2"
                             >
                                 <Receipt className="w-4 h-4" />
                                 Imprimir Comprobante

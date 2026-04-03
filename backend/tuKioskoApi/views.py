@@ -50,12 +50,37 @@ class ObtenerProductosVista(viewsets.ViewSet):
             return Response({'error': str(e)}, status=400)
     @action(detail=False, methods=['get'])
     def get_productos(self, request):
-        vendedor = request.user
-        negocio = Usuario.objects.filter(id=vendedor.referido_por_id).first()
-        print(f'pertence a {negocio}')
+        usuario = request.user
+        if usuario.rol == 'vendedor':
+            negocio = Usuario.objects.filter(id=usuario.referido_por_id).first()
+        if usuario.rol == 'administrador':
+            negocio = Usuario.objects.filter(id=usuario.id).first()  
+        print(f'pertence a {usuario}')
         productos = Producto.objects.filter(activo=True, cantidad__gt=0, negocio_pertenece=negocio).order_by('-creado')
         print(f'estos son los productos {productos}')
         return Response(ProductosSerializer(productos, many=True).data)
+    @action(detail=True, methods=['patch'])
+    def actualizar_cantidad_producto(self, request, pk=None):
+        print(f'este es el pk {pk}')
+        datos = request.data
+        usuario = request.user
+        print(f'datos: {datos}')
+        if usuario.rol == 'administrador':
+            negocio = Usuario.objects.filter(id=usuario.id).first()  
+        print(f'pertence a {usuario}')
+        try:
+            producto = Producto.objects.filter(id=pk, cantidad__gt=0, negocio_pertenece=negocio).first()
+            producto.cantidad = producto.cantidad + datos['cantidad']
+            area_seleccionada = Area.objects.filter(nombre=datos['area']).first()
+            producto.ubicacion = area_seleccionada
+            print(f'esta es el area seleccionada desde el front {area_seleccionada}')
+            print(producto.cantidad, datos['cantidad'])
+            producto.save()
+        except Producto.DoesNotExist:
+            return Response({'error': 'Producto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            
+        print(f'este es el producto {producto}')
+        return Response(ProductosSerializer(producto).data)
         
         
 
@@ -149,9 +174,10 @@ class UsuarioVista(viewsets.ViewSet):
         link_referido, referido_por = None, None
         print(f'este es el user {usuario}')
         usuario = Usuario.objects.filter(id=usuario.id).first()
-        referido_por = Usuario.objects.filter(id=usuario.referido_por.id).first().username
+        if usuario.rol == "vendedor":
+            referido_por = Usuario.objects.filter(id=usuario.referido_por.id).first().username
         if usuario.rol == "administrador":
-            link_referido = f"https://tukiosko.onrender.com/registro?={usuario.codigo_referir}"
+            link_referido = f"https://tukiosko.onrender.com/registro?referido={usuario.codigo_referir}"
             print(f'este es el link {link_referido}')
         return Response({
             "usuario_datos":UsuarioSerializer(usuario).data,

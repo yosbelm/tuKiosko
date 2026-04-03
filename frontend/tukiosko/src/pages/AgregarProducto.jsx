@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { postNuevoProducto } from "../api/productos.api"
 import { toast } from 'sonner';
 import { getAllAreas } from '../api/productos.api'
+import {Save} from 'lucide-react'
 
 
 export default function AgregarProducto() {
@@ -10,6 +11,7 @@ export default function AgregarProducto() {
   const [activeTab, setActiveTab] = useState('area');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  
 
   // Cerrar menú al hacer clic fuera
   useEffect(() => {
@@ -92,7 +94,7 @@ export default function AgregarProducto() {
 
   return (
         <>
-            <div className="p-4 lg:p-6 lg:pt-2">
+            <div className="p-4 lg:p-6 lg:pt-2 lg:pb-24">
                 <section className="animate-in fade-in duration-300">
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100">
@@ -122,7 +124,7 @@ export default function AgregarProducto() {
                         </label>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-gray-700">Precio de Venta</label>
                                 <div className="relative">
@@ -174,8 +176,10 @@ export default function AgregarProducto() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 pt-4">
-                        <button type="submit" className="px-6 py-2.5 bg-[#1c2d47] hover:bg-[#373a3f] text-white font-medium rounded-lg transition-colors">
+                        <div className="flex items-center justify-center gap-3 pt-4">
+                        <button type="submit" className="flex items-center justify-center gap-2 px-6 lg:w-[50%] md:w-[50%] w-full py-2.5
+                         bg-[#1c2d47] hover:bg-[#373a3f] text-white font-medium rounded-xl transition-colors">
+                          <Save className="w-4 h-4" />
                           {cargando ? "Guardando..." : "Guardar Producto"}
                         </button>
                         </div>

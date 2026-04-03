@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { X, Calculator, RotateCcw } from "lucide-react"
+import { X, Calculator, RotateCcw, CheckCircle } from "lucide-react"
 import { toast } from "sonner"
 
 const DENOMINACIONES = [1000, 500, 200, 100, 50, 20, 10, 5]
@@ -113,15 +113,15 @@ export default function Calculadora({ total, onClose }) {
                         }`}
                     >
                         {vuelto < 0 && "-"}${Math.abs(vuelto)}
-                        {vuelto > 0 && <span className="text-xs ml-1 font-normal">(sobra)</span>}
-                        {vuelto < 0 && <span className="text-xs ml-1 font-normal">(falta)</span>}
+                        {vuelto > 0 && <span className="text-xs ml-1 font-normal">(sobrante)</span>}
+                        {vuelto < 0 && <span className="text-xs ml-1 font-normal">(faltante)</span>}
                     </span>
                     </div>
                 </div>
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50">
+                <div className="flex items-center justify-around px-4 py-3 border-t border-gray-200 bg-gray-50">
                 <button
                     onClick={handleReset}
                     className="flex items-center gap-1.5 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
@@ -130,16 +130,17 @@ export default function Calculadora({ total, onClose }) {
                     Reiniciar
                 </button>
                 <div className="flex items-center gap-2">
-                    <button
+                    {/* <button
                     onClick={onClose}
                     className="px-3 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium"
                     >
                     Cancelar
-                    </button>
+                    </button> */}
                     <button
                     onClick={handleConfirmar}
-                    className="px-4 py-2 bg-[#1c2d47] hover:bg-[#2a3d5a] text-white rounded-lg transition-colors text-sm font-medium"
+                    className="flex justify-center items-center gap-2 px-4 py-2 bg-[#1c2d47] hover:bg-[#2a3d5a] text-white rounded-lg transition-colors text-sm font-medium"
                     >
+                    <CheckCircle className="w-4 h-4" />
                     Confirmar
                     </button>
                 </div>
