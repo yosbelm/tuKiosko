@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import RightColumn from "../components/RightColumn";
-import { getAllVentas, getAllProducts } from "../api/productos.api";
+import { getAllVentas } from "../api/productos.api";
 import fechaFinal from '../../utils/Date';
 import {Package, Search, Plus} from 'lucide-react';
 

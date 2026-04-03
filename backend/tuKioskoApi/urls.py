@@ -6,13 +6,12 @@ from .views import *
 
 
 router = routers.DefaultRouter()
-router.register(r'productos', ObtenerProductosVista)
+router.register(r'productos', ObtenerProductosVista, basename='productos-cantidad-diferente-cero')
 router.register(r'todos-productos', ObtenerTodosProductosVista, basename='productos-todos' )
 router.register(r'areas', ObtenerAreaVista, basename="areas_negocio")
-router.register(r'usuarios', UsuarioVista)
+router.register(r'usuarios', UsuarioVista, basename="usuarios-vista")
 router.register(r'vendedores', VendedorVista, basename="vendedores")
-router.register(r'ventas', VentaVista)
-router.register(r'productos-vendidos', ProductoVendidoVista)
+router.register(r'ventas', VentaVista, basename="ventas-vistas")
 
 
 urlpatterns = [

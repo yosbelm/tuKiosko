@@ -1,7 +1,7 @@
 import { Users, Bell, ChevronDown, LogOut, MenuIcon, User } from "lucide-react"
 import React, { Profiler, useEffect, useState, useRef } from "react";
 import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
-import { getAllProducts, cerrarSesion } from "../api/productos.api";
+import { cerrarSesion } from "../api/productos.api";
 import {toast} from "sonner";
 import {useAuth} from "../api/useAuth"
 

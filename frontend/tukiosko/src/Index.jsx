@@ -5,7 +5,7 @@ import UserRow from './components/UserRow.jsx'
 import IconWidget from './components/IconWidget.jsx'
 import SocialCard from './components/SocialCard.jsx'
 import RightColumn from './components/RightColumn.jsx'
-import { getAllProducts, getAllVentas } from './api/productos.api.js';
+import {  getAllVentas } from './api/productos.api.js';
 import fechaFinal from '../utils/Date.js'
 import { Briefcase, BarChart3, Wallet, Users, Bell, ChevronDown, Search, ChartLine, Timer, MenuIcon, Workflow } from "lucide-react"
 import { Link, useOutletContext } from 'react-router-dom';
@@ -13,7 +13,6 @@ import { Link, useOutletContext } from 'react-router-dom';
 
 
 function Index() {
-  const [productos, setProductos] = useState([])
   const [ventas, setVentas] = useState([])
   const [vendedores, setVendedores] = useState([])
   const [productosVendidos, setProductosVendidos] = useState([])
@@ -27,13 +26,6 @@ function Index() {
   
 
   useEffect(() => {
-    getAllProducts()
-      .then(response => {
-        setProductos(response.data);
-      })
-      .catch(error => {
-        console.error('Error al obtener productos:', error);
-      }); 
 
       getAllVentas()
         .then(response => {

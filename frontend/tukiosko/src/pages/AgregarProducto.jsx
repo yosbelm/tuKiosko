@@ -128,7 +128,7 @@ export default function AgregarProducto() {
                                 <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                                 <input type="number" className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg
-                                 focus:border-blue-500 outline-none" value={precioVenta}
+                                 focus:border-blue-500 outline-none" placeholder='0'
                                  onChange={(e) => setPrecioVenta(e.target.value)}/>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@ export default function AgregarProducto() {
                                 <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                                 <input type="number" className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg
-                                 focus:border-blue-500 outline-none" value={precioCompra}
+                                 focus:border-blue-500 outline-none" placeholder='0'
                                  onChange={(e) => setPrecioCompra(e.target.value)}/>
                                 </div>
                             </div>

@@ -27,7 +27,7 @@ apiUrl.interceptors.response.use(
 
 // GET
 export const getAllProducts = () => {
-    return apiUrl.get(`/productos/`);
+    return apiUrl.get(`/productos/get_productos/`);
 };
 
 export const getTodosProductos = () => {
@@ -78,7 +78,7 @@ export const postVenta = (data) => {
 
 // PATCH
 export const patchProducto = (id, data) => {
-    return apiUrl.patch(`/todos-productos/${id}/`, data)
+    return apiUrl.patch(`/todos-productos/${id}/editar_producto/`, data)
 }
 
 // DELETE

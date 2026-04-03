@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Package, DollarSign, AlertTriangle, XCircle, Search, Plus, MapPin, Calendar } from 'lucide-react';
-import {getAllProducts, getTodosProductos, deleteProducto} from '../api/productos.api'
+import { getTodosProductos, deleteProducto} from '../api/productos.api'
 import { Link } from 'react-router-dom';
 import { toast } from "sonner"
 

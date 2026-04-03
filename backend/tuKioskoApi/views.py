@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -18,9 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 @permission_classes([IsAuthenticated])
-class ObtenerProductosVista(viewsets.ModelViewSet):
-    serializer_class = ProductosSerializer
-    queryset = Producto.objects.filter(activo=True, cantidad__gt=0).order_by('-creado')
+class ObtenerProductosVista(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def subir_producto(self, request):
         datos = request.data
@@ -50,12 +48,19 @@ class ObtenerProductosVista(viewsets.ModelViewSet):
         except Exception as e:
             print("entra en not" )
             return Response({'error': str(e)}, status=400)
+    @action(detail=False, methods=['get'])
+    def get_productos(self, request):
+        vendedor = request.user
+        negocio = Usuario.objects.filter(id=vendedor.referido_por_id).first()
+        print(f'pertence a {negocio}')
+        productos = Producto.objects.filter(activo=True, cantidad__gt=0, negocio_pertenece=negocio).order_by('-creado')
+        print(f'estos son los productos {productos}')
+        return Response(ProductosSerializer(productos, many=True).data)
+        
+        
 
-    
-
-class ObtenerTodosProductosVista(viewsets.ModelViewSet):
-    serializer_class = ProductosSerializer
-    queryset = Producto.objects.all()
+@permission_classes([IsAuthenticated])
+class ObtenerTodosProductosVista(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def obtener_productos(self, request):
         try:
@@ -65,22 +70,38 @@ class ObtenerTodosProductosVista(viewsets.ModelViewSet):
         except Exception as e:
             print("entra en not" )
             return Response({'error': str(e)}, status=400)
+    @action(detail=True, methods=['patch'])
+    def editar_producto(self, request, pk=None):
+        try:
+            producto = Producto.objects.get(id=pk, negocio_pertenece__id=request.user.id)
+            serializer = ProductosSerializer(producto, data=request.data, partial=True)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Producto.DoesNotExist:
+            return Response({'error': 'Producto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     
     
-    
+@permission_classes([IsAuthenticated])    
 class DeleteProductoAPIView(APIView):
     @action(detail=False, methods=['delete'])
     def delete(self, request, producto_id):
-        producto = get_object_or_404(Producto, id=producto_id)
+        negocio = request.user
+        producto = get_object_or_404(Producto, id=producto_id, negocio_pertenece=negocio)
         producto.delete()
         
         return Response({'status': 'Producto eliminado'}, status=201)
 
     
-    
-class ObtenerAreaVista(viewsets.ModelViewSet):
-    serializer_class = AreaSerializer
-    queryset = Area.objects.all()
+@permission_classes([IsAuthenticated])    
+class ObtenerAreaVista(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def subir_area(self, request):
         datos = request.data
@@ -120,10 +141,8 @@ class ObtenerAreaVista(viewsets.ModelViewSet):
 
     
     
-    
-class UsuarioVista(viewsets.ModelViewSet):
-    serializer_class = UsuarioSerializer
-    queryset = Usuario.objects.all()
+@permission_classes([IsAuthenticated])    
+class UsuarioVista(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def get_usuario(self, request):
         usuario = request.user
@@ -142,11 +161,8 @@ class UsuarioVista(viewsets.ModelViewSet):
      
     
     
-    
-class VendedorVista(viewsets.ModelViewSet):
-    serializer_class = VendedorSerializer
-    queryset = Usuario.objects.all() 
-    
+@permission_classes([IsAuthenticated])    
+class VendedorVista(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def get_vendedor(self, request):
         negocio = request.user
@@ -156,16 +172,14 @@ class VendedorVista(viewsets.ModelViewSet):
     
     
 @permission_classes([IsAuthenticated])
-class VentaVista(viewsets.ModelViewSet):
-    queryset = Venta.objects.all()    
-    
+class VentaVista(viewsets.ViewSet):    
     @action(detail=False, methods=['post'])
     def finalizar_venta(self, request):
         datos = request.data
         try:
             with transaction.atomic():
                 print("entra en valido" )
-                vendedor = Usuario.objects.get(id=request.user.id)
+                vendedor = Usuario.objects.filter(id=request.user.id, rol="vendedor").first()
                 print(vendedor)
                 venta = Venta.objects.create(
                     vendedor_id=vendedor.id,
@@ -193,18 +207,16 @@ class VentaVista(viewsets.ModelViewSet):
             print("entra en not" )
             return Response({'error': str(e)}, status=400)
 
-    
-    
-class ProductoVendidoVista(viewsets.ModelViewSet):
-    serializer_class = ProductoVendidoSerializer
-    queryset = ProductoVendido.objects.all() 
+ 
 
 
 
-
+@permission_classes([IsAuthenticated])
 class DetallesProductoAPIView(APIView):
+    @action(detail=False, methods=['get'])
     def get(self, request, producto_id):
-        producto = get_object_or_404(Producto, id=producto_id)
+        usuario = request.user
+        producto = get_object_or_404(Producto, id=producto_id, negocio_pertenece=usuario)
         
         return Response({
             "producto": ProductosSerializer(producto).data,

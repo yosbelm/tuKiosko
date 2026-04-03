@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from tuKioskoApp.models import Usuario
+from tuKioskoApp.models import Area, Usuario
 from tuKioskoApi.serializers import UserRegistrationSerializer
 
 
@@ -72,8 +72,9 @@ def register(request):
     print(f'Este es el código de referido: {codigo_referido}') 
     print(f'est es el promotor {Usuario.objects.filter(codigo_referir=codigo_referido, rol="administrador").exists()}')   
     if serializer.is_valid():
+        user = serializer.save()
+        area, _ = Area.objects.get_or_create(nombre="Kiosko", negocio_pertenece=user)
         if codigo_referido and promotor:
-            user = serializer.save()
             try:
                 user.referido_por = promotor
                 user.rol = 'vendedor'
@@ -82,7 +83,7 @@ def register(request):
             except Usuario.DoesNotExist:
                 return Response({"status": "Ha occurrido un error"}, status=400)
                 
-        return Response({"status": "Codigo o administrador no validos"}, status=400)
+        return Response(serializer.data, status=200)
     return Response(serializer.errors, status=400)
     
         

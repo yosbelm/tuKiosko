@@ -147,6 +147,8 @@ export default function POSPage() {
                 duration: 3000,
             });
             setOrderItems([]);
+            setSearchTerm("");
+            setEliminarBusqueda(false);
         } catch (error) {
             alert("Error: " + (error.response?.data?.error || error.message));
         }
