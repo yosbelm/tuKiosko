@@ -1,4 +1,4 @@
-import { ChartLine,  Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList, Users } from "lucide-react"
+import { ChartLine,  Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList, Users, ListCheckIcon } from "lucide-react"
 import SectionTitle from './SectionTitle'
 import SidebarLink from './SidebarLink';
 
@@ -47,6 +47,7 @@ export default function Sidebar({ isOpen, toggle, closeOnLink }){
             <SectionTitle title="Administrar" />
             <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
             <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-area" direccionUrl={"/agregar-area"} icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
+            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-categoria" direccionUrl={"/agregar-categoria"} icon={<ListCheckIcon className="w-4 h-4" />} label="Agregar Categoria" hasArrow />
             {/* <SidebarLink icon="fa-power-off" label="Disabled menu" disabled /> */}
             </nav>
         </aside>

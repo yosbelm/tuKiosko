@@ -27,11 +27,13 @@ class ObtenerProductosVista(viewsets.ViewSet):
                 print("entra en valido" )
                 print(request.user)
                 area = Area.objects.filter(nombre=datos['ubicacion'], negocio_pertenece=request.user).first()
+                categoria = Categoria.objects.filter(nombre=datos['categoria'], negocio_pertenece=request.user).first()
                 payload = {"nombre":datos['nombre'],
                     "activo":datos['activo'],
                     "cantidad":datos['cantidad'],
                     "precio_compra":datos['precio_compra'],
                     "precio_venta":datos['precio_venta'],
+                    "categoria": categoria,
                     "ubicacion":area}
                 print(payload)
                 producto = Producto.objects.create(
@@ -41,6 +43,7 @@ class ObtenerProductosVista(viewsets.ViewSet):
                     cantidad=datos['cantidad'],
                     precio_compra=datos['precio_compra'],
                     precio_venta=datos['precio_venta'],
+                    categoria_id=categoria.id,
                     ubicacion_id=area.id,
                 )
                 print(f'esta es el producto {producto}')             
@@ -162,6 +165,40 @@ class ObtenerAreaVista(viewsets.ViewSet):
             print("entra en not" )
             return Response({'error': str(e)}, status=400)
             
+
+
+@permission_classes([IsAuthenticated])    
+class ObtenerCategoriaVista(viewsets.ViewSet):
+    @action(detail=False, methods=['post'])
+    def subir_categoria(self, request):
+        datos = request.data
+        try:
+            with transaction.atomic():
+                negocio = Usuario.objects.filter(id=request.user.id).first()
+                categorias = Categoria.objects.filter(negocio_pertenece=negocio).count()
+                print("entra en valido" )
+                if categorias <= 5:
+                    categoria = Categoria.objects.create(
+                        negocio_pertenece=request.user,
+                        nombre=datos['nombre'],
+                    )
+                    print(f'esta es la Categoria {categoria}')             
+                    return Response({'status': 'Categoria creada'}, status=201)
+                else:
+                    return Response({'status': 'Limite de Categorias'}, status=400)
+        except Exception as e:
+            print("entra en not" )
+            return Response({'error': str(e)}, status=400)
+        
+    @action(detail=False, methods=['get'])
+    def obtener_categoria(self, request):
+        try:
+            negocio = Usuario.objects.filter(id=request.user.id).first()
+            categorias = Categoria.objects.filter(negocio_pertenece=negocio)
+            return Response(CategoriaSerializer(categorias, many=True).data)
+        except Exception as e:
+            print("entra en not" )
+            return Response({'error': str(e)}, status=400)
 
 
     

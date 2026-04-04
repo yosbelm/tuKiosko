@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from tuKioskoApp.models import Area, Usuario
+from tuKioskoApp.models import Area, Categoria, Usuario
 from tuKioskoApi.serializers import UserRegistrationSerializer
 
 
@@ -74,6 +74,7 @@ def register(request):
     if serializer.is_valid():
         user = serializer.save()
         area, _ = Area.objects.get_or_create(nombre="Kiosko", negocio_pertenece=user)
+        categoria, _ = Categoria.objects.get_or_create(nombre="Sin categoria", negocio_pertenece=user)
         if codigo_referido and promotor:
             try:
                 user.referido_por = promotor

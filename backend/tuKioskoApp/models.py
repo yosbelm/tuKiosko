@@ -50,8 +50,16 @@ class Area(models.Model):
     
     def __str__(self) -> str:
         return f"Area {self.nombre} pertenece a {self.negocio_pertenece}"
- 
-
+    
+    
+class Categoria(models.Model):
+    negocio_pertenece = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="categoria_negocio", null=True)
+    nombre = models.CharField(max_length=100)
+    
+    def __str__(self) -> str:
+        return f"Categoria {self.nombre} pertenece a {self.negocio_pertenece}"
+    
+        
 class Producto(models.Model):
     negocio_pertenece = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="producto_negocio", null=True)
     nombre = models.CharField(max_length=100)
@@ -59,7 +67,8 @@ class Producto(models.Model):
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
     cantidad = models.PositiveIntegerField(default=0)
-    ubicacion = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="ubicacion_del_producto") 
+    ubicacion = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="ubicacion_del_producto")
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name="categoria_del_producto", null=True) 
     creado = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     def __str__(self):

@@ -50,6 +50,10 @@ export const getAllAreas = () => {
     return apiUrl.get(`/areas/obtener_area/`);
 }
 
+export const getAllCategorias = () => {
+    return apiUrl.get(`/categorias/obtener_categoria/`);
+}
+
 export const getProducto = (id) => {
     return apiUrl.get(`/producto-detalles/${id}/`);
 }
@@ -61,6 +65,10 @@ export const getUsuario = () => {
 // POST
 export const postNuevaArea = (data) => {
     return apiUrl.post(`/areas/subir_area/`, data);
+};
+
+export const postNuevaCategoria = (data) => {
+    return apiUrl.post(`/categorias/subir_categoria/`, data);
 };
 
 export const postNuevoProducto = (data) => {

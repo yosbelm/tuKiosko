@@ -23,6 +23,7 @@ import ProductosVendidos from './pagesVendedor/ProductosVendidos'
 import UsuarioCuenta from './pages/UsuarioCuenta';
 import PublicRoute from '../src/api/publicRoute';
 import VendedorCuenta from '../src/pagesVendedor/VendedorCuenta'
+import AgregarCategoria from './pages/AgregarCategoria'
 
 
 export default function App() {
@@ -65,6 +66,9 @@ export default function App() {
             </PrivateRoute>} />
           <Route path="/agregar-area" element={<PrivateRoute rolPermitido="administrador">
             <AgregarArea />
+            </PrivateRoute>} />
+          <Route path="/agregar-categoria" element={<PrivateRoute rolPermitido="administrador">
+            <AgregarCategoria />
             </PrivateRoute>} />
           
           <Route path="/productos-lista" element={<PrivateRoute rolPermitido="administrador">

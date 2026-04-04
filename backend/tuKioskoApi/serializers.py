@@ -18,6 +18,12 @@ class AreaSerializer(serializers.ModelSerializer):
         model = Area
         fields = '__all__'
         
+
+
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['nombre']        
         
 
         

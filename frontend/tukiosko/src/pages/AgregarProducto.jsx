@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { postNuevoProducto } from "../api/productos.api"
 import { toast } from 'sonner';
-import { getAllAreas } from '../api/productos.api'
-import {Save} from 'lucide-react'
+import { getAllAreas, getAllCategorias } from '../api/productos.api'
+import {Minus, Plus, Save} from 'lucide-react'
 
 
 export default function AgregarProducto() {
   const { toggleSidebar } = useOutletContext();
   const [activeTab, setActiveTab] = useState('area');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [categorias, setCategorias] = useState([])
   const menuRef = useRef(null);
   
 
@@ -26,11 +27,12 @@ export default function AgregarProducto() {
 
     const [nombre, setNombre] = useState("");
     const [activo, setActivo] = useState(true);
-    const [precioCompra, setPrecioCompra] = useState(0);
-    const [precioVenta, setPrecioVenta] = useState(0);
+    const [precioCompra, setPrecioCompra] = useState("");
+    const [precioVenta, setPrecioVenta] = useState("");
     const [cantidad, setCantidad] = useState(1);
     const [ubicacion, setUbicacion] = useState([]);
     const [definirUbicacion, setDefinirUbicacion] = useState("")
+    const [definirCategoria, setDefinirCategoria] = useState("")
     const [cargando, setCargando] = useState(false);
 
 
@@ -54,7 +56,8 @@ export default function AgregarProducto() {
                 "precio_compra": precioCompra,
                 "precio_venta": precioVenta,
                 "cantidad": cantidad,
-                "ubicacion": definirUbicacion
+                "ubicacion": definirUbicacion,
+                "categoria": definirCategoria,
               }
             );
             toast.success('Producto agregado correctamente', {
@@ -62,10 +65,11 @@ export default function AgregarProducto() {
                 duration: 3000,
             });
             setNombre("");
-            setPrecioCompra(0);
-            setPrecioVenta(0);
+            setPrecioCompra("");
+            setPrecioVenta("");
             setCantidad(1);
             setDefinirUbicacion(definirUbicacion);
+            setDefinirCategoria(definirCategoria);
         } catch (error) {
             console.error("Error al crear área:", error);
             alert("Hubo un error al guardar");
@@ -89,12 +93,26 @@ export default function AgregarProducto() {
             console.error('Error al obtener areas:', error);
           }); 
       };
+      async function AllCategorias (){
+        await getAllCategorias()
+          .then(response => {
+            setCategorias(response.data);
+            if (response.data.length > 0 && !definirCategoria) {
+              setDefinirCategoria(response.data[0].nombre);
+            }
+            console.log(response.data)
+          })
+          .catch(error => {
+            console.error('Error al obtener categorias:', error);
+          }); 
+      };
       allAreas();
+      AllCategorias();
     }, [])
 
   return (
         <>
-            <div className="p-4 lg:p-6 lg:pt-2 lg:pb-24">
+            <div className="p-4 lg:p-6 lg:pt-2 pb-24 lg:pb-24">
                 <section className="animate-in fade-in duration-300">
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100">
@@ -130,7 +148,7 @@ export default function AgregarProducto() {
                                 <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                                 <input type="number" className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg
-                                 focus:border-blue-500 outline-none" placeholder='0'
+                                 focus:border-blue-500 outline-none" value={precioVenta} placeholder='0'
                                  onChange={(e) => setPrecioVenta(e.target.value)}/>
                                 </div>
                             </div>
@@ -139,21 +157,32 @@ export default function AgregarProducto() {
                                 <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                                 <input type="number" className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg
-                                 focus:border-blue-500 outline-none" placeholder='0'
+                                 focus:border-blue-500 outline-none" value={precioCompra} placeholder='0'
                                  onChange={(e) => setPrecioCompra(e.target.value)}/>
                                 </div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">Cantidad</label>
-                                <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 w-fit">
-                                  <button type="button" onClick={() => setCantidad(Math.max(0, cantidad - 1))} className="px-4 py-2 hover:bg-gray-100 text-gray-600">−</button>
-                                  <input type="number" value={cantidad} className="w-16 bg-transparent text-center font-normal border-x border-gray-200" 
-                                  onChange={(e) => setCantidad(e.target.value)} />
-                                  <button type="button" onClick={() => setCantidad(cantidad + 1)} className="px-4 py-2 hover:bg-gray-100 text-gray-600">+</button>
-                                </div>
+                            
+                            <div className='space-y-2'>
+                              <label className="text-sm font-medium text-gray-700">Categoria</label>
+                              <div className="relative">
+                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">#️⃣</span>
+                                  <select 
+                                      name="zona" value={definirCategoria}
+                                      onChange={(e) => setDefinirCategoria(e.target.value)}
+                                      className="w-full pl-12 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
+                                  >
+                                      {categorias.map(ubc => (
+                                          <option key={ubc.nombre} value={ubc.nombre}>{ubc.nombre}</option>
+                                        ))
+                                      }
+                                  </select>
+                                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                  </svg>
+                              </div>
                             </div>
                             <div className='space-y-2'>
                               <label className="text-sm font-medium text-gray-700">Ubicación</label>
@@ -165,7 +194,7 @@ export default function AgregarProducto() {
                                       className="w-full pl-12 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
                                   >
                                       {ubicacion.map(ubc => (
-                                          <option key={ubc.id} value={ubc.nombre}>{ubc.nombre}</option>
+                                          <option key={ubc.nombre} value={ubc.nombre}>{ubc.nombre}</option>
                                         ))
                                       }
                                   </select>
@@ -174,6 +203,24 @@ export default function AgregarProducto() {
                                   </svg>
                               </div>
                             </div>
+                        </div>
+
+                        <div className="">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-gray-700">Cantidad</label>
+                            <div className="flex items-center  bg-gray-50 justify-center">
+                                <button type="button" onClick={() => setCantidad(Math.max(0, cantidad - 1))} 
+                                  className="bg-gray-100 border border-gray-200 flex justify-center rounded-xl px-4 py-2 hover:bg-gray-200 text-gray-600 w-16">
+                                      <Minus />
+                                </button>
+                                <input type="number" value={cantidad} className="w-24 bg-transparent text-center font-normal border-x border-gray-200" 
+                                onChange={(e) => setCantidad(e.target.value)} />
+                                <button type="button" onClick={() => setCantidad(cantidad + 1)} 
+                                  className="bg-gray-100 border border-gray-200 flex justify-center text-center rounded-xl px-4 py-2 hover:bg-gray-200 text-gray-600 w-16">
+                                  <Plus />
+                                </button>
+                              </div>
+                          </div>
                         </div>
 
                         <div className="flex items-center justify-center gap-3 pt-4">
