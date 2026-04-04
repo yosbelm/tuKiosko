@@ -168,7 +168,7 @@ export default function AgregarProducto() {
                             <div className='space-y-2'>
                               <label className="text-sm font-medium text-gray-700">Categoria</label>
                               <div className="relative">
-                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">#️⃣</span>
+                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🔖</span>
                                   <select 
                                       name="zona" value={definirCategoria}
                                       onChange={(e) => setDefinirCategoria(e.target.value)}
