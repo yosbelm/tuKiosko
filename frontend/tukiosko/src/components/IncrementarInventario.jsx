@@ -49,10 +49,19 @@ export default function Incrementarinventario({ onClose }) {
                 "area": definirUbicacion
             }
             await postNuevaCantidad(id, payload);
+            
+            toast.success('Producto actualizado', {
+                description: `Se ha actualizado el producto correctamente.`,
+                duration: 3000,
+            });
             setSearchTerm("");
             // cantidadActualProducto(cantidadActualProducto+newQuantity)
             setSelectedProduct(null);
         } catch (error) {
+            toast.error('Ha occurrido un error', {
+                description: `${error}.`,
+                duration: 3000,
+            });
             console.error("Error al obtener productos:", error);
         }
     };

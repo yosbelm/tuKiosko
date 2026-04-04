@@ -100,7 +100,7 @@ export default function AgregarCategoria(){
                                 className="flex-1 min-w-30 bg-transparent border-none outline-none text-sm text-gray-600 placeholder-gray-400 disabled:cursor-not-allowed"
                                 />
                             </div>
-                            <p className="text-xs text-gray-500">Agrega hasta 8 categorías</p>
+                            <p className="text-xs text-gray-500">Agrega hasta 5 categorías</p>
                         </div>
                         <div className="flex items-center justify-center gap-3 pt-4">
                             <button 

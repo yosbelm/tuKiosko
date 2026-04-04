@@ -74,7 +74,7 @@ class ObtenerProductosVista(viewsets.ViewSet):
         try:
             producto = Producto.objects.filter(id=pk, cantidad__gt=0, negocio_pertenece=negocio).first()
             producto.cantidad = producto.cantidad + datos['cantidad']
-            area_seleccionada = Area.objects.filter(nombre=datos['area']).first()
+            area_seleccionada = Area.objects.filter(nombre=datos['area'], negocio_pertenece=negocio).first()
             producto.ubicacion = area_seleccionada
             print(f'esta es el area seleccionada desde el front {area_seleccionada}')
             print(producto.cantidad, datos['cantidad'])
@@ -286,11 +286,18 @@ class DetallesProductoAPIView(APIView):
         })
         
     
-    
+@permission_classes([IsAuthenticated])    
 class DetallesVentaAPIView(APIView):
+    @action(detail=False, methods=['get'])
     def get(self, request, venta_id):
+        usuario = request.user
+        if usuario.rol == 'vendedor':
+            negocio = Usuario.objects.filter(id=usuario.referido_por_id).first()
+        if usuario.rol == 'administrador':
+            negocio = Usuario.objects.filter(id=usuario.id).first()
         venta = get_object_or_404(Venta, ticket_venta=venta_id)
-        productos_vendidos = ProductoVendido.objects.filter(venta_producto_id=venta.id)
+        productos_vendidos = ProductoVendido.objects.filter(venta_producto_id=venta.id, 
+                            producto__negocio_pertenece=negocio)
         
         return Response({
             "venta": VentaSerializer(venta).data,
@@ -298,8 +305,9 @@ class DetallesVentaAPIView(APIView):
         })
 
 
-
+@permission_classes([IsAuthenticated])
 class DatosVentasAPIView(APIView):
+    @action(detail=False, methods=['get'])
     def get(self, request):
         hoy = timezone.now()
         usuario = request.user
