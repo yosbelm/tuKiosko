@@ -45,8 +45,7 @@ export default function POSPage() {
     setEliminarBusqueda(true);
     return productos.filter(
         (product) =>
-        product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.ubicacion.toLowerCase().includes(searchTerm.toLowerCase())
+        product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
     }, [searchTerm]);
 
@@ -197,7 +196,7 @@ export default function POSPage() {
                                 </div>
                                 <div className="text-left">
                                     <p className="font-medium text-gray-900 group-hover:text-black">{product.nombre}</p>
-                                    <p className="text-xs text-gray-500">{product.ubicacion} • Cantidad: {product.cantidad}</p>
+                                    <p className="text-xs text-gray-500">Cantidad: {product.cantidad}</p>
                                 </div>
                                 </div>
                                 <div className="flex items-center gap-4">

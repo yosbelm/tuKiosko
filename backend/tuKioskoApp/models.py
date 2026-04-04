@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Sum
 from django.utils.crypto import get_random_string
 
 # Create your models here.
@@ -47,6 +48,7 @@ class Usuario(AbstractUser):
 class Area(models.Model):
     negocio_pertenece = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="area_negocio", null=True)
     nombre = models.CharField(max_length=100)
+    por_defecto = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return f"Area {self.nombre} pertenece a {self.negocio_pertenece}"
@@ -66,13 +68,31 @@ class Producto(models.Model):
     activo = models.BooleanField(default=True)
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
-    cantidad = models.PositiveIntegerField(default=0)
-    ubicacion = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="ubicacion_del_producto")
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name="categoria_del_producto", null=True) 
     creado = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     def __str__(self):
         return f"{self.nombre} - precio:{self.precio_venta} - pertence {self.negocio_pertenece}"
+    
+    @property
+    def cantidad(self):
+        total = self.almacenamiento_producto.aggregate(total=Sum('cantidad'))['total']
+        return total or 0
+    
+
+
+class Almacenamiento(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name="almacenamiento_producto")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="almacenamiento_en_area")
+    cantidad = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        # Esto evita que un producto se repita en la misma área
+        unique_together = ('producto', 'area')
+
+    def __str__(self):
+        return f"{self.producto.nombre} en {self.area.nombre}: {self.cantidad}"
+    
     
 
 

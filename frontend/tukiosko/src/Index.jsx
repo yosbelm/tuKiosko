@@ -81,7 +81,7 @@ function Index() {
               <div className="lg:col-span-7 bg-white rounded-lg shadow-sm max-h-127 overflow-auto scrollbar-hide">
                 <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2">
                   <div className="w-1 h-5 bg-[#1c2d47] rounded"></div>
-                  <h3 className="text-gray-700 font-semibold">Ventas Recientes</h3>
+                  <h3 className="text-gray-700 font-semibold">Ventas Diarias</h3>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">

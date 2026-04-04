@@ -71,9 +71,11 @@ export default function Header({toggle, urlFinal}){
                 </button> */}
               </div>
               <div className="flex items-center gap-4">
+                <Link to={"/avisos"}>
                 <button className="relative text-gray-400 hover:text-gray-600">
                   <Bell className="w-4 h-4" />
                 </button>
+                </Link>
                 <button className="text-gray-400 hover:text-gray-600 flex items-center gap-1"
                     onClick={() => {
                       handleChevron()

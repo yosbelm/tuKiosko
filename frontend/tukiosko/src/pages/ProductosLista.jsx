@@ -134,12 +134,11 @@ function ProductoLista() {
               <thead>
                 <tr className="bg-gray-50 text-left">
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Producto</th>
-                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Estado</th>
-                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">P.Compra</th>
-                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">P.Venta</th>
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Cantidad</th>
-                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Ubicación</th>
+                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">P.Venta</th>
+                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Categoria</th>
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Creado</th>
+                  <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Estado</th>
                   <th className="px-3 py-3 flex-nowrap text-xs text-center font-semibold text-gray-500 uppercase">Acción</th>
                 </tr>
               </thead>
@@ -147,7 +146,7 @@ function ProductoLista() {
                 {productosFiltrados.length > 0 ? (
                   productosFiltrados.map((producto) => (
                     <tr key={producto.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
-                        <td className="px-3 py-4">
+                      <td className="px-3 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-[#1c2d47] rounded-lg flex items-center justify-center">
                               <Package className="w-4 h-4 text-white" />
@@ -156,7 +155,31 @@ function ProductoLista() {
                             <span className="font-medium text-[#1c2d47] text-nowrap">{producto.nombre}</span>
                             </Link>
                           </div>
-                        </td>
+                      </td>
+                      <td className="px-3 py-4 text-center">
+                        <span className={`font-medium ${
+                          producto.cantidad < 5 
+                            ? 'text-amber-600' 
+                            : 'text-gray-700'
+                        }`}>
+                          {producto.cantidad}
+                          {producto.cantidad < 15 && (
+                            <AlertTriangle className="inline-block w-3 h-3 mb-0.5 text-amber-500" />
+                          )}
+                        </span>
+                      </td>
+                      <td className="px-3 py-4 text-green-500 font-semibold">
+                        {formatCurrency(producto.precio_venta)}
+                      </td>
+                      <td className='px-3 py-4 text-gray-500 text-sm text-nowrap'>
+                        {producto.categoria}
+                      </td>
+                      <td className="px-3 py-4">
+                        <div className="flex items-center gap-1 text-gray-500 text-sm text-nowrap">
+                          <Calendar className="w-4 h-4" />
+                          {formatDate(producto.creado)}
+                        </div>
+                      </td>
                       <td className="px-3 py-4 text-center">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           producto.activo 
@@ -165,38 +188,6 @@ function ProductoLista() {
                         }`}>
                           {producto.activo ? 'Activo' : 'Inactivo'}
                         </span>
-                      </td>
-                      <td className="px-2 py-4 text-gray-600 font-medium">
-                        {formatCurrency(producto.precio_compra)}
-                      </td>
-                      <td className="px-3 py-4 text-green-500 font-semibold">
-                        {formatCurrency(producto.precio_venta)}
-                      </td>
-                      <td className="px-3 py-4 flex justify-center items-center gap-1">
-                        <span className={`font-medium ${
-                          producto.cantidad < 5 
-                            ? 'text-amber-600' 
-                            : 'text-gray-700'
-                        }`}>
-                          {producto.cantidad}
-                          {producto.cantidad < 5 && (
-                            <AlertTriangle className="inline-block w-3 h-3 mb-0.5 text-amber-500" />
-                          )}
-                        </span>
-                      </td>
-                      <td className="px-3 py-4">
-                        <div className="flex items-center text-nowrap">
-                          <MapPin className="w-4 h-4 text-[#373a3f]" />
-                          <span className="text-gray-600 bg-gray-100 px-2 py-1 rounded text-sm">
-                            {producto.ubicacion}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-3 py-4">
-                        <div className="flex items-center gap-1 text-gray-500 text-sm text-nowrap">
-                          <Calendar className="w-4 h-4" />
-                          {formatDate(producto.creado)}
-                        </div>
                       </td>
                       <td className='px-3 py-4 text-center'>
                         <button className='bg-red-200 text-red-500 hover:bg-[#2a3f5f px-2 py-1 rounded-lg text-sm font-medium transition-colors'

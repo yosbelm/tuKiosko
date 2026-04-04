@@ -18,6 +18,7 @@ router.register(r'ventas', VentaVista, basename="ventas-vistas")
 urlpatterns = [
     path("", include(router.urls)),
     path('datos-ventas/', DatosVentasAPIView.as_view(), name='datos-ventas'),
+    path('datos-all-ventas/', DatosVentasAdminAPIView.as_view(), name='datos-all-ventas'),
     path('producto-detalles/<int:producto_id>/', DetallesProductoAPIView.as_view(), name='producto-detalles'),
     path('eliminar-producto/<int:producto_id>/', DeleteProductoAPIView.as_view(), name='eliminar-producto'),
     path('detalles-venta/<str:venta_id>/', DetallesVentaAPIView.as_view(), name='detalles-venta'),

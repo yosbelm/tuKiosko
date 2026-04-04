@@ -38,6 +38,10 @@ export const getAllVentas = () => {
     return apiUrl.get(`/datos-ventas/`);
 };
 
+export const getAllAdminVentas = () => {
+    return apiUrl.get(`/datos-all-ventas/`);
+};
+
 export const getDetallesVenta = (id) => {
     return apiUrl.get(`/detalles-venta/${id}/`);
 };
@@ -92,6 +96,14 @@ export const postVenta = (data) => {
 // PATCH
 export const patchProducto = (id, data) => {
     return apiUrl.patch(`/todos-productos/${id}/editar_producto/`, data)
+}
+
+export const patchAlmacenamiento = (id, data) => {
+    return apiUrl.patch(`/todos-productos/${id}/editar_producto/`, data)
+}
+
+export const patchAreaPorDefecto = (id) => {
+    return apiUrl.patch(`/areas/${id}/definir_area_principal/`)
 }
 
 // DELETE

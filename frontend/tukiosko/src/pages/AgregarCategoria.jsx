@@ -1,7 +1,7 @@
 import { postNuevaCategoria, getAllCategorias } from "../api/productos.api"
 import { useEffect, useState } from "react";
 import { toast } from 'sonner';
-import { BookmarkCheck, CatIcon, ListChevronsDownUpIcon, Save } from "lucide-react";
+import { Tag, CatIcon, ListChevronsDownUpIcon, Save } from "lucide-react";
 
 
 export default function AgregarCategoria(){
@@ -82,7 +82,7 @@ export default function AgregarCategoria(){
                             <div className="flex flex-wrap items-center gap-2 p-3 py-1 bg-gray-50 border border-gray-200 rounded-lg min-h-13">
                                 {categoriasDisponibles.map((miembro) => (
                                 <span key={miembro.id} className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-sm rounded-full shadow-sm animate-in zoom-in duration-200">
-                                    <BookmarkCheck className="w-5 h-5 rounded-full" />
+                                    <Tag className="w-5 h-5" />
                                     {miembro.nombre}
                                     <button 
                                     type="button" 

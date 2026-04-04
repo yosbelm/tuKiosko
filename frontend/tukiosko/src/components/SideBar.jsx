@@ -1,4 +1,4 @@
-import { ChartLine,  Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList, Users, ListCheckIcon, Bookmark } from "lucide-react"
+import { ChartLine,  Settings2, PackagePlus, MapPinPlus, UserRoundPlus, ClipboardList, Users, ListCheckIcon, Bookmark, Tags, ShoppingBagIcon } from "lucide-react"
 import SectionTitle from './SectionTitle'
 import SidebarLink from './SidebarLink';
 
@@ -42,12 +42,13 @@ export default function Sidebar({ isOpen, toggle, closeOnLink }){
             <SectionTitle title="Navegacion" />
             <SidebarLink closeSidebar={closeOnLink} direccion={"/panel"} direccionUrl={"/panel"} icon={<Settings2 className="w-4 h-4" />} label="Panel"  />
             <SidebarLink closeSidebar={closeOnLink} direccion={"/productos-lista"} direccionUrl={"/productos-lista"} icon={<ClipboardList className="w-4 h-4" />} label="Productos"  />
+            <SidebarLink closeSidebar={closeOnLink} direccion={"/ventas-lista"} direccionUrl={"/ventas-lista"} icon={<ShoppingBagIcon className="w-4 h-4" />} label="Ventas"  />
             <SidebarLink closeSidebar={closeOnLink} direccion={"/vendedores-lista"} direccionUrl={"/vendedores-lista"} icon={<Users className="w-4 h-4" />} label="Vendedores"  />
 
             <SectionTitle title="Administrar" />
-            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Productos" hasArrow />
+            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-producto" direccionUrl={"/agregar-producto"} icon={<PackagePlus className="w-4 h-4" />} label="Agregar Producto" hasArrow />
             <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-area" direccionUrl={"/agregar-area"} icon={<MapPinPlus className="w-4 h-4" />} label="Agregar Area" hasArrow />
-            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-categoria" direccionUrl={"/agregar-categoria"} icon={<Bookmark className="w-4 h-4" />} label="Agregar Categoria" hasArrow />
+            <SidebarLink closeSidebar={closeOnLink} direccion="/agregar-categoria" direccionUrl={"/agregar-categoria"} icon={<Tags className="w-4 h-4" />} label="Agregar Categoria" hasArrow />
             {/* <SidebarLink icon="fa-power-off" label="Disabled menu" disabled /> */}
             </nav>
         </aside>

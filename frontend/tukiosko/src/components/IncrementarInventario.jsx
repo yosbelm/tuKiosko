@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
-import { X, Search, Package, Plus, Minus, CheckCircle } from 'lucide-react';
+import { X, Search, Package, Plus, Minus, CheckCircle, MapPin } from 'lucide-react';
 import { getAllProducts, postNuevaCantidad, getAllAreas } from '../api/productos.api';
+import {toast} from "sonner";
 
 export default function Incrementarinventario({ onClose }) {
     const [searchTerm, setSearchTerm] = useState("");
@@ -13,7 +14,7 @@ export default function Incrementarinventario({ onClose }) {
     
     // Estados para la lógica de incremento
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [newQuantity, setNewQuantity] = useState(0);
+    const [newQuantity, setNewQuantity] = useState("");
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -32,6 +33,9 @@ export default function Incrementarinventario({ onClose }) {
         await getAllAreas()
             .then(response => {
                 setUbicacion(response.data);
+                if (response.data.length > 0 && !definirUbicacion) {
+                    setDefinirUbicacion(response.data[0].nombre);
+                  }
             })
             .catch(error => {
                 console.error('Error al obtener areas:', error);
@@ -72,19 +76,18 @@ export default function Incrementarinventario({ onClose }) {
         if (searchTerm.trim() === "") return [];
         return productos.filter(
             (product) =>
-                product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.ubicacion.toLowerCase().includes(searchTerm.toLowerCase())
+                product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+                
         );
     }, [searchTerm, productos]);
 
     const handleSelectProduct = (product) => {
         setSelectedProduct(product);
-        setDefinirUbicacion(product.ubicacion);
         setIdProducto(product.id);
         setCantidadActualProducto(product.cantidad);
         setSearchTerm(product.nombre);
         setShowDropdown(false);
-        setNewQuantity(0); // Resetear a 1 al cambiar de producto
+        setNewQuantity(""); // Resetear a 1 al cambiar de producto
     };
 
     const handleQuantityChange = (val) => {
@@ -106,7 +109,7 @@ export default function Incrementarinventario({ onClose }) {
 
                 {/* Header */}
                 <div className="rounded-t-xl px-4 py-4 border-b border-gray-200 bg-gray-50">
-                    <h2 className="text-lg font-semibold text-gray-900">Actualizar Producto</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">Incrementar Producto</h2>
                     {/* <p className="text-[11px] text-start text-gray-400 font-medium italic">
                         Agrega la cantidad que entro de este producto a tu kiosko.
                     </p> */}
@@ -148,7 +151,7 @@ export default function Incrementarinventario({ onClose }) {
                                                 <span className="font-medium text-gray-700">{product.nombre}</span>
                                             </div>
                                             <span className="text-xs font-bold text-[#1c2d47] px-2 py-1 bg-white border border-gray-200 rounded-md shadow-sm">
-                                                {product.ubicacion}: {product.cantidad}
+                                                Total: {product.cantidad}
                                             </span>
                                         </button>
                                     ))
@@ -163,9 +166,11 @@ export default function Incrementarinventario({ onClose }) {
                     {selectedProduct && (
                         <div className="p-4 bg-gray-50 rounded-xl border border-dashed border-gray-300 animate-in slide-in-from-top-2 duration-300">
                             <div className="pb-4">
-                                <label className="text-sm font-medium text-gray-600">Cambiar ubicación</label>
+                                <label className="text-sm font-medium text-gray-600">Ubicación</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🚹</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">
+                                    <MapPin className="w-5 h-5" />
+                                    </span>
                                     <select 
                                         name="zona" value={definirUbicacion}
                                         onChange={(e) => setDefinirUbicacion(e.target.value)}
@@ -199,7 +204,7 @@ export default function Incrementarinventario({ onClose }) {
                                 
                                 <input 
                                     type="number"
-                                    value={newQuantity}
+                                    value={newQuantity} placeholder="0"
                                     onChange={(e) => handleQuantityChange(e.target.value)}
                                     className="w-14 text-center font-medium text-[#111827]"
                                 />

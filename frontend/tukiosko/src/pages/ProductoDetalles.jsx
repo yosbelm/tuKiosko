@@ -12,9 +12,12 @@ import {
   ToggleLeft,
   ToggleRight,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  MapPinCheckIcon,
+  Bookmark,
+  TagIcon
 } from 'lucide-react';
-import { getProducto, patchProducto, getAllAreas } from '../api/productos.api';
+import { getProducto, patchProducto, getAllAreas, getAllCategorias } from '../api/productos.api';
 import { useParams, useNavigate } from 'react-router-dom';
 import {toast} from "sonner"
 
@@ -27,47 +30,63 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
   const [saving, setSaving] = useState(false);
   const [notification, setNotification] = useState(null);
   const [ubicacion, setUbicacion] = useState("");
+  const [ubicaciones, setUbicaciones] = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
   const params = useParams()
   const navigate = useNavigate()
 
 
   useEffect(() => {
-    const fetchProducto = async () => {
-        getProducto(params.id)
-        .then(response=>{
-            setProducto(response.data.producto);
-            setFormData(response.data.producto);
-            console.log(response.data.producto);
-        }).catch(error=>{
-            console.log(`error: ${error}`);
+    const loadAllData = async () => {
+      setLoading(true);
+      try {
+        // Ejecutamos las 3 llamadas en paralelo para un tiempo de carga mucho más rápido
+        const [productoRes, areasRes, categoriasRes] = await Promise.all([
+          getProducto(params.id),
+          getAllAreas(),
+          getAllCategorias()
+        ]);
+
+        const dataProducto = productoRes.data.producto;
+        const almacenamientosPrevios = productoRes.data.almacenamientos; // Lo que ya tiene stock
+        const todasLasAreas = areasRes.data; // [{id: 1, nombre: "Bodega Principal"}, ...]
+
+        // 1. Seteamos estados básicos
+        setProducto(dataProducto);
+        setFormData(dataProducto);
+        setCategorias(categoriasRes.data);
+
+        // 2. FUSIONAMOS TODAS LAS ÁREAS con el almacenamiento existente
+        const ubicacionesCompletas = todasLasAreas.map(area => {
+          // Buscamos si el producto ya tiene un registro de Almacenamiento en esta área.
+          // Nota: Como tu AlmacenamientoSerializer devuelve el nombre como 'area', comparamos por nombre.
+          const stockExistente = almacenamientosPrevios.find(
+            (alm) => alm.area === area.nombre 
+          );
+
+          return {
+            area_id: area.id, // Es útil guardar el ID real del área para tu backend
+            area: area.nombre,
+            cantidad: stockExistente ? stockExistente.cantidad : 0 // Si no hay registro, inicia en 0
+          };
         });
-        try {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            // En producción: const response = await getProductById(productoId);
-            
-            setLoading(false);
-        } catch (error) {
-            console.error('Error al obtener producto:', error);
-            setLoading(false);
-        }
+
+        // 3. Seteamos las ubicaciones consolidadas
+        setUbicaciones(ubicacionesCompletas);
+
+      } catch (error) {
+        console.error('Error al cargar la información:', error);
+        toast.error("Error al cargar los datos del producto");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchProducto();
-  }, [productoId]);
-
-  useEffect(() => {
-    async function allAreas (){
-      await getAllAreas()
-          .then(response => {
-              setUbicacion(response.data);
-          })
-          .catch(error => {
-              console.error('Error al obtener areas:', error);
-          }); 
-      };
-    allAreas();
-  }, [])
+    if (params.id) {
+      loadAllData();
+    }
+  }, [params.id]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -75,12 +94,22 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
       [field]: value
     }));
   };
+  
+  const handleUbicacionChange = (index, newCantidad) => {
+    const nuevasUbicaciones = [...ubicaciones];
+    nuevasUbicaciones[index].cantidad = newCantidad === "" ? "" : Math.max(0, parseInt(newCantidad) || 0);
+    setUbicaciones(nuevasUbicaciones);
+  };
 
   const handleSave = async () => {
     setSaving(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 800));
-      await patchProducto(params.id, formData)
+      const payload = {
+        ...formData,
+        "ubicaciones": ubicaciones,
+      }
+      await patchProducto(params.id, payload)
       setProducto(formData);
       setEditMode(false);
       toast.success('Actualización exitosa', {
@@ -152,7 +181,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
   }
 
   return (
-    <div className="p-4 lg:p-6 py-3 lg:pt-2 min-h-screen pb-24">
+    <div className="p-4 lg:p-6 lg:pt-2 pb-24 lg:pb-24">
       {/* Notificación */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${
@@ -293,23 +322,26 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                 )}
               </div>
 
-              {/* Ubicación */}
+              {/* Categoría */}
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-2">
-                  Ubicación del Producto
+                  Categoría del Producto
                 </label>
                 {editMode ? (
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🚹</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">
+                        <TagIcon className='w-5 h-5'/>
+                        </span>
                         <select 
-                            name="zona" value={formData.ubicacion}
-                            onChange={(e) => handleInputChange('ubicacion', e.target.value)}
+                            name="categoria" 
+                            value={formData.categoria || "Sin categoria"} 
+                            onChange={(e) => handleInputChange('categoria', e.target.value)}
                             className="w-full pl-12 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 appearance-none cursor-pointer transition-all"
                         >
-                            {ubicacion.map(ubc => (
-                                <option key={ubc.id} value={ubc.nombre}>{ubc.nombre}</option>
+                            {categorias.map(categoria => (
+                                <option key={categoria.id} value={categoria.nombre}>{categoria.nombre}</option>
                             ))
                             }
                         </select>
@@ -320,7 +352,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 px-4 py-2.5 bg-gray-100 rounded-lg">
-                    <span className="text-gray-800 bg-gray-100 rounded">{producto.ubicacion}</span>
+                    <span className="text-gray-800 bg-gray-100 rounded">{producto.categoria}</span>
                   </div>
                 )}
               </div>
@@ -334,7 +366,7 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
               <h3 className="text-gray-700 font-semibold">Precios e Inventario</h3>
             </div>
             <div className="p-6 py-3">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                 {/* Precio Compra */}
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -382,34 +414,50 @@ function ProductoDetalles({ productoId, onBack, onSave }) {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
 
-                {/* Cantidad */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-2">
-                    Cantidad en Stock
-                  </label>
-                  {editMode ? (
-                    <div className="relative">
-                      <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        type="number"
-                        min="0"
-                        value={formData.cantidad}
-                        onChange={(e) => handleInputChange('cantidad', parseInt(e.target.value) || 0)}
-                        className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1de9b6] focus:border-transparent"
-                      />
-                    </div>
-                  ) : (
-                    <div className={`flex items-center gap-2 px-4 py-2.5 rounded-lg ${
-                      producto.cantidad < 5 ? 'bg-amber-50' : 'bg-gray-100'
-                    }`}>
-                      {/* <Hash className={`w-5 h-5 ${producto.cantidad < 5 ? 'text-amber-500' : 'text-gray-500'}`} /> */}
-                      <span className={`font-medium ${producto.cantidad < 5 ? 'text-amber-600' : 'text-gray-800'}`}>
-                        {producto.cantidad} unidades
-                      </span>
-                    </div>
-                  )}
-                </div>
+          {/* Ubicaciones */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+            {/* Header */}
+            <div className="px-6 py-3 border-b border-gray-100 flex items-center gap-2">
+              <div className="w-1 h-5 bg-[#1c2d47] rounded"></div>
+              <h3 className="text-gray-700 font-semibold text-lg">Ubicaciones</h3>
+            </div>
+
+            {/* Contenedor de Items */}
+            <div className="p-6">
+            <div className="grid grid-cols-3 gap-4">
+                {ubicaciones.map((ubicacion, index) => (
+                  <div key={index} className="space-y-2">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">
+                      {ubicacion.area}
+                    </label>
+                    
+                    {editMode ? (
+                      <div className="relative group">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#1c2d47] transition-colors">
+                          <MapPinCheckIcon className="w-4 h-4" />
+                        </div>
+                        <input
+                          type="number"
+                          step="1"
+                          min="0"
+                          value={ubicacion.cantidad}
+                          onChange={(e) => handleUbicacionChange(index, e.target.value)}
+                          className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-md focus:ring-2 focus:ring-[#1de9b6]/20 focus:border-[#1c2d47] outline-none transition-all"
+                          placeholder="0"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 border border-gray-100 rounded-md">
+                        <span className="text-xs text-gray-400">Cant:</span>
+                        <span className="text-gray-700 font-semibold">{ubicacion.cantidad}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

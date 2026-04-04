@@ -40,13 +40,19 @@ class ObtenerProductosVista(viewsets.ViewSet):
                     negocio_pertenece=request.user,
                     nombre=datos['nombre'],
                     activo=datos['activo'],
-                    cantidad=datos['cantidad'],
+                    # cantidad=datos['cantidad'],
                     precio_compra=datos['precio_compra'],
                     precio_venta=datos['precio_venta'],
                     categoria_id=categoria.id,
-                    ubicacion_id=area.id,
+                    # ubicacion_id=area.id,
                 )
-                print(f'esta es el producto {producto}')             
+                almacenamiento_producto = Almacenamiento.objects.create(
+                    producto=producto,
+                    area=area,
+                    cantidad=datos['cantidad'],
+                )
+                print(f'esta es el producto {producto}')
+                print(f'esta es el almacenamiento_producto {almacenamiento_producto}')             
                 return Response({'status': 'Venta completada'}, status=201)
         except Exception as e:
             print("entra en not" )
@@ -59,7 +65,7 @@ class ObtenerProductosVista(viewsets.ViewSet):
         if usuario.rol == 'administrador':
             negocio = Usuario.objects.filter(id=usuario.id).first()  
         print(f'pertence a {usuario}')
-        productos = Producto.objects.filter(activo=True, cantidad__gt=0, negocio_pertenece=negocio).order_by('-creado')
+        productos = Producto.objects.filter(activo=True, negocio_pertenece=negocio).order_by('-creado')
         print(f'estos son los productos {productos}')
         return Response(ProductosSerializer(productos, many=True).data)
     @action(detail=True, methods=['patch'])
@@ -72,13 +78,14 @@ class ObtenerProductosVista(viewsets.ViewSet):
             negocio = Usuario.objects.filter(id=usuario.id).first()  
         print(f'pertence a {usuario}')
         try:
-            producto = Producto.objects.filter(id=pk, cantidad__gt=0, negocio_pertenece=negocio).first()
-            producto.cantidad = producto.cantidad + datos['cantidad']
+            producto = Producto.objects.filter(id=pk, negocio_pertenece=negocio).first()
+            # producto.cantidad = producto.cantidad + datos['cantidad']
             area_seleccionada = Area.objects.filter(nombre=datos['area'], negocio_pertenece=negocio).first()
-            producto.ubicacion = area_seleccionada
+            almacenamiento = Almacenamiento.objects.filter(producto=producto, area=area_seleccionada).first()
+            almacenamiento.cantidad = almacenamiento.cantidad+datos['cantidad']
             print(f'esta es el area seleccionada desde el front {area_seleccionada}')
-            print(producto.cantidad, datos['cantidad'])
-            producto.save()
+            print(f"esta es la cantidad {datos['cantidad']}")
+            almacenamiento.save()
         except Producto.DoesNotExist:
             return Response({'error': 'Producto no encontrado'}, status=status.HTTP_404_NOT_FOUND)
             
@@ -105,9 +112,30 @@ class ObtenerTodosProductosVista(viewsets.ViewSet):
             serializer = ProductosSerializer(producto, data=request.data, partial=True)
             
             if serializer.is_valid():
+                print('es valido')
                 serializer.save()
+                
+                ubicaciones_data = request.data.get('ubicaciones', [])
+                categoria_data = request.data.get('categoria')
+                print(f'esta es la categoria data {categoria_data}')
+                categoria = Categoria.objects.filter(negocio_pertenece=request.user, nombre=categoria_data).first()
+                if categoria_data:
+                    producto.categoria = categoria
+                    producto.save()
+                print(f'estos son los ubicaiones data {ubicaciones_data}')
+                for ubc in ubicaciones_data:
+                    area = Area.objects.filter(negocio_pertenece=request.user, nombre=ubc.get('area')).first()
+                    print(f'entra al bucle {ubc.get('cantidad')}')
+                    Almacenamiento.objects.update_or_create(
+                        producto=producto, 
+                        area=area,
+                        defaults={
+                            'cantidad': ubc.get('cantidad', 0)
+                        }
+                    )
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
+                print('no es valido')
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 
         except Producto.DoesNotExist:
@@ -151,6 +179,22 @@ class ObtenerAreaVista(viewsets.ViewSet):
                     return Response({'status': 'Area creada'}, status=201)
                 else:
                     return Response({'status': 'Limite de Areas'}, status=400)
+        except Exception as e:
+            print("entra en not" )
+            return Response({'error': str(e)}, status=400)
+    
+    @action(detail=True, methods=['patch'])
+    def definir_area_principal(self, request,  pk=None):
+        print(f'este es el id {pk}'),
+        try:
+            negocio = Usuario.objects.filter(id=request.user.id).first()
+            area_activa = Area.objects.filter(negocio_pertenece=negocio, por_defecto=True).first()
+            area_activa.por_defecto = False
+            area_activa.save()
+            area_seleccionada = Area.objects.filter(negocio_pertenece=negocio, id=pk).first()
+            area_seleccionada.por_defecto = True
+            area_seleccionada.save()
+            return Response({'status': 'Area por defecto actualizada'}, status=201)
         except Exception as e:
             print("entra en not" )
             return Response({'error': str(e)}, status=400)
@@ -243,6 +287,7 @@ class VentaVista(viewsets.ViewSet):
             with transaction.atomic():
                 print("entra en valido" )
                 vendedor = Usuario.objects.filter(id=request.user.id, rol="vendedor").first()
+                negocio = Usuario.objects.filter(id=vendedor.referido_por_id).first()
                 print(vendedor)
                 venta = Venta.objects.create(
                     vendedor_id=vendedor.id,
@@ -250,14 +295,16 @@ class VentaVista(viewsets.ViewSet):
                 )
                 print(f'esta es venta {venta}')
                 for item in datos['productos']:
-                    prod = Producto.objects.select_for_update().get(id=item['producto'])                    
+                    prod = Producto.objects.select_for_update().get(id=item['producto']) 
+                    area_defecto = Area.objects.filter(negocio_pertenece=negocio, por_defecto=True).first() 
+                    almacenamiento = Almacenamiento.objects.filter(producto=prod, area=area_defecto).first()                  
 
-                    if prod.cantidad < item['cantidad']:
-                        prod.cantidad = 0
+                    if almacenamiento.cantidad < item['cantidad']:
+                        almacenamiento.cantidad = 0
                         # raise ValueError(f"Stock insuficiente para {prod.nombre}")
                     else:
-                        prod.cantidad -= item['cantidad']
-                    prod.save()
+                        almacenamiento.cantidad -= item['cantidad']
+                    almacenamiento.save()
 
                     ProductoVendido.objects.create(
                         venta_producto=venta,
@@ -280,9 +327,11 @@ class DetallesProductoAPIView(APIView):
     def get(self, request, producto_id):
         usuario = request.user
         producto = get_object_or_404(Producto, id=producto_id, negocio_pertenece=usuario)
+        almacenamiento = Almacenamiento.objects.filter(producto=producto)
         
         return Response({
             "producto": ProductosSerializer(producto).data,
+            "almacenamientos": AlmacenamientoSerializer(almacenamiento, many=True).data,
         })
         
     
@@ -325,7 +374,6 @@ class DatosVentasAPIView(APIView):
             productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy, 
                 producto__negocio_pertenece=usuario).values(
                 nombre=F('producto__nombre'),
-                ubicacion=F('producto__ubicacion__nombre'),
                 precio=F('precio_producto_vendido')
             ).annotate(
                 cantidad_total=Sum('cantidad'),
@@ -357,7 +405,6 @@ class DatosVentasAPIView(APIView):
             productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy, 
                 venta_producto__vendedor=usuario).values(
                 nombre=F('producto__nombre'),
-                ubicacion=F('producto__ubicacion__nombre'),
                 precio=F('precio_producto_vendido')
             ).annotate(
                 cantidad_total=Sum('cantidad'),
@@ -386,3 +433,16 @@ class DatosVentasAPIView(APIView):
             "total_dinero_vendido": total_dinero_vendido,
         })
     
+    
+@permission_classes([IsAuthenticated])
+class DatosVentasAdminAPIView(APIView):
+    @action(detail=False, methods=['get'])
+    def get(self, request):
+        usuario = request.user
+        ventas_diarias = None
+        if usuario.rol == 'administrador':
+            ventas_diarias = Venta.objects.filter(vendedor__referido_por=usuario).order_by('-creado')
+
+        return Response({
+            "ventas_diarias": VentaSerializer(ventas_diarias, many=True).data,
+        })

@@ -4,19 +4,29 @@ from django.db import transaction
 
 
 class ProductosSerializer(serializers.ModelSerializer):
-    ubicacion = serializers.SlugRelatedField(
-        slug_field='nombre', 
-        queryset=Area.objects.all()
-    )
+    cantidad = serializers.ReadOnlyField()
+    categoria = serializers.ReadOnlyField(source='categoria.nombre')
     class Meta:
         model = Producto
-        fields = '__all__'
+        fields = [
+            'id', 'negocio_pertenece', 'nombre', 'activo', 
+            'precio_compra', 'precio_venta', 'categoria', 
+            'creado', 'cantidad'
+        ]
         
         
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
         fields = '__all__'
+        
+        
+        
+class AlmacenamientoSerializer(serializers.ModelSerializer):
+    area = serializers.ReadOnlyField(source='area.nombre')
+    class Meta:
+        model = Almacenamiento
+        fields = ['area', 'cantidad',]
         
 
 

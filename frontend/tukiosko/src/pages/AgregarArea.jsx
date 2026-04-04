@@ -1,7 +1,7 @@
-import { postNuevaArea, getAllAreas } from "../api/productos.api"
+import { postNuevaArea, getAllAreas, patchAreaPorDefecto } from "../api/productos.api"
 import { useEffect, useState } from "react";
 import { toast } from 'sonner';
-import { Save } from "lucide-react";
+import { MapPin, MapPinCheckInside, Save } from "lucide-react";
 
 
 export default function AgregarArea(){
@@ -27,6 +27,33 @@ export default function AgregarArea(){
             console.error("Error al crear área:", error);
             toast.error('Limite alcanzado', {
                 description: `Ha llegado al limite de areas.`,
+                duration: 3000,
+            });
+        } finally {
+            setCargando(false);
+        }
+    };
+
+    const definirArea = async (id) => {
+        setCargando(true);
+        console.log({ identificador: id })
+        try {
+            await patchAreaPorDefecto(id);
+            setAreasDisponibles(prevAreas => 
+                prevAreas.map(area => ({
+                    ...area,
+                    por_defecto: area.id === id
+                }))
+            );
+            toast.success('Área actualizada correctamente', {
+                description: `Se ha añadido  como el área de ventas.`,
+                duration: 3000,
+            });
+            setNombre("");
+        } catch (error) {
+            console.error("Error al crear área:", error);
+            toast.error('Error al crear área', {
+                description: `${error}.`,
                 duration: 3000,
             });
         } finally {
@@ -79,11 +106,15 @@ export default function AgregarArea(){
                         </div> */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700">Áreas de Ventas</label>
+                            <p className="text-sm text-gray-500 mt-0">El área seleccionada es el área de ventas.</p>
                             <div className="flex flex-wrap items-center gap-2 p-3 py-1 bg-gray-50 border border-gray-200 rounded-lg min-h-13">
-                                {areasDisponibles.map((miembro) => (
-                                <span key={miembro.id} className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 text-sm rounded-full shadow-sm animate-in zoom-in duration-200">
-                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Jack`} alt="" className="w-5 h-5 rounded-full" />
-                                    {miembro.nombre}
+                                {areasDisponibles.map((area) => (
+                                <button key={area.id} type="button" onClick={()=>{definirArea(area.id)}} className={`inline-flex items-center gap-2 px-3 py-1.5
+                                 bg-white border ${area.por_defecto? "border-[#1c2d47]" : "border-gray-200"}  text-gray-700 text-sm rounded-full shadow-sm animate-in zoom-in duration-200`}>
+                                    {/* <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Jack`} alt="" className="w-5 h-5 rounded-full" /> */}
+                                    {area.por_defecto?<MapPinCheckInside className="w-5 h-5 rounded-full" />:
+                                    <MapPin className="w-5 h-5 rounded-full" />}
+                                    {area.nombre}
                                     <button 
                                     type="button" 
                                     // onClick={() => eliminarMiembro(miembro.id)}
@@ -91,7 +122,7 @@ export default function AgregarArea(){
                                     >
                                     ×
                                     </button>
-                                </span>
+                                </button>
                                 ))}
                                 <input 
                                 type="text" 

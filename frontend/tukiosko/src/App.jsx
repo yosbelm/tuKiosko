@@ -24,6 +24,8 @@ import UsuarioCuenta from './pages/UsuarioCuenta';
 import PublicRoute from '../src/api/publicRoute';
 import VendedorCuenta from '../src/pagesVendedor/VendedorCuenta'
 import AgregarCategoria from './pages/AgregarCategoria'
+import TotalVentas from './pages/VentasLista'
+import Avisos from './pages/Avisos'
 
 
 export default function App() {
@@ -60,6 +62,9 @@ export default function App() {
           <Route path="/panel" element={<PrivateRoute rolPermitido="administrador">
             <Index />
             </PrivateRoute>} />
+          <Route path="/avisos" element={<PrivateRoute rolPermitido="administrador">
+            <Avisos />
+            </PrivateRoute>} />
 
           <Route path="/agregar-producto" element={<PrivateRoute rolPermitido="administrador">
             <AgregarProducto />
@@ -73,6 +78,9 @@ export default function App() {
           
           <Route path="/productos-lista" element={<PrivateRoute rolPermitido="administrador">
             <ProductoLista />
+            </PrivateRoute>} />
+          <Route path="/ventas-lista" element={<PrivateRoute rolPermitido="administrador">
+            <TotalVentas />
             </PrivateRoute>} />
           <Route path="/producto-detalles/:id/" element={<PrivateRoute rolPermitido="administrador">
             <ProductoDetalles />

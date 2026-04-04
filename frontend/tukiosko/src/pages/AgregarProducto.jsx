@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { postNuevoProducto } from "../api/productos.api"
 import { toast } from 'sonner';
 import { getAllAreas, getAllCategorias } from '../api/productos.api'
-import {Minus, Plus, Save} from 'lucide-react'
+import {Minus, Plus, Save, MapPin, TagIcon} from 'lucide-react'
 
 
 export default function AgregarProducto() {
@@ -29,7 +29,7 @@ export default function AgregarProducto() {
     const [activo, setActivo] = useState(true);
     const [precioCompra, setPrecioCompra] = useState("");
     const [precioVenta, setPrecioVenta] = useState("");
-    const [cantidad, setCantidad] = useState(1);
+    const [cantidad, setCantidad] = useState("");
     const [ubicacion, setUbicacion] = useState([]);
     const [definirUbicacion, setDefinirUbicacion] = useState("")
     const [definirCategoria, setDefinirCategoria] = useState("")
@@ -168,7 +168,9 @@ export default function AgregarProducto() {
                             <div className='space-y-2'>
                               <label className="text-sm font-medium text-gray-700">Categoria</label>
                               <div className="relative">
-                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🔖</span>
+                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">
+                                    <TagIcon className="w-5 h-5" />
+                                  </span>
                                   <select 
                                       name="zona" value={definirCategoria}
                                       onChange={(e) => setDefinirCategoria(e.target.value)}
@@ -187,7 +189,9 @@ export default function AgregarProducto() {
                             <div className='space-y-2'>
                               <label className="text-sm font-medium text-gray-700">Ubicación</label>
                               <div className="relative">
-                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">🚹</span>
+                                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg">
+                                    <MapPin className="w-5 h-5" />
+                                  </span>
                                   <select 
                                       name="zona" value={definirUbicacion}
                                       onChange={(e) => setDefinirUbicacion(e.target.value)}
@@ -210,13 +214,13 @@ export default function AgregarProducto() {
                             <label className="text-sm font-medium text-gray-700">Cantidad</label>
                             <div className="flex items-center  bg-gray-50 justify-center">
                                 <button type="button" onClick={() => setCantidad(Math.max(0, cantidad - 1))} 
-                                  className="bg-gray-100 border border-gray-200 flex justify-center rounded-xl px-4 py-2 hover:bg-gray-200 text-gray-600 w-16">
+                                  className="bg-gray-100 border border-gray-200 flex justify-center rounded-xl px-4 py-2 hover:bg-gray-200 text-gray-600 ">
                                       <Minus />
                                 </button>
-                                <input type="number" value={cantidad} className="w-24 bg-transparent text-center font-normal border-x border-gray-200" 
+                                <input type="number" value={cantidad} placeholder='0' className="w-18 bg-transparent text-center font-normal border-x border-gray-200" 
                                 onChange={(e) => setCantidad(e.target.value)} />
                                 <button type="button" onClick={() => setCantidad(cantidad + 1)} 
-                                  className="bg-gray-100 border border-gray-200 flex justify-center text-center rounded-xl px-4 py-2 hover:bg-gray-200 text-gray-600 w-16">
+                                  className="bg-gray-100 border border-gray-200 flex justify-center text-center rounded-xl px-4 py-2 hover:bg-gray-200 text-gray-600 ">
                                   <Plus />
                                 </button>
                               </div>
