@@ -13,6 +13,7 @@ router.register(r'categorias', ObtenerCategoriaVista, basename="categorias_negoc
 router.register(r'usuarios', UsuarioVista, basename="usuarios-vista")
 router.register(r'vendedores', VendedorVista, basename="vendedores")
 router.register(r'ventas', VentaVista, basename="ventas-vistas")
+router.register(r'avisos', AvisosVista, basename="avisos")
 
 
 urlpatterns = [

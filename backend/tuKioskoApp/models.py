@@ -126,4 +126,21 @@ class ProductoVendido(models.Model):
     creado = models.DateTimeField(auto_now_add=True)    
 
 
+
+
+class Aviso(models.Model):
+    class Prioridad(models.TextChoices):
+        BAJA = 'baja', 'Prioridad Baja'
+        MEDIA = 'media', 'Prioridad Media'
+        ALTA = 'alta', 'Prioridad Alta'
+    titulo = models.CharField(max_length=150, default="Nuevo Aviso")
+    descripcion = models.TextField()
+    prioridad = models.CharField(max_length=20, choices=Prioridad.choices, default=Prioridad.BAJA)    
+    creado_por = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='avisos_creados')
+    visto_por = models.ManyToManyField(Usuario, related_name='avisos_leidos', blank=True)
+    creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.descripcion} ({self.prioridad})"
+
     

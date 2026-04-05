@@ -111,4 +111,31 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
+
+class AvisosSerializer(serializers.ModelSerializer):
+    creado_por = serializers.ReadOnlyField(source='creado_por.username')
+    visto_por = serializers.SlugRelatedField(many=True, read_only=True, slug_field='username')
+    leido = serializers.SerializerMethodField()
+    class Meta:
+        model = Aviso
+        fields = ['id', 'descripcion', 'prioridad', 'creado_por', 'visto_por', 'creacion', 'leido']
+    def get_leido(self, obj):
+        request = self.context.get('request')
+        if request and request.user:
+            return obj.visto_por.filter(id=request.user.id).exists()
+        return False
+    
+class AvisosVendedorSerializer(serializers.ModelSerializer):
+    creado_por = serializers.ReadOnlyField(source='creado_por.username')
+    leido = serializers.SerializerMethodField()
+    class Meta:
+        model = Aviso
+        fields = ['id', 'descripcion', 'prioridad', 'creado_por', 'creacion', 'leido']
+    def get_leido(self, obj):
+        request = self.context.get('request')
+        if request and request.user:
+            return obj.visto_por.filter(id=request.user.id).exists()
+        return False
+    
+    
     

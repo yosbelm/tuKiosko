@@ -1,7 +1,7 @@
 import { Users, Bell, ChevronDown, MenuIcon, LogOut, LogIn, InfoIcon, User } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useResolvedPath, useNavigate } from 'react-router-dom';
-import {cerrarSesion} from '../api/productos.api'
+import {cerrarSesion, getAvisosVendedor} from '../api/productos.api'
 import {toast} from "sonner";
 import NavBar from "../components/NavBar";
 import {useAuth} from "../api/useAuth"
@@ -15,9 +15,30 @@ export default function HeaderAuth({autenticado, totalVenta}) {
     const [mostrarNav, setMostrarNav] = useState(false);
     const [mostrarCalculadora, setMostrarCalculadora] = useState(false);
     const [mostrarIcons, setMostrarIcons] = useState(true);
+    const [hayAvisosPendientes, setHayAvisosPendientes] = useState(false);
+    
     const menuRef = useRef(null);
     const navigate = useNavigate();
     const { logout } = useAuth();
+
+    useEffect(() => {
+        const verificarAvisos = async () => {
+            try {
+                const response = await getAvisosVendedor();
+                const avisos = response.data;
+                // Si la respuesta tiene elementos, activamos la campana
+                if (avisos && avisos.length > 0) {
+                    setHayAvisosPendientes(true);
+                } else {
+                    setHayAvisosPendientes(false);
+                }
+            } catch (error) {
+                console.error("Error al obtener avisos:", error);
+            }
+        };
+  
+        verificarAvisos();
+    }, [window.location.pathname]);
 
     // Cerrar el menú si se hace click fuera
     useEffect(() => {
@@ -111,9 +132,17 @@ export default function HeaderAuth({autenticado, totalVenta}) {
 
                 {mostrarIcons && (
                     <div className="flex items-center gap-4 relative" ref={menuRef}>
-                        <button className="relative text-gray-400 hover:text-gray-600">
-                            <Bell className="w-4 h-4" />
-                        </button>
+                        <Link to={"/avisos-vendedor"} className="flex items-center">
+                            <button className="relative text-gray-400 hover:text-gray-600">
+                                <Bell className="w-4 h-4" />
+                                {hayAvisosPendientes && (
+                                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                </span>
+                                )}
+                            </button>
+                        </Link>
                         <button 
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className={`flex items-center gap-1 px-0 py-1.5 rounded-lg transition-all duration-200 ${

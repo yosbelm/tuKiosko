@@ -66,6 +66,14 @@ export const getUsuario = () => {
     return apiUrl.get(`/usuarios/get_usuario/`);
 }
 
+export const getAvisos = () => {
+    return apiUrl.get(`/avisos/get_avisos/`);
+}
+
+export const getAvisosVendedor = () => {
+    return apiUrl.get(`/avisos/get_avisos_no_leidos_vendedor/`);
+}
+
 // POST
 export const postNuevaArea = (data) => {
     return apiUrl.post(`/areas/subir_area/`, data);
@@ -92,6 +100,10 @@ export const postVenta = (data) => {
     return apiUrl.post(`/ventas/finalizar_venta/`, data);
 };
 
+export const postNuevoAviso = (data) => {
+    return apiUrl.post(`/avisos/publicar_aviso/`, data);
+};
+
 
 // PATCH
 export const patchProducto = (id, data) => {
@@ -106,9 +118,21 @@ export const patchAreaPorDefecto = (id) => {
     return apiUrl.patch(`/areas/${id}/definir_area_principal/`)
 }
 
+export const patchAvisoLeido = (id) => {
+    return apiUrl.patch(`/avisos/${id}/marcar_leido/`)
+}
+
+export const patchTodosAvisoLeido = () => {
+    return apiUrl.patch(`/avisos/marcar_todos_leido/`)
+}
+
 // DELETE
 export const deleteProducto = (id) => {
     return apiUrl.delete(`/eliminar-producto/${id}/`)
+}
+
+export const deleteAviso = (id) => {
+    return apiUrl.delete(`/avisos/${id}/delete_aviso/`)
 }
 
 

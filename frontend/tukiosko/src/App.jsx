@@ -26,6 +26,7 @@ import VendedorCuenta from '../src/pagesVendedor/VendedorCuenta'
 import AgregarCategoria from './pages/AgregarCategoria'
 import TotalVentas from './pages/VentasLista'
 import Avisos from './pages/Avisos'
+import AvisosVendedor from './pagesVendedor/AvisosVendedor'
 
 
 export default function App() {
@@ -101,6 +102,9 @@ export default function App() {
           <Route path="/historial" element={<PrivateRoute rolPermitido="vendedor">
             <Historial/>
             </PrivateRoute>}/>
+          <Route path="/avisos-vendedor" element={<PrivateRoute rolPermitido="vendedor">
+            <AvisosVendedor />
+            </PrivateRoute>} />
           <Route path="/venta-detalles/:id/" element={<PrivateRoute rolPermitido="vendedor">
             <VentaDetallesVendedor/>
             </PrivateRoute>}/>

@@ -449,3 +449,104 @@ class DatosVentasAdminAPIView(APIView):
         return Response({
             "ventas_diarias": VentaSerializer(ventas_diarias, many=True).data,
         })
+        
+        
+
+@permission_classes([IsAuthenticated])    
+class AvisosVista(viewsets.ViewSet):
+    @action(detail=False, methods=['get'])
+    def get_avisos(self, request):
+        hoy = timezone.now()
+        usuario = request.user
+        if usuario.rol == 'vendedor':
+            negocio = Usuario.objects.filter(id=usuario.referido_por_id).first()
+            avisos = Aviso.objects.filter(creado_por=negocio, creacion__date=hoy)
+            serializer = AvisosVendedorSerializer(avisos, many=True, context={'request': request})
+            print(serializer.data)
+        if usuario.rol == 'administrador':
+            negocio = Usuario.objects.filter(id=usuario.id).first()
+            avisos = Aviso.objects.filter(creado_por=negocio, creacion__date=hoy)
+            serializer = AvisosSerializer(avisos, many=True)        
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def get_avisos_no_leidos_vendedor(self, request):
+        hoy = timezone.now()
+        vendedor = Usuario.objects.filter(id=request.user.id, rol="vendedor").first()
+        if not vendedor:
+            return Response({"error": "Usuario no es vendedor"}, status=403)
+        negocio = Usuario.objects.filter(id=vendedor.referido_por_id).first()        
+        avisos = Aviso.objects.filter(creado_por=negocio, creacion__date=hoy).exclude(visto_por=request.user)
+        serializer = AvisosVendedorSerializer(avisos, many=True, context={'request': request})        
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['patch'])
+    def marcar_leido(self, request, pk=None):
+        try:
+            aviso = Aviso.objects.get(pk=pk)
+            usuario = request.user
+            aviso.visto_por.add(usuario)
+            return Response({
+                'status': 'Aviso marcado como leído',
+                'id': aviso.id
+            }, status=status.HTTP_200_OK)
+        except Aviso.DoesNotExist:
+            return Response({'error': 'Aviso no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=False, methods=['patch'])
+    def marcar_todos_leido(self, request):
+        usuario = request.user
+        hoy = timezone.now()
+        try:
+            if usuario.rol == 'vendedor':
+                negocio = Usuario.objects.filter(id=usuario.referido_por_id).first()
+                avisos = Aviso.objects.filter(creado_por=negocio, creacion__date=hoy).exclude(visto_por=usuario)
+                for aviso in avisos:
+                    aviso.visto_por.add(usuario)
+                return Response({
+                    'status': 'Avisos marcados como leído',}, status=status.HTTP_200_OK)
+        except Aviso.DoesNotExist:
+            return Response({'error': 'No se marcaron como leido'}, status=status.HTTP_404_NOT_FOUND)
+    
+    @action(detail=False, methods=['post'])
+    def publicar_aviso(self, request):
+        usuario = request.user
+        if usuario.rol != 'administrador':
+            return Response(
+                {"error": "No tienes permisos para publicar avisos"}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        descripcion = request.data.get('descripcion')
+        prioridad = request.data.get('prioridad', 'baja')
+        # titulo = request.data.get('titulo', 'Nuevo Aviso')
+        if not descripcion:
+            return Response(
+                {"error": "La descripción es obligatoria"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            nuevo_aviso = Aviso.objects.create(
+                # titulo=titulo,
+                descripcion=descripcion,
+                prioridad=prioridad,
+                creado_por=usuario
+            )
+            serializer = AvisosSerializer(nuevo_aviso)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response(
+                {"error": f"Error al crear el aviso: {str(e)}"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    @action(detail=True, methods=['delete'])
+    def delete_aviso(self, request, pk=None):
+        negocio = request.user
+        print('este es el negocio')
+        try:
+            aviso = get_object_or_404(Aviso, id=pk, creado_por=negocio)
+            aviso.delete()
+            return Response({'status': 'Aviso eliminado'}, status=201)
+        except Exception as e:
+            return Response({"error": f"Error al eliminar el aviso {e}"})
+
