@@ -285,6 +285,9 @@ class VentaVista(viewsets.ViewSet):
         datos = request.data
         try:
             with transaction.atomic():
+                """
+                arreglar la logica para si el area del producto no coincidde que se pueda vender el producto
+                """
                 print("entra en valido" )
                 vendedor = Usuario.objects.filter(id=request.user.id, rol="vendedor").first()
                 negocio = Usuario.objects.filter(id=vendedor.referido_por_id).first()

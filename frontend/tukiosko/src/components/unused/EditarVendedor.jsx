@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { getAllVendedores, postNuevoVendedor } from '../../api/productos.api.js';
+import { getAllVendedores } from '../../api/productos.api.js';
 import { KeyIcon, KeyRoundIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
