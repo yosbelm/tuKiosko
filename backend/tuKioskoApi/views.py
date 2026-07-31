@@ -7,6 +7,7 @@ from datetime import datetime, date
 from django.utils.timezone import now
 from django.utils import timezone
 from django.db.models import Sum, F
+from django.core.cache import cache
 
 
 
@@ -100,7 +101,10 @@ class ObtenerTodosProductosVista(viewsets.ViewSet):
     def obtener_productos(self, request):
         try:
             negocio = Usuario.objects.filter(id=request.user.id).first()
-            total_productos = Producto.objects.filter(negocio_pertenece=negocio)
+            total_productos = cache.get('total_productos')
+            if not total_productos:
+                total_productos = list(Producto.objects.filter(negocio_pertenece=negocio))
+                cache.set('total_productos', total_productos, 3600)
             return Response(ProductosSerializer(total_productos, many=True).data)
         except Exception as e:
             print("entra en not" )
@@ -374,14 +378,17 @@ class DatosVentasAPIView(APIView):
             vendedores = Usuario.objects.filter(referido_por=usuario).count()
             total_productos = Producto.objects.filter(negocio_pertenece=usuario).count()
         
-            productos_vendidos = ProductoVendido.objects.filter(creado__date=hoy, 
-                producto__negocio_pertenece=usuario).values(
-                nombre=F('producto__nombre'),
-                precio=F('precio_producto_vendido')
-            ).annotate(
-                cantidad_total=Sum('cantidad'),
-                total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
-            ).order_by('producto__nombre')
+            productos_vendidos = cache.get('productos_vendidos')
+            if not productos_vendidos:
+                productos_vendidos = list(ProductoVendido.objects.filter(creado__date=hoy, 
+                    producto__negocio_pertenece=usuario).values(
+                    nombre=F('producto__nombre'),
+                    precio=F('precio_producto_vendido')
+                ).annotate(
+                    cantidad_total=Sum('cantidad'),
+                    total_recaudado=Sum(F('cantidad') * F('precio_producto_vendido'))
+                ).order_by('producto__nombre'))
+                cache.set('productos_vendidos', productos_vendidos, 3600)
             
             productos_vendidos_dia = ProductoVendido.objects.filter(creado__date=hoy, producto__negocio_pertenece=usuario).aggregate(
                 cantidad_total=Sum('cantidad')
@@ -393,13 +400,19 @@ class DatosVentasAPIView(APIView):
                 cantidad_total=Sum('cantidad')
             )['cantidad_total'] or 0
             
-            productos_vendidos_mes = ProductoVendido.objects.filter(creado__year=hoy.year,
-                producto__negocio_pertenece=usuario,
-                creado__month=hoy.month).aggregate(
-                cantidad_total=Sum('cantidad')
-            )['cantidad_total'] or 0
+            productos_vendidos_mes = cache.get('productos_vendidos_mes')
+            if not productos_vendidos_mes:
+                productos_vendidos_mes = ProductoVendido.objects.filter(creado__year=hoy.year,
+                    producto__negocio_pertenece=usuario,
+                    creado__month=hoy.month).aggregate(
+                    cantidad_total=Sum('cantidad')
+                )['cantidad_total'] or 0
+                cache.set('productos_vendidos_mes', productos_vendidos_mes, 3600)
             
-            ventas_diarias = Venta.objects.filter(creado__date=hoy, vendedor__referido_por=usuario).order_by('-creado')
+            ventas_diarias = cache.get('ventas_diarias')
+            if not ventas_diarias:
+                ventas_diarias = Venta.objects.filter(creado__date=hoy, vendedor__referido_por=usuario).order_by('-creado')
+                cache.set('ventas_diarias', ventas_diarias, 3600)
             dinero_ventas_diarias = ventas_diarias.aggregate(total=Sum('precio_total'))['total'] or 0
             ventas_semana = Venta.objects.filter(creado__year=hoy.year, vendedor__referido_por=usuario, creado__week=hoy.isocalendar()[1])
             dinero_ventas_semanal = ventas_semana.aggregate(total=Sum('precio_total'))['total'] or 0
@@ -444,8 +457,11 @@ class DatosVentasAdminAPIView(APIView):
         usuario = request.user
         ventas_diarias = None
         if usuario.rol == 'administrador':
-            ventas_diarias = Venta.objects.filter(vendedor__referido_por=usuario).order_by('-creado')
-
+            ventas_diarias = cache.get('ventas_diarias')
+            if not ventas_diarias:
+                ventas_diarias = Venta.objects.filter(vendedor__referido_por=usuario).order_by('-creado')
+                cache.set('ventas_diarias', ventas_diarias, 3600)
+                
         return Response({
             "ventas_diarias": VentaSerializer(ventas_diarias, many=True).data,
         })

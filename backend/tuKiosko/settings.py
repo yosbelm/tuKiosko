@@ -171,6 +171,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://tukiosko.onrender.com",
     "https://tukiosko-backend.onrender.com",
+    "http://localhost:8081",
+    "http://127.0.0.1:8081",
 ]
 
 
