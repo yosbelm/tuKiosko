@@ -276,10 +276,24 @@ class UsuarioVista(viewsets.ViewSet):
 class VendedorVista(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def get_vendedor(self, request):
-        negocio = request.user
-        print(f'este es el user {negocio}')
-        vendedores = Usuario.objects.filter(referido_por=negocio.id, rol="vendedor")
-        return Response(VendedorSerializer(vendedores, many=True).data)
+        usuario = request.user
+        hoy = timezone.now()
+        
+        if usuario.rol == 'administrador':
+            print(f'este es el user {usuario}')
+            vendedores = Usuario.objects.filter(referido_por=usuario.id, rol="vendedor")
+            dict = {}
+            for vendedor in vendedores:
+                ventas_diarias = Venta.objects.filter(vendedor=vendedor, creado__date=hoy).aggregate(precio_total=Sum('precio_total'))
+                print(f"-----------{ventas_diarias['precio_total']}")
+                print(f'este es el vendor {vendedor.username}')
+                dict[vendedor.username] = ventas_diarias['precio_total']
+                pass
+            print(f'aaqui esta el diccionario {dict}')
+        return Response({
+            'vendedores': VendedorSerializer(vendedores, many=True).data,
+            'stats': dict
+        })
     
     
 @permission_classes([IsAuthenticated])
@@ -456,14 +470,23 @@ class DatosVentasAdminAPIView(APIView):
     def get(self, request):
         usuario = request.user
         ventas_diarias = None
+        total_vendido= None
+        hoy = timezone.now()
         if usuario.rol == 'administrador':
             ventas_diarias = cache.get('ventas_diarias')
             if not ventas_diarias:
-                ventas_diarias = Venta.objects.filter(vendedor__referido_por=usuario).order_by('-creado')
+                ventas_diarias = Venta.objects.filter(vendedor__referido_por=usuario,
+                                                    creado__date=hoy).order_by('-creado')
                 cache.set('ventas_diarias', ventas_diarias, 3600)
+                total_vendido = 0
+                for venta in ventas_diarias:
+                    total_vendido += venta.precio_total
+                print(f"esta es la venta {total_vendido}")
+                print(f'ventas diarias {[venta.precio_total for venta in ventas_diarias]}')
                 
         return Response({
             "ventas_diarias": VentaSerializer(ventas_diarias, many=True).data,
+            "total": total_vendido,
         })
         
         
