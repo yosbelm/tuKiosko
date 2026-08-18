@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#+f=t1^z+xx6apd42s+^5(d&)43oq%1_z-t#_3y&nrws0o02=0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['tukiosko-backend.onrender.com', 
                  'http://127.0.0.1/',
@@ -32,13 +32,15 @@ ALLOWED_HOSTS = ['tukiosko-backend.onrender.com',
                  '127.0.0.1',
                  'localhost',
                  'https://tukiosko-backend.onrender.com',
+                 '192.168.1.102',
                  ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # 'django.contrib.admin',
+    'hide_admin.apps.HideAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -173,6 +175,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://tukiosko-backend.onrender.com",
     "http://localhost:8081",
     "http://127.0.0.1:8081",
+    "http://localhost"
 ]
 
 

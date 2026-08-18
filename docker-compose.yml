@@ -1,0 +1,29 @@
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: tukiosko_backend
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    command: gunicorn tuKiosko.wsgi:application --bind 0.0.0.0:8000
+
+
+  frontend:
+    build:
+      context: ./frontend/tukiosko
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api/v1/
+    container_name: tukiosko_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

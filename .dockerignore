@@ -1,0 +1,5 @@
+.env
+db.sqlite3
+*.pyc
+node_modules
+dist
