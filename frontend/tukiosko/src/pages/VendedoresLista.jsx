@@ -22,7 +22,7 @@ export default function VendedoresLista() {
       try {
         const response = await getAllVendedores();
         // Asumiendo que la respuesta trae la relación de Usuario y Vendedor
-        setVendedores(response.data);
+        setVendedores(response.data.vendedores);
       } catch (error) {
         console.error('Error al obtener la lista de vendedores:', error);
       } finally {

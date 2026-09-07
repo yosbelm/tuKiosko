@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { toast } from 'sonner';
-import { registrarUsuario } from '../api/productos.api';
+import { estaAutenticado, iniciarSesion, registrarUsuario } from '../api/productos.api';
 import { useLocation } from 'react-router-dom';
 
 export default function RegisterPage() {
@@ -54,6 +54,19 @@ export default function RegisterPage() {
                 description: `Bienvenido ${nombre}, tu cuenta ha sido creada.`,
                 duration: 3000,
             });
+
+            
+            await iniciarSesion(payload);
+            const response = await estaAutenticado();
+            const userRol = response?.data?.rol;
+            if (userRol === "administrador") {
+                window.location.replace("/panel", { replace: true })
+            } else if (userRol === "vendedor") {
+                window.location.replace("/historial", { replace: true })
+            } else {
+                window.location.replace("/", { replace: true })
+            }
+            
             setNombre('');
             setEmail('');
             setPassword('');

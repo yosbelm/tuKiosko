@@ -15,17 +15,21 @@ RUN apt-get update \
 # Instalar dependencias
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Tiempo de espera y retry feature pra conexiones lentas como la mia
+RUN pip install --default-timeout=1000 --retries=10 --no-cache-dir -r requirements.txt
 
 # Copiar todo el backend
 COPY . .
 
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Crear directorio para archivos estáticos
 RUN mkdir -p /app/staticfiles
 
-# Recolectar archivos estáticos
-RUN python manage.py collectstatic --no-input
 
 EXPOSE 8000
+
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 CMD ["gunicorn", "tuKiosko.wsgi:application", "--bind", "0.0.0.0:8000"]

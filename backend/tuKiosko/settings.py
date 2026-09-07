@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,8 +40,7 @@ ALLOWED_HOSTS = ['tukiosko-backend.onrender.com',
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
-    'hide_admin.apps.HideAdminConfig',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -98,22 +98,28 @@ WSGI_APPLICATION = 'tuKiosko.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-IS_PRODUCTION = os.environ.get('IS_PRODUCTION', 'False').strip().lower() == 'true'
+IS_PRODUCTION = config('IS_PRODUCTION', default=True, cast=bool)
 if IS_PRODUCTION:
-    DATABASE_PATH = '/data/db.sqlite3'    
-    print(f"MODO PRODUCCIÓN ACTIVO: La base de datos está en {DATABASE_PATH}")
-else:
-    DATABASE_PATH = BASE_DIR / 'db.sqlite3'
-    print(f"MODO LOCAL ACTIVO: La base de datos está en {DATABASE_PATH}")
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DATABASE_PATH,
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME', default=config('POSTGRES_DB')),
+            'USER': config('DB_USER', default=config('POSTGRES_USER')),
+            'PASSWORD': config('DB_PASSWORD', default=config('POSTGRES_PASSWORD')),
+            'HOST': config('DB_HOST', default='db'),
+            'PORT': config('DB_PORT', default=5432, cast=int),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-print(f"DEBUG: La base de datos se está cargando en: {DATABASES['default']['NAME']}")
+print(f"DEBUG DB ENGINE: {DATABASES['default']['ENGINE']}")
+print(f"DEBUG DB NAME: {DATABASES['default']['NAME']}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

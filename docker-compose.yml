@@ -8,6 +8,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file:
       - .env.production
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_DB=tukiosko
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
 
   backend:
     build:
@@ -17,19 +22,25 @@ services:
     container_name: tukiosko_backend
 
     env_file:
-      - .env
+      - .env.production
+    environment:
+      - IS_PRODUCTION=True
     depends_on:
       - db
     ports:
       - "8000:8000"
-
+    develop:
+      watch:
+        - path: ./backend
+          target: /app
+          action: sync
     command: gunicorn tuKiosko.wsgi:application --bind 0.0.0.0:8000
 
 
   frontend:
     build:
       context: ./frontend/tukiosko
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       args:
         - VITE_API_BASE_URL=/api/v1/
     image: yosbelm/tukiosko:frontend
@@ -38,6 +49,11 @@ services:
       - "80:80"
     depends_on:
       - backend
+    develop:
+      watch:
+        - path: ./frontend/tukiosko
+          target: /app
+          action: sync
 
 volumes:
   postgres_data:

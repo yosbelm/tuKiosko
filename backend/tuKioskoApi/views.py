@@ -101,10 +101,7 @@ class ObtenerTodosProductosVista(viewsets.ViewSet):
     def obtener_productos(self, request):
         try:
             negocio = Usuario.objects.filter(id=request.user.id).first()
-            total_productos = cache.get('total_productos')
-            if not total_productos:
-                total_productos = list(Producto.objects.filter(negocio_pertenece=negocio))
-                cache.set('total_productos', total_productos, 3600)
+            total_productos = list(Producto.objects.filter(negocio_pertenece=negocio))
             return Response(ProductosSerializer(total_productos, many=True).data)
         except Exception as e:
             print("entra en not" )
@@ -174,13 +171,22 @@ class ObtenerAreaVista(viewsets.ViewSet):
                 # payload = {"nombre":datos['nombre'],
                 #     }
                 # print(payload)
+                print(f'este es el total {total_areas}')
                 if total_areas < 3:
-                    area = Area.objects.create(
-                        negocio_pertenece=request.user,
-                        nombre=datos['nombre'],
-                    )
-                    print(f'esta es la area {area}')             
-                    return Response({'status': 'Area creada'}, status=201)
+                    if total_areas < 1:
+                        area = Area.objects.create(
+                            negocio_pertenece=request.user,
+                            nombre=datos['nombre'],
+                            por_defecto=True
+                        )
+                        return Response({'status': 'Primer Area creada'}, status=201)
+                    else:
+                        area = Area.objects.create(
+                            negocio_pertenece=request.user,
+                            nombre=datos['nombre'],
+                        )
+                        print(f'esta es la area {area}')             
+                        return Response({'status': 'Area creada'}, status=201)
                 else:
                     return Response({'status': 'Limite de Areas'}, status=400)
         except Exception as e:
